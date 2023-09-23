@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <cstdint>
 #include <concepts>
 #include <ostream>
 #include <format>
@@ -219,13 +220,6 @@ namespace utils {
 
 		std::string toString() const {
 			return std::format("({}, {})", m_x, m_y);
-		}
-
-		// Return the vector with members equal to the outputs to the func for the pairs of (x, vec.x) and (y, vec.y)
-		template<std::invocable Func>
-			requires requires (Func f, T x, T y) { std::is_same_v<f(x, y), x>; }
-		constexpr Vector2 invokeForXY(const Vector2& vec, Func func) const {
-			return Vector2(func(m_x, vec.x()), func(m_y, vec.y()));
 		}
 
 		constexpr Vector2 getMaxByXY(const Vector2& vec) const noexcept {
