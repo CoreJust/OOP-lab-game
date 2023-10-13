@@ -1,25 +1,30 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include <vector>
 #include <memory>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
+#include "Utils/NoNullptr.h"
+#include "IO/VirtualInput.h"
 #include "State.h"
 
 class StateManager final {
 private:
-	std::vector<std::unique_ptr<State>> m_menus;
-	bool m_popMenu = false;
+	std::unique_ptr<io::VirtualInput> m_virtualInput;
+	std::vector<std::unique_ptr<State>> m_states;
+	bool m_popState = false;
 	bool m_isToExit = false;
 
 public:
-	StateManager();
+	StateManager(const float& mouseWheelDelta);
 
 	void update(sf::RenderWindow& window, float deltaTime);
 
-	void addMenu(std::unique_ptr<State> menu);
-	void popMenu();
+	void addState(std::unique_ptr<State> state);
+	void popState();
 
-	State* getCurrentMenu() const;
-	bool isToBeClosed() const; // must the program be closed (after the save)
+	utils::NoNullptr<State> getCurrentState() const;
+	bool isToBeClosed() const noexcept; // must the program be closed (after the save)
 };

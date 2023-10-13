@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include <vector>
 #include <map>
@@ -19,11 +23,11 @@ protected:
 public:
 	ResourceManager();
 
-	TextureAtlas* getOrLoadTextureAtlas(const std::string& name);
+	TextureAtlas& getOrLoadTextureAtlas(const std::string& name);
 
-	void registerTexture(TextureId texId, Texture texture);
-	void registerAnimation(AnimationId animId, AnimationData animation);
+	void registerTexture(const TextureId texId, Texture texture);
+	void registerAnimation(const AnimationId animId, AnimationData animation);
 
-	Texture* getTexture(TextureId texId);
-	AnimationData* getAnimationData(AnimationId animId);
+	Texture& getTexture(const TextureId texId);
+	AnimationData& getAnimationData(const AnimationId animId);
 };

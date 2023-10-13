@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include <cassert>
 
@@ -19,7 +23,7 @@ enum class TileCategory : uint8_t {
 struct TileInfo {
 	const float hardness;
 	const float speedModifier; // acceleration or deceleration on tiles of the kind
-	TileCategory category;
+	const TileCategory category;
 	const bool isTransparent;
 
 	constexpr TileInfo(TileCategory category, float hardness, float speedModifier, bool isTransparent)

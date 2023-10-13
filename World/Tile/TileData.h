@@ -1,5 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
-#include "Utils/Vector.h"
+#include <memory>
+#include "Math/Vector.h"
 
 class World;
 class Player;
@@ -11,5 +16,10 @@ protected:
 	TileData() = default;
 
 public:
-	virtual void update(utils::Vector2f pos, World* world, Player* player) = 0;
+	virtual ~TileData() noexcept = default;
+
+	virtual void update(math::Vector2f pos, World& world, Player& player) = 0;
+
+	// Expected to be used with smart pointers
+	virtual std::unique_ptr<TileData> copy() = 0;
 };

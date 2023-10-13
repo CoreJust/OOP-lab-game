@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "TextureId.h"
 
 #include <cassert>
@@ -11,6 +15,7 @@ std::string TextureId::toString() const {
 		"STONE_FLOOR",
 		"STONE_WALL",
 		"STONE",
+		"STONE_PORTAL",
 
 		"NUMBER_TEXTURE_IDS"
 	};
@@ -27,7 +32,8 @@ std::string TextureId::getResourceLocation() const {
 
 		"stone_floor",
 		"stone_wall",
-		"stone"
+		"stone",
+		"stone_portal",
 
 		""
 	};

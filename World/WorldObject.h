@@ -1,15 +1,19 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
-#include "Utils/Vector.h"
+#include "Math/Vector.h"
 
 // Anything that can be located in the world
 class WorldObject {
 protected:
-	utils::Vector2f m_pos;
+	math::Vector2f m_pos;
 
 public:
-	WorldObject(utils::Vector2f pos);
+	WorldObject(math::Vector2f pos);
 
-	const utils::Vector2f& getPos() const;
+	const math::Vector2f& getPos() const;
 	float getX() const;
 	float getY() const;
 };

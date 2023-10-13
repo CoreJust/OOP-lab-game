@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include <vector>
 
@@ -12,11 +16,11 @@ protected:
 
 public:
 	AnimationData() = default;
-	AnimationData(TextureAtlas* atlas, const std::vector<uint32_t>& animationLengths, float slideDuration = 0.3f);
+	AnimationData(const TextureAtlas& atlas, const std::vector<uint32_t>& animationLengths, const float slideDuration = 0.3f);
 
-	Texture& getTexture(uint32_t animationId, uint32_t slide);
+	Texture& getTexture(const uint32_t animationId, const uint32_t slide);
 
 	float getSlideDuration() const;
 	size_t getAnimationsCount() const;
-	size_t getAnimationSlideCount(size_t id) const;
+	size_t getAnimationSlideCount(const size_t id) const;
 };

@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include "State.h"
 #include "Graphics/Camera.h"
@@ -7,15 +11,15 @@
 
 class GameState : public State {
 private:
+	World m_world;
 	PlayerContoller m_playerController;
 	Camera m_camera;
-	World m_world;
 
 	RenderMaster m_renderMaster;
 
 public:
 	GameState();
 
-	void update(float deltaTime) override;
+	void update(float deltaTime, utils::NoNullptr<io::VirtualInput> input) override;
 	void render(sf::RenderWindow& window) override;
 };

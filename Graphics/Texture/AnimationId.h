@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include "BasicResourceId.h"
 
@@ -11,7 +15,9 @@ public:
 
 public:
 	constexpr AnimationId() = delete;
-	constexpr AnimationId(Value value) noexcept : BasicResourceId(value) { }
+	constexpr AnimationId(const Value value) noexcept : BasicResourceId(value) {
+		assert(value < NUMBER_ANIMATION_IDS);
+	}
 
 	constexpr AnimationId& operator=(AnimationId other) noexcept {
 		m_id = id_t(other);

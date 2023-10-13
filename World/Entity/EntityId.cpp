@@ -1,10 +1,14 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "EntityId.h"
 
 #include <cassert>
 
 const EntityStats& EntityId::getEntityStats() const {
 	static EntityStats s_entityIdStats[] {
-		EntityStats(1000, 0, 20, 2, 0.2f)
+		EntityStats{ .maxHealth = 1000, .defence = 0, .power = 20, .speed = 3, .hitbox = 0.26f }, // Player
 	};
 
 	assert(m_id < std::size(s_entityIdStats));

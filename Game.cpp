@@ -1,7 +1,11 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "Game.h"
 
 Game::Game()
-	: m_display(800, 600, "OOP lab1 game") {
+	: m_display(800, 600, "OOP lab1 game"), m_stateManager(m_display.getMouseWheelDeltaRef()) {
 
 }
 

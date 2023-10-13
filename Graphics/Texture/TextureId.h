@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include "BasicResourceId.h"
 
@@ -10,15 +14,18 @@ public:
 		STONE_FLOOR,
 		STONE_WALL,
 		STONE,
+		STONE_PORTAL,
 
 		NUMBER_TEXTURE_IDS
 	};
 
 public:
 	constexpr TextureId() = delete;
-	constexpr TextureId(Value value) noexcept : BasicResourceId(value) { }
+	constexpr TextureId(const Value value) noexcept : BasicResourceId(value) {
+		assert(value < NUMBER_TEXTURE_IDS);
+	}
 
-	constexpr TextureId& operator=(TextureId other) noexcept {
+	constexpr TextureId& operator=(const TextureId other) noexcept {
 		m_id = id_t(other);
 
 		return *this;

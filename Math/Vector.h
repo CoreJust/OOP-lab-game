@@ -1,22 +1,26 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include <cmath>
 #include <cstdint>
-#include <concepts>
-#include <ostream>
+#include <numbers>
 #include <format>
 
-namespace utils {
-	constexpr float PI = 3.1415926536f; // M_PI is not suitable
+#include <SFML/System/Vector2.hpp> // For convertion to sf::Vector2
 
-	template<class T>
-	concept Arithmetic = std::is_arithmetic_v<T>;
+#include "Utils/Concepts.h"
+#include "Cmath.h"
 
-
-	template<Arithmetic T>
+namespace math {
+	template<::utils::Arithmetic T>
 	class Vector2 final {
 	public:
+		using ValueTy = T;
+
 		// FloatTy - the corresponding to T floating point type
-		using FloatTy = std::conditional<sizeof(T) <= sizeof(float), float, double>::type;
+		using FloatTy = CorrespondingFloat<T>;
 
 	private:
 		T m_x = 0;
@@ -29,14 +33,15 @@ namespace utils {
 		constexpr Vector2(const Vector2&) noexcept = default;
 		constexpr Vector2(Vector2&&) noexcept = default;
 
-		template<Arithmetic U> requires std::is_nothrow_convertible_v<U, T>
-		constexpr Vector2(U x, U y) noexcept 
+		template<utils::Arithmetic U> requires std::is_nothrow_convertible_v<U, T>
+		constexpr Vector2(const U x, const U y) noexcept
 			: m_x(static_cast<T>(x)), m_y(static_cast<T>(y)) {
 
 		}
 
-		constexpr Vector2(T x, T y) noexcept
-			: m_x(x), m_y(y) {
+		template<utils::Arithmetic U> requires std::is_nothrow_convertible_v<U, T>
+		constexpr Vector2(const U val) noexcept // Constructs a vector with same coordinates
+			: m_x(static_cast<T>(val)), m_y(static_cast<T>(val)) {
 
 		}
 
@@ -68,7 +73,7 @@ namespace utils {
 			return Vector2(m_x + right.x(), m_y + right.y());
 		}
 
-		constexpr Vector2 operator+(T value) const noexcept {
+		constexpr Vector2 operator+(const T value) const noexcept {
 			return Vector2(m_x + value, m_y + value);
 		}
 
@@ -76,19 +81,19 @@ namespace utils {
 			return Vector2(m_x - right.x(), m_y - right.y());
 		}
 
-		constexpr Vector2 operator-(T value) const noexcept {
+		constexpr Vector2 operator-(const T value) const noexcept {
 			return Vector2(m_x - value, m_y - value);
 		}
 
-		constexpr Vector2 operator*(T value) const noexcept {
+		constexpr Vector2 operator*(const T value) const noexcept {
 			return Vector2(m_x * value, m_y * value);
 		}
 
-		constexpr Vector2 operator/(T value) const {
+		constexpr Vector2 operator/(const T value) const {
 			return Vector2(m_x / value, m_y / value);
 		}
 
-		constexpr Vector2 operator%(T value) const noexcept {
+		constexpr Vector2 operator%(const T value) const noexcept {
 			if constexpr (std::is_integral_v<T>) {
 				return Vector2(m_x % value, m_y % value);
 			} else {
@@ -102,7 +107,7 @@ namespace utils {
 			return *this;
 		}
 
-		constexpr Vector2& operator+=(T value) noexcept {
+		constexpr Vector2& operator+=(const T value) noexcept {
 			m_x += value;
 			m_y += value;
 			return *this;
@@ -114,25 +119,25 @@ namespace utils {
 			return *this;
 		}
 
-		constexpr Vector2& operator-=(T value) noexcept {
+		constexpr Vector2& operator-=(const T value) noexcept {
 			m_x -= value;
 			m_y -= value;
 			return *this;
 		}
 
-		constexpr Vector2& operator*=(T value) noexcept {
+		constexpr Vector2& operator*=(const T value) noexcept {
 			m_x *= value;
 			m_y *= value;
 			return *this;
 		}
 
-		constexpr Vector2& operator/=(T value) {
+		constexpr Vector2& operator/=(const T value) {
 			m_x /= value;
 			m_y /= value;
 			return *this;
 		}
 
-		constexpr Vector2& operator%=(T value) noexcept {
+		constexpr Vector2& operator%=(const T value) noexcept {
 			if constexpr (std::is_integral_v<T>) {
 				m_x %= value;
 				m_y %= value;
@@ -144,36 +149,50 @@ namespace utils {
 			return *this;
 		}
 
-		template<Arithmetic U> requires std::is_nothrow_convertible_v<U, T>
-		constexpr explicit operator Vector2<U>() const {
+		template<utils::Arithmetic U> requires std::is_nothrow_convertible_v<U, T>
+		constexpr explicit operator Vector2<U>() const noexcept {
 			return Vector2<U>(U(m_x), U(m_y));
+		}
+
+		template<utils::Arithmetic U> requires std::is_nothrow_convertible_v<U, T>
+		constexpr Vector2<U> to() const noexcept { // Another version of the conversion operator
+			return Vector2<U>(U(m_x), U(m_y));
+		}
+
+		constexpr sf::Vector2<T> toSfml() const noexcept {
+			return sf::Vector2<T>(m_x, m_y);
 		}
 
 		///  Methods  ///
 
-		constexpr T dotProduct(const Vector2& other) const {
+		constexpr T dotProduct(const Vector2& other) const noexcept {
 			return m_x * other.x() + m_y * other.y();
 		}
 
-		constexpr FloatTy cosOfAngleWith(const Vector2& other) const {
+		constexpr FloatTy cosOfAngleWith(const Vector2& other) const noexcept {
 			return dotProduct(other) / (length() * other.length());
 		}
 
-		FloatTy angleWith(const Vector2& other) const {
-			float result = acos(cosOfAngleWith(other));
-			if (result > PI) {
-				result -= 2 * PI;
+		constexpr FloatTy angleWith(const Vector2& other) const {
+			float result = Cmath::acos(cosOfAngleWith(other));
+			if (result > std::numbers::pi_v<FloatTy>) {
+				result -= 2 * std::numbers::pi_v<FloatTy>;
 			}
 
 			return result;
 		}
 
-		FloatTy length() const {
-			return sqrt(m_x * m_x + m_y * m_y);
+		constexpr FloatTy length() const {
+			return Cmath::sqrt(m_x * m_x + m_y * m_y);
 		}
 
-		constexpr FloatTy distance(const Vector2& to) const {
+		constexpr FloatTy distance(const Vector2& to) const noexcept {
 			return (*this - to).length();
+		}
+
+		// Returns a vector with swapped coords
+		constexpr Vector2 swap() const noexcept {
+			return Vector2(m_y, m_x);
 		}
 
 		constexpr Vector2 mirrorByX() const noexcept {
@@ -184,10 +203,8 @@ namespace utils {
 			return Vector2(m_x, -m_y);
 		}
 
-		constexpr Vector2<int32_t> roundFloor() const noexcept {
-			static_assert(std::is_floating_point_v<T>);
-
-			return Vector2<int32_t>(std::floor(m_x), std::floor(m_y));
+		constexpr Vector2 roundFloor() const noexcept {
+			return Vector2(Cmath::floor(m_x), Cmath::floor(m_y));
 		}
 
 		constexpr Vector2 abs() const noexcept {
@@ -200,7 +217,7 @@ namespace utils {
 
 		// Is this vector located to the left-up from the vec
 		template<bool IsStrict = false>
-		constexpr bool isToLeftUpFrom(const Vector2& vec) const noexcept {
+		constexpr bool isToUpLeftFrom(const Vector2& vec) const noexcept {
 			if constexpr (IsStrict) {
 				return m_x < vec.x() && m_y < vec.y();
 			} else {
@@ -249,7 +266,7 @@ namespace utils {
 		}
 	};
 
-	typedef Vector2<float> Vector2f;
-	typedef Vector2<int32_t> Vector2i;
-	typedef Vector2<uint32_t> Vector2u;
+	using Vector2f = Vector2<float>;
+	using Vector2i = Vector2<int32_t>;
+	using Vector2u = Vector2<uint32_t>;
 }

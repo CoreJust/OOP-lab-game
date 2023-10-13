@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include "ResourceManager.h"
 
@@ -11,10 +15,10 @@ public:
 	void registerAll();
 
 private:
-	void registerTexture(TextureId texId);
+	void registerTexture(const TextureId texId);
 	void registerAnimation(
-		AnimationId animId,
+		const AnimationId animId,
 		const std::vector<uint32_t>& animationLegths, 
-		float slideDuration = 0.3
+		const float slideDuration = 0.3
 	);
 };

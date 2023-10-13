@@ -1,14 +1,24 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "EntityController.h"
 
-#include "Utils/Direction.h"
+#include "Math/Direction.h"
+#include "Math/Rect.h"
+#include "Math/Collision.h"
 #include "World/World.h"
+#include "IO/Logger.h"
+#include "GlobalSettings.h"
 
-EntityController::EntityController(std::unique_ptr<Entity> entity, World* pWorld)
+EntityController::EntityController(std::unique_ptr<Entity> entity, World& pWorld)
 	: m_entity(std::move(entity)), m_pWorld(pWorld) {
 
 }
 
-void EntityController::update(float deltaTime) {
+void EntityController::update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input) {
+	m_entity->getEffectPoolMut().update(deltaTime);
+
 	if (m_isMoving) {
 		m_animation->update(deltaTime);
 		m_isMoving = false;
@@ -18,22 +28,22 @@ void EntityController::update(float deltaTime) {
 }
 
 void EntityController::draw(RenderMaster& renderMaster) {
-	renderMaster.drawEntity(m_animation.get(), m_entity->getPos() - 0.5);
+	renderMaster.drawEntity(*m_animation, m_entity->getPos() - 0.5f);
 }
 
-void EntityController::tryToMove(utils::Vector2f offset) {
+void EntityController::tryToMove(math::Vector2f offset) {
 	// Updating animation
-	utils::Vector2f currentDirection;
+	math::Vector2f currentDirection;
 	switch (m_animation->getAnimationId()) {
-		case 0: currentDirection = utils::Direction<float>::UP_VEC; break;
-		case 1: currentDirection = utils::Direction<float>::DOWN_VEC; break;
-		case 2: currentDirection = utils::Direction<float>::RIGHT_VEC; break;
-		case 3: currentDirection = utils::Direction<float>::LEFT_VEC; break;
+		case 0: currentDirection = math::Direction<float>::UP_VEC; break;
+		case 1: currentDirection = math::Direction<float>::DOWN_VEC; break;
+		case 2: currentDirection = math::Direction<float>::RIGHT_VEC; break;
+		case 3: currentDirection = math::Direction<float>::LEFT_VEC; break;
 	default: break;
 	}
 
 	float angle = offset.angleWith(currentDirection);
-	if (abs(angle) > utils::PI / 4) {
+	if (abs(angle) > std::numbers::pi_v<float> / 4) {
 		if (abs(offset.x()) >= abs(offset.y())) {
 			if (offset.x() > 0) {
 				m_animation->setAnimation(2); // right
@@ -42,44 +52,29 @@ void EntityController::tryToMove(utils::Vector2f offset) {
 			}
 		} else {
 			if (offset.y() > 0) {
-				m_animation->setAnimation(0); // up
-			} else {
 				m_animation->setAnimation(1); // down
+			} else {
+				m_animation->setAnimation(0); // up
 			}
 		}
 	}
 
 	// Collision check
 
-	float hitbox = m_entity->getStats().hitbox;
-	const utils::Vector2f& entityPos = m_entity->getPos();
-
-	// Current position in the world
-	utils::Vector2i currPos1 = (entityPos - hitbox).roundFloor();
-	utils::Vector2i currPos2 = (entityPos + hitbox).roundFloor();
-
-	// newPos1 and newPos2 is a hitbox of the entity
-	utils::Vector2i newPos1 = (entityPos + offset - hitbox).roundFloor();
-	utils::Vector2i newPos2 = (entityPos + offset + hitbox).roundFloor();
-
-	if (newPos1.x() < currPos1.x()) {
-		if (m_pWorld->isObstacleAt({ newPos1.x(), currPos1.y() })) {
-			offset.x() = currPos1.x() - entityPos.x() + hitbox;
-		}
-	} else if (newPos2.x() > currPos2.x()) {
-		if (m_pWorld->isObstacleAt({ newPos2.x(), currPos2.y() })) {
-			offset.x() = newPos2.x() - entityPos.x() - hitbox - 2e-5f;
-		}
+	if (!m_entity->isInSpiritualMode()) {
+		offset = math::Collision(
+			m_entity->getPos(),
+			m_entity->getStats().hitbox,
+			offset,
+			[this, pos = m_entity->getPos().roundFloor().template to<int32_t>()](int32_t x, int32_t y) -> bool {
+				return m_pWorld.isObstacleAt(pos + math::Vector2i(x, y)); //.at(0, pos + math::Vector2i(x, y)).isObstacle();
+			}
+		).calculatePossibleMove().getOffset();
 	}
 
-	if (newPos1.y() < currPos1.y()) {
-		if (m_pWorld->isObstacleAt({ currPos1.x(), newPos1.y() })) {
-			offset.y() = currPos1.y() - entityPos.y() + hitbox;
-		}
-	} else if (newPos2.y() > currPos2.y()) {
-		if (m_pWorld->isObstacleAt({ currPos2.x(), newPos2.y() })) {
-			offset.y() = newPos2.y() - entityPos.y() - hitbox - 2e-5f;
-		}
+	if (GlobalSettings::get().isToLogEntitiesPos()) {
+		io::Logger::logInfo("Entity [" + m_entity->getId().toString() + "]: position: " + m_entity->getPos().toString()
+						+ ", offset: " + offset.toString());
 	}
 	
 	// Moving
@@ -87,8 +82,29 @@ void EntityController::tryToMove(utils::Vector2f offset) {
 	m_isMoving = true;
 }
 
-void EntityController::setAnimation(AnimationData* animationData) {
+void EntityController::setAnimation(AnimationData& animationData) {
 	m_animation = std::make_unique<Animation>(animationData);
+}
+
+float EntityController::calculateSpeed() const {
+	float result = 0.f;
+	math::Rectf entityRect = math::Rectf(m_entity->getPos(), m_entity->getStats().hitbox);
+	math::SquareArray<float, 2> proportions = entityRect.getProportions<2>();
+
+	math::Vector2i pos = entityRect.topLeft().to<int>();
+	for (int32_t x = 0; x < 2; x++) {
+		for (int32_t y = 0; y < 2; y++) {
+			const Tile& tile = m_pWorld.at(0, pos + math::Vector2i { x, y });
+
+			if (tile.isObstacle()) {
+				result += proportions.at(x, y); // so that we don't get stuck in the wall in case something happened
+			} else {
+				result += proportions.at(x, y) * tile.getId().getTileInfo().speedModifier;
+			}
+		}
+	}
+
+	return result * m_entity->getStats().speed;
 }
 
 Entity& EntityController::getEntity() {

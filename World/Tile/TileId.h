@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include "Utils/BasicId.h"
 #include "Graphics/Texture/TextureId.h"
@@ -18,6 +22,7 @@ public:
 		STONE,
 
 		// Interactive tiles
+		STONE_PORTAL,
 
 
 		NUMBER_TILE_IDS
@@ -25,7 +30,9 @@ public:
 
 public:
 	constexpr TileId() = delete;
-	constexpr TileId(Value value) noexcept : BasicId(value) { }
+	constexpr TileId(Value value) noexcept : BasicId(value) {
+		assert(value < NUMBER_TILE_IDS);
+	}
 
 	constexpr TileId& operator=(TileId other) noexcept {
 		m_id = id_t(other);
