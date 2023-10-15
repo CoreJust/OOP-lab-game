@@ -11,7 +11,7 @@
 class Display final {
 private:
 	sf::RenderWindow m_window;
-	float m_mouseWheelDelta;
+	float m_mouseWheelDelta = 0.f;
 
 public:
 	Display(uint32_t width, uint32_t height, std::string title);

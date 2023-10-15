@@ -18,6 +18,34 @@ Entity::Entity(math::Vector2f pos, EntityId id, World& pWorld)
 
 }
 
+Entity& Entity::operator=(const Entity& other) {
+	m_pos = other.m_pos;
+	m_id = other.m_id;
+	m_stats = other.m_stats;
+	m_health = other.m_health;
+	m_immortalMode = other.m_immortalMode;
+	m_invisibleMode = other.m_invisibleMode;
+	m_spiritualMode = other.m_spiritualMode;
+
+	m_effectPool = other.m_effectPool;
+
+	return *this;
+}
+
+Entity& Entity::operator=(Entity&& other) noexcept {
+	m_pos = other.m_pos;
+	m_id = other.m_id;
+	m_stats = other.m_stats;
+	m_health = other.m_health;
+	m_immortalMode = other.m_immortalMode;
+	m_invisibleMode = other.m_invisibleMode;
+	m_spiritualMode = other.m_spiritualMode;
+
+	m_effectPool = std::move(other.m_effectPool);
+
+	return *this;
+}
+
 // Preliminary implementation
 // TODO: Review defence system
 float Entity::calcDamage(float amount) const {

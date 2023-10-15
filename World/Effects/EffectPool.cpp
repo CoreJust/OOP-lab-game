@@ -14,8 +14,20 @@ EffectPool::EffectPool(Entity& pEntity, World& pWorld) noexcept
 
 }
 
+EffectPool& EffectPool::operator=(const EffectPool& other) {
+	m_effects = other.m_effects;
+
+	return *this;
+}
+
+EffectPool& EffectPool::operator=(EffectPool&& other) {
+	m_effects = std::move(other.m_effects);
+
+	return *this;
+}
+
 void EffectPool::update(const float deltaTime) {
-	for (auto it = m_effects.begin(); it != m_effects.end(); it++) {
+	for (auto it = m_effects.begin(); it != m_effects.end(); ++it) {
 		if ((*it)->update(m_pEntity, m_pWorld, deltaTime)) {
 			it = m_effects.erase(it);
 

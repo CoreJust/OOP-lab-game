@@ -4,19 +4,26 @@
 
 #include "EffectGiverTileData.h"
 
-EffectGiverTileData::EffectGiverTileData(std::vector<std::shared_ptr<Effect>> effects, const float activationRadius)
-	: m_effects(std::move(effects)), m_activationRadius(activationRadius) {
+EffectGiverTileData::EffectGiverTileData(std::vector<std::shared_ptr<Effect>> effects, const float coolDown)
+	: m_effects(std::move(effects)), m_coolDown(coolDown) {
 
 }
 
-void EffectGiverTileData::update(math::Vector2f pos, World& world, Player& player) {
-	if (pos.distance(player.getPos()) <= m_activationRadius) {
+void EffectGiverTileData::update(math::Vector2f pos, World& world, Player& player, const float deltaTime) {
+	if (m_coolDownTimer > 0.f) {
+		m_coolDownTimer -= deltaTime;
+	}
+}
+
+void EffectGiverTileData::onStep(math::Vector2f pos, World& world, Entity& entity) {
+	if (m_coolDownTimer <= 0.f) {
 		for (auto& e : m_effects) {
-			player.getEffectPoolMut().pushEffect(e->copy());
+			entity.getEffectPoolMut().pushEffect(e->copy());
+			m_coolDownTimer = m_coolDown;
 		}
 	}
 }
 
 std::unique_ptr<TileData> EffectGiverTileData::copy() {
-	return std::make_unique<EffectGiverTileData>(m_effects, m_activationRadius);
+	return std::make_unique<EffectGiverTileData>(m_effects, m_coolDown);
 }

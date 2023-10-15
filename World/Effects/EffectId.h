@@ -5,7 +5,7 @@
 #pragma once
 #include "Utils/BasicId.h"
 
-class EffectId : public BasicId {
+class EffectId final : public BasicId {
 public:
 	enum Value : id_t {
 		// Continuous effects
@@ -21,8 +21,8 @@ public:
 		DEFENCE_INCREASE,
 		DEFENCE_DECREASE,
 
-		CONTINUOUS_DAMAGE,
 		CONTINUOUS_HEALING,
+		CONTINUOUS_DAMAGE,
 
 		IMMORTALITY,
 		SPIRITUAL_FORM,
@@ -59,7 +59,7 @@ public:
 	}
 
 	constexpr bool isPeriodic() const noexcept {
-		return m_id >= CONTINUOUS_DAMAGE && m_id <= CONTINUOUS_HEALING;
+		return m_id >= CONTINUOUS_HEALING && m_id <= CONTINUOUS_DAMAGE;
 	}
 
 	constexpr bool isInstant() const noexcept {

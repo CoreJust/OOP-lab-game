@@ -4,11 +4,10 @@
 
 #include "GameState.h"
 #include "IO/Logger.h"
-
-constexpr math::Vector2u WORLD_SIZE = { 40, 40 };
+#include "Graphics/GameGUI/MessageDialog.h"
 
 GameState::GameState()
-	: m_world(WORLD_SIZE),
+	: m_world(WorldLevelId::BASIC_LEVEL),
 	m_playerController(std::make_unique<Player>(math::Vector2f(0.5, 0.5), m_world), m_world)
 {
 	m_playerController.setAnimation(m_renderMaster.getResources().getAnimationData(AnimationId::PLAYER));
@@ -22,6 +21,10 @@ void GameState::update(float deltaTime, utils::NoNullptr<io::VirtualInput> input
 	m_camera.setPos(m_playerController.getPlayer().getViewPos());
 
 	m_world.update(m_playerController.getPlayer(), deltaTime);
+
+	if (!m_playerController.getPlayer().isAlive()) {
+		processPlayerDeath();
+	}
 }
 
 void GameState::render(sf::RenderWindow& window) {
@@ -33,4 +36,16 @@ void GameState::render(sf::RenderWindow& window) {
 	m_playerController.draw(m_renderMaster);
 
 	m_renderMaster.render(window, m_camera);
+}
+
+void GameState::processPlayerDeath() {
+	io::Logger::logInfo("Player died. Restarting game...");
+
+	gamegui::MessageDialog dialog("Game message", "You died! Restarting the game");
+	dialog.open();
+
+	m_world = World(WorldLevelId::BASIC_LEVEL);
+	m_playerController.getPlayer() = Player(math::Vector2f(0.5, 0.5), m_world);
+
+	io::Logger::logInfo("Game restarted successfully");
 }

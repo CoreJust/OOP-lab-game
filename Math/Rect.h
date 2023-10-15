@@ -7,6 +7,7 @@
 
 #include "Vector.h"
 #include "SquareArray.h"
+#include "RectIterator.h"
 
 namespace math {
 	// Literally a rectangle
@@ -16,6 +17,9 @@ namespace math {
 		using VectorTy = Vector2<T>;
 		using ValueTy = VectorTy::ValueTy;
 		using FloatTy = VectorTy::FloatTy;
+		using IntegralTy = VectorTy::IntegralTy;
+
+		using Iterator = RectIterator<IntegralTy>;
 
 	private:
 		VectorTy m_topLeft;
@@ -54,6 +58,19 @@ namespace math {
 			return m_topLeft == other.topLeft() && m_downRight == other.downRight();
 		}
 
+		template<utils::Arithmetic U>
+		constexpr Rect<U> to() const noexcept {
+			return Rect<U>(m_topLeft.to<U>(), m_downRight.to<U>());
+		}
+
+		constexpr Rect clip(const VectorTy& fromTopLeft, const VectorTy& fromDownRight) const noexcept {
+			return Rect(m_topLeft + fromTopLeft, m_downRight - fromDownRight);
+		}
+
+		constexpr Rect clip(T n) const noexcept {
+			return Rect(m_topLeft + n, m_downRight - n);
+		}
+
 		// Returns the percent of the rect's area for each of tiles (where tile [0, 0] is the tile of topLeft)
 		template<uint32_t NumTiles>
 		constexpr SquareArray<T, NumTiles> getProportions() const {
@@ -73,8 +90,31 @@ namespace math {
 			return result;
 		}
 
+		constexpr VectorTy getCenter() const noexcept {
+			return m_topLeft + (m_downRight - m_topLeft) / 2;
+		}
+
 		constexpr bool contains(const VectorTy& point) const noexcept {
 			return m_topLeft.isToUpLeftFrom(point) && m_downRight.isToDownRightFrom(point);
+		}
+
+		constexpr const Iterator begin() const noexcept {
+			return Iterator(
+				m_topLeft.roundFloor().to<int32_t>(),
+				static_cast<int32_t>(Cmath::floor(m_topLeft.x())), 
+				static_cast<int32_t>(Cmath::floor(m_downRight.x())) + 1
+			);
+		}
+
+		constexpr const Iterator end() const noexcept {
+			return Iterator(
+				math::Vector2<IntegralTy>(
+					static_cast<IntegralTy>(Cmath::floor(m_topLeft.x())), 
+					static_cast<IntegralTy>(Cmath::floor(m_downRight.y())) + 1
+				),
+				static_cast<IntegralTy>(Cmath::floor(m_topLeft.x())),
+				static_cast<IntegralTy>(Cmath::floor(m_downRight.x())) + 1
+			);
 		}
 
 		constexpr VectorTy& topLeft() noexcept {
@@ -91,6 +131,22 @@ namespace math {
 
 		constexpr const VectorTy& downRight() const noexcept {
 			return m_downRight;
+		}
+
+		constexpr ValueTy top() const noexcept {
+			return m_topLeft.y();
+		}
+
+		constexpr ValueTy down() const noexcept {
+			return m_downRight.y();
+		}
+
+		constexpr ValueTy right() const noexcept {
+			return m_downRight.x();
+		}
+
+		constexpr ValueTy left() const noexcept {
+			return m_topLeft.x();
 		}
 
 		constexpr VectorTy getSize() const noexcept {

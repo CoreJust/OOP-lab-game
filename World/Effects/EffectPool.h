@@ -18,6 +18,9 @@ private:
 public:
 	EffectPool(Entity& pEntity, World& pWorld) noexcept;
 
+	EffectPool& operator=(const EffectPool& other);
+	EffectPool& operator=(EffectPool&& other);
+
 	void update(const float deltaTime);
 
 	void pushEffect(std::shared_ptr<Effect> effect);

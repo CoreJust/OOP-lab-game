@@ -12,10 +12,9 @@ ResourceRegisterer::ResourceRegisterer(ResourceManager& resManager)
 }
 
 void ResourceRegisterer::registerAll() {
-	registerTexture(TextureId::STONE_FLOOR);
-	registerTexture(TextureId::STONE_WALL);
-	registerTexture(TextureId::STONE);
-	registerTexture(TextureId::STONE_PORTAL);
+	for (id_t id = 1; id < TextureId::NUMBER_TEXTURE_IDS; id++) {
+		registerTexture(TextureId::Value(id));
+	}
 
 	registerAnimation(AnimationId::PLAYER, { 4, 4, 4, 4 }, 0.2f);
 }

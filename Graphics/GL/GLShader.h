@@ -34,11 +34,11 @@ namespace gl {
 		Shader(std::string_view vertexShaderFile, std::string_view fragmentShaderFile);
 		Shader(std::string_view vertexShaderFile, std::string_view geometryShaderFile, std::string_view fragmentShaderFile);
 
-		void create() override;
-		void release() override;
+		void create() override final;
+		void release() override final;
 
-		void bind() override;
-		void unbind() override;
+		void bind() override final;
+		void unbind() override final;
 
 	private:
 		ShaderObject compileShader(std::string_view shaderFile, const GLenum shaderType) const;

@@ -7,6 +7,7 @@
 #include "Math/Direction.h"
 #include "Math/Rect.h"
 #include "Math/Collision.h"
+#include "Math/Cmath.h"
 #include "World/World.h"
 #include "IO/Logger.h"
 #include "GlobalSettings.h"
@@ -24,6 +25,19 @@ void EntityController::update(const float deltaTime, utils::NoNullptr<io::Virtua
 		m_isMoving = false;
 	} else {
 		m_animation->reset();
+	}
+
+	for (const math::Vector2i& pos : math::Rectf(m_entity->getPos(), m_entity->getId().getEntityStats().hitbox)) {
+		if (!m_pWorld.getMapper().contains(pos)) {
+			continue;
+		}
+
+		for (uint8_t layer = 0; layer <= 1; layer++) {
+			Tile& tile = m_pWorld.atMut(layer, pos);
+			if (tile.isInteractive()) {
+				tile.getTileData()->onStep(pos.to<float>(), m_pWorld, *m_entity);
+			}
+		}
 	}
 }
 
@@ -67,7 +81,7 @@ void EntityController::tryToMove(math::Vector2f offset) {
 			m_entity->getStats().hitbox,
 			offset,
 			[this, pos = m_entity->getPos().roundFloor().template to<int32_t>()](int32_t x, int32_t y) -> bool {
-				return m_pWorld.isObstacleAt(pos + math::Vector2i(x, y)); //.at(0, pos + math::Vector2i(x, y)).isObstacle();
+				return m_pWorld.isObstacleAt(pos + math::Vector2i(x, y));
 			}
 		).calculatePossibleMove().getOffset();
 	}
@@ -91,15 +105,17 @@ float EntityController::calculateSpeed() const {
 	math::Rectf entityRect = math::Rectf(m_entity->getPos(), m_entity->getStats().hitbox);
 	math::SquareArray<float, 2> proportions = entityRect.getProportions<2>();
 
-	math::Vector2i pos = entityRect.topLeft().to<int>();
+	math::Vector2i pos = entityRect.topLeft().roundFloor().to<int>();
 	for (int32_t x = 0; x < 2; x++) {
 		for (int32_t y = 0; y < 2; y++) {
 			const Tile& tile = m_pWorld.at(0, pos + math::Vector2i { x, y });
+			const Tile& tileFront = m_pWorld.at(1, pos + math::Vector2i { x, y });
 
-			if (tile.isObstacle()) {
+			if (tile.isObstacle() || tileFront.isObstacle()) {
 				result += proportions.at(x, y); // so that we don't get stuck in the wall in case something happened
 			} else {
-				result += proportions.at(x, y) * tile.getId().getTileInfo().speedModifier;
+				float speedModifier = math::Cmath::min(tile.getId().getTileInfo().speedModifier, tileFront.getId().getTileInfo().speedModifier);
+				result += proportions.at(x, y) * speedModifier;
 			}
 		}
 	}

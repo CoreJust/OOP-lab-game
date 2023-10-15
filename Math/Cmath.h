@@ -90,23 +90,47 @@ namespace math {
 
             if constexpr (::std::is_integral_v<T>) {
                 return FloatTy(x);
-            }
+            } else {
+                if (::std::is_constant_evaluated()) {
+                    return isNan(x) ? ::std::numeric_limits<FloatTy>::quiet_NaN()
+                        : isInf(x) ? x
+                        : ::std::numeric_limits<FloatTy>::min() > abs(x) ? x
+                        : floor_internal<FloatTy>(x);
+                }
 
-            if (::std::is_constant_evaluated()) {
-                return isNan(x) ? ::std::numeric_limits<FloatTy>::quiet_NaN()
-                    : isInf(x) ? x
-                    : ::std::numeric_limits<FloatTy>::min() > abs(x) ? x
-                    : floor_internal<FloatTy>(x);
+                return ::std::floor(x);
             }
+        }
 
-            return ::std::floor(x);
+        template<::utils::Arithmetic T>
+        constexpr static CorrespondingFloat<T> ceil(const T x) noexcept {
+            using FloatTy = CorrespondingFloat<T>;
+
+            if constexpr (::std::is_integral_v<T>) {
+                return FloatTy(x);
+            } else {
+                if (::std::is_constant_evaluated()) {
+                    return isNan(x) ? ::std::numeric_limits<FloatTy>::quiet_NaN()
+                        : isInf(x) ? x
+                        : ::std::numeric_limits<FloatTy>::min() > abs(x) ? x
+                        : ceil_internal<FloatTy>(x);
+                }
+
+                return ::std::ceil(x);
+            }
         }
 
         // Allows compile-time sqrt
         template<::utils::Arithmetic T>
         constexpr static T sqrt(const T x) noexcept {
             if (::std::is_constant_evaluated()) {
-                return static_cast<T>(sqrt(x, x, 0));
+                if constexpr (std::is_floating_point_v<T>) {
+                    return isNan(x) ? ::std::numeric_limits<T>::quiet_NaN()
+                        : isInf(x) ? x
+                        : static_cast<T>(sqrt(x, x, 0));
+                } else {
+                    return static_cast<T>(sqrt(x, x, 0));
+                }
             }
 
             return ::std::sqrt(x);
@@ -159,6 +183,27 @@ namespace math {
 
             return abs(x) >= getMinValueWithoutPoint<FloatTy>() ? x
                    : floor_int(x, FloatTy(static_cast<CorrespondingInteger<FloatTy>>(x)));
+        }
+
+        template<::utils::FloatingPoint FloatTy>
+        constexpr static int ceil_residual(const FloatTy x, const FloatTy x_whole) noexcept {
+            return((x > FloatTy(0)) && (x > x_whole));
+        }
+
+        template<::utils::FloatingPoint FloatTy>
+        constexpr static FloatTy ceil_int(const FloatTy x, const FloatTy x_whole) noexcept {
+            return(x_whole + static_cast<FloatTy>(ceil_residual(x, x_whole)));
+        }
+
+        template<::utils::FloatingPoint FloatTy>
+        constexpr static FloatTy ceil_internal(const FloatTy x) noexcept {
+            if constexpr (::std::is_same_v<FloatTy, long double>) {
+                return abs(x) >= getMinValueWithoutPoint<FloatTy>() ? x
+                    : ceil_int(x, FloatTy(static_cast<::std::uintmax_t>(abs(x))) * sgn(x));
+            }
+
+            return abs(x) >= getMinValueWithoutPoint<FloatTy>() ? x
+                : ceil_int(x, FloatTy(static_cast<CorrespondingInteger<FloatTy>>(x)));
         }
         
         constexpr static double sqrt(const double x, const double curr, const double prev) noexcept { // Newton-Raphson

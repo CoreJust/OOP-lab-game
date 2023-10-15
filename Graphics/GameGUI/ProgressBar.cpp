@@ -9,7 +9,6 @@
 #include "TextAdapter.h"
 
 constexpr float DEFAULT_PROGRESS_BAR_OUTLINE_THICKNESS = 0.008f;
-constexpr uint32_t DEFAULT_TEXT_SIZE = 30;
 
 gamegui::ProgressBar::ProgressBar(
 	const std::string& name, 
@@ -33,14 +32,14 @@ gamegui::ProgressBar::ProgressBar(
 
 	float height = pos.getSize().y();
 	float textOffset = height * 0.2f;
-	float textScale = (height - textOffset * 2) / DEFAULT_TEXT_SIZE;
+	float textScale = (height - textOffset * 2) / GameGUI::DEFAULT_TEXT_SIZE;
 
 	sf::Text* text = emplaceDrawable<sf::Text>();
 	text->setPosition((pos.topLeft() + textOffset).toSfml());
 	text->setFont(TextAdapter::getFont());
 	text->setString(name);
 	text->setFillColor(textColor);
-	text->setCharacterSize(DEFAULT_TEXT_SIZE);
+	text->setCharacterSize(GameGUI::DEFAULT_TEXT_SIZE);
 	text->setScale({ textScale, textScale });
 }
 

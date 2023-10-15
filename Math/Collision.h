@@ -11,17 +11,17 @@ namespace math {
 	private:
 		Vector2f m_pos;
 		Vector2f m_offset;
-		SquareArray<bool, 3> m_obstacleMap;
+		SquareArray<bool, 5> m_obstacleMap;
 		float m_hitbox;
 
 	private:
 		template<::utils::Callable<bool, int32_t, int32_t> ObstacleChecker>
-		constexpr SquareArray<bool, 3> buildObstacleMap(ObstacleChecker isObstacle) const noexcept {
-			SquareArray<bool, 3> result;
+		constexpr SquareArray<bool, 5> buildObstacleMap(ObstacleChecker isObstacle) const noexcept {
+			SquareArray<bool, 5> result;
 
-			for (int32_t x = -1; x <= 1; x++) {
-				for (int32_t y = -1; y <= 1; y++) {
-					result.at(x + 1ull, y + 1ull) = isObstacle(x, y);
+			for (int32_t x = -2; x <= 2; x++) {
+				for (int32_t y = -2; y <= 2; y++) {
+					result.at(x + 2ull, y + 2ull) = isObstacle(x, y);
 				}
 			}
 
@@ -33,7 +33,7 @@ namespace math {
 		constexpr Collision(Vector2f pos, const float hitbox, Vector2f offset, ObstacleChecker isObstacle) noexcept
 			: Collision(::std::move(pos), hitbox, ::std::move(offset), buildObstacleMap(isObstacle)) { }
 
-		constexpr Collision(Vector2f pos, const float hitbox, Vector2f offset, SquareArray<bool, 3> obstacleMap) noexcept
+		constexpr Collision(Vector2f pos, const float hitbox, Vector2f offset, SquareArray<bool, 5> obstacleMap) noexcept
 			: m_pos(::std::move(pos)), m_hitbox(hitbox), m_offset(::std::move(offset)), m_obstacleMap(::std::move(obstacleMap)) { }
 
 		constexpr Collision& calculatePossibleMove() noexcept {
@@ -51,12 +51,12 @@ namespace math {
 
 			if (m_offset.x() < 0) {
 				int32_t newX = static_cast<int32_t>(floor(newPos.x() - m_hitbox));
-				if (m_obstacleMap.at(newX + 1ull, currPos1.y() + 1ull) || m_obstacleMap.at(newX + 1ull, currPos2.y() + 1ull)) {
+				if (m_obstacleMap.at(newX + 2ull, currPos1.y() + 2ull) || m_obstacleMap.at(newX + 2ull, currPos2.y() + 2ull)) {
 					m_offset.x() = currPos1.x() - pos.x() + m_hitbox + EPSILON;
 				}
 			} else if (m_offset.x() > 0) {
 				int32_t newX = static_cast<int32_t>(floor(newPos.x() + m_hitbox));
-				if (m_obstacleMap.at(newX + 1ull, currPos1.y() + 1ull) || m_obstacleMap.at(newX + 1ull, currPos2.y() + 1ull)) {
+				if (m_obstacleMap.at(newX + 2ull, currPos1.y() + 2ull) || m_obstacleMap.at(newX + 2ull, currPos2.y() + 2ull)) {
 					m_offset.x() = newX - pos.x() - m_hitbox - EPSILON;
 				}
 			}
@@ -69,12 +69,12 @@ namespace math {
 
 			if (m_offset.y() < 0) {
 				int32_t newY = int(floor(newPos.y() - m_hitbox));
-				if (m_obstacleMap.at(currPos1.x() + 1, newY + 1) || m_obstacleMap.at(currPos2.x() + 1, newY + 1)) {
+				if (m_obstacleMap.at(currPos1.x() + 2, newY + 2) || m_obstacleMap.at(currPos2.x() + 2, newY + 2)) {
 					m_offset.y() = currPos1.y() - pos.y() + m_hitbox + EPSILON;
 				}
 			} else if (m_offset.y() > 0) {
 				int32_t newY = int(floor(newPos.y() + m_hitbox));
-				if (m_obstacleMap.at(currPos1.x() + 1, newY + 1) || m_obstacleMap.at(currPos2.x() + 1, newY + 1)) {
+				if (m_obstacleMap.at(currPos1.x() + 2, newY + 2) || m_obstacleMap.at(currPos2.x() + 2, newY + 2)) {
 					m_offset.y() = newY - pos.y() - m_hitbox - EPSILON;
 				}
 			}

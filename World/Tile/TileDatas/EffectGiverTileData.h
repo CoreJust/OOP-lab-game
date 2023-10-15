@@ -11,12 +11,14 @@
 class EffectGiverTileData : public TileData {
 private:
 	std::vector<std::shared_ptr<Effect>> m_effects;
-	float m_activationRadius;
+	float m_coolDown;
+	float m_coolDownTimer = 0.f;
 
 public:
-	EffectGiverTileData(std::vector<std::shared_ptr<Effect>> effects, const float activationRadius);
+	EffectGiverTileData(std::vector<std::shared_ptr<Effect>> effects, const float coolDown = 0.f);
 
-	void update(math::Vector2f pos, World& world, Player& player) override;
+	void update(math::Vector2f pos, World& world, Player& player, const float deltaTime) override;
+	void onStep(math::Vector2f pos, World& world, Entity& entity) override;
 
 	std::unique_ptr<TileData> copy() override;
 };

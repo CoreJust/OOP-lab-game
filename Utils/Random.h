@@ -12,6 +12,9 @@ namespace utils {
 	// Class for convenient random usage
 	template<RandomGeneratorConcept RandomGenerator = std::mt19937>
 	class Random final {
+	public:
+		using RG = RandomGenerator;
+
 	private:
 		RandomGenerator m_rand;
 

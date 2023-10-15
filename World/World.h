@@ -4,7 +4,9 @@
 
 #pragma once
 #include "Math/Rect.h"
+#include "Math/Mapper.h"
 #include "Tile/Tile.h"
+#include "WorldLevelId.h"
 #include "Graphics/Render/RenderMaster.h"
 
 class Player;
@@ -15,29 +17,32 @@ private:
 	Tile* m_field[2]; // Background and foreground tiles
 	Tile* m_fieldCenter[2];
 
-	math::Vector2i m_size; // from the center to a corner
-	uint32_t m_width;
-	uint32_t m_height;
-
-private:
-	void initFor(const math::Vector2u& worldSizeFromCenter);
+	math::Mapper<> m_mapper; // Maps the 2D coordinates to 1D array index
 
 public:
 	World();
-	World(const math::Vector2u& worldSizeFromCenter); // Vector from the center to the corner
-	World(const World& other) = delete;
+	World(const math::Vector2i& size); // An empty world of the size
+	World(WorldLevelId id);
+
+	World(const World& other);
 	World(World&& other) noexcept;
+
 	~World();
 
-	World& operator=(const World& other) = delete;
+	World& operator=(const World& other);
 	World& operator=(World&& other) noexcept;
 
 	void update(Player& player, float deltaTime);
 	void draw(RenderMaster& renderMaster, Camera& camera);
 
 	void fillArea(const math::Recti& rect, bool isForeground, TileId id);
+	void fillAreaBounds(const math::Recti& rect, bool isForeground, TileId id);
+	void makeTunnel(const math::Vector2i& from, const math::Vector2i& to, TileId floorId); // Makes a passable tunnel
+	void makePassable(const math::Vector2i& pos, TileId floorId);
 
-	const math::Vector2i& getSize() const;
+	const math::Vector2i& getSize() const; // size from the center of the world
+	const math::Vector2u& getActualSize() const; // (width, height)
+	const math::Mapper<>& getMapper() const;
 
 	math::Vector2i getNearestPassableLocation(const math::Vector2i& from) const noexcept; // returns from if no passable location found
 	math::Vector2i getRandomLocation() const noexcept;

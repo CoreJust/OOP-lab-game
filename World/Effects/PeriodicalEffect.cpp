@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "PeriodicalEffect.h"
 
 bool PeriodicalEffect::update(Entity& entity, World& world, const float deltaTime) {
@@ -31,8 +35,8 @@ void PeriodicalEffect::eraseEffect(Entity& entity, World& world) {
 
 void PeriodicalEffect::applyTo(Entity& entity, World& world) {
 	switch (m_id) {
-    case EffectId::CONTINUOUS_DAMAGE: entity.heal(Effect::CONTINUOUS_HEAL_PER_LEVEL * m_level); break;
-	case EffectId::CONTINUOUS_HEALING: entity.dealDamage(Effect::CONTINUOUS_DAMAGE_PER_LEVEL * m_level); break;
+    case EffectId::CONTINUOUS_DAMAGE: entity.dealDamage(Effect::CONTINUOUS_DAMAGE_PER_LEVEL * m_level); break;
+	case EffectId::CONTINUOUS_HEALING: entity.heal(Effect::CONTINUOUS_HEAL_PER_LEVEL * m_level); break;
 	default:
 		assert(false && "Not a periodical effect");
 		break;

@@ -8,6 +8,7 @@
 #include "MazeGenerator.h"
 #include "CellularAutomatonGenerator.h"
 #include "PostGenGenerator.h"
+#include "TemplateGenerator.h"
 
 WorldGenerator::WorldGenerator(World& pWorld) 
 	: m_pWorld(pWorld) {
@@ -25,6 +26,8 @@ std::unique_ptr<WorldGenerator> WorldGenerator::makeWorldGenerator(World& pWorld
 		return std::make_unique<CellularAutomatonGenerator>(pWorld, std::move(sets));
 	} else if (sets.isPostGen()) {
 		return std::make_unique<PostGenGenerator>(pWorld, std::move(sets));
+	} else if (sets.isTemplateGen()) {
+		return std::make_unique<TemplateGenerator>(pWorld, std::move(sets));
 	}
 
 	assert(false && "Unknown generation type");

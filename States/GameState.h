@@ -22,4 +22,7 @@ public:
 
 	void update(float deltaTime, utils::NoNullptr<io::VirtualInput> input) override;
 	void render(sf::RenderWindow& window) override;
+
+public:
+	void processPlayerDeath();
 };

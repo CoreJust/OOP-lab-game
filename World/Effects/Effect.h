@@ -26,7 +26,7 @@ class Entity;
 
 class Effect {
 public:
-	constexpr inline static float EFFECT_BASE_PER_LEVEL = 1.1f;
+	constexpr inline static float EFFECT_BASE_PER_LEVEL = 0.1f;
 
 	constexpr inline static float INSTANT_HEAL_PER_LEVEL = 50.f;
 	constexpr inline static float INSTANT_DAMAGE_PER_LEVEL = 50.f;

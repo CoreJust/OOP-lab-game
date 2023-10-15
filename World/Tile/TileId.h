@@ -23,6 +23,10 @@ public:
 
 		// Interactive tiles
 		STONE_PORTAL,
+		NEXT_LEVEL_PORTAL,
+
+		SAINT_SPRINGS,
+		POISON_CLOUD,
 
 
 		NUMBER_TILE_IDS
@@ -46,6 +50,10 @@ public:
 
 	const TileInfo& getTileInfo() const;
 	TextureId getTileTexture() const;
+	TileCategory getCategory() const;
+
+	bool isBackground() const;
+	bool isForeground() const;
 
 	std::string toString() const override;
 };

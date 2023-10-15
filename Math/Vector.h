@@ -21,6 +21,7 @@ namespace math {
 
 		// FloatTy - the corresponding to T floating point type
 		using FloatTy = CorrespondingFloat<T>;
+		using IntegralTy = CorrespondingInteger<T>;
 
 	private:
 		T m_x = 0;
@@ -190,6 +191,15 @@ namespace math {
 			return (*this - to).length();
 		}
 
+		constexpr Vector2 normalize() const noexcept {
+			return *this / length();
+		}
+
+		// Returns the area of the rectangle ((0, 0) : Vector)
+		constexpr T area() const noexcept {
+			return m_x * m_y;
+		}
+
 		// Returns a vector with swapped coords
 		constexpr Vector2 swap() const noexcept {
 			return Vector2(m_y, m_x);
@@ -205,6 +215,10 @@ namespace math {
 
 		constexpr Vector2 roundFloor() const noexcept {
 			return Vector2(Cmath::floor(m_x), Cmath::floor(m_y));
+		}
+
+		constexpr Vector2 roundCeil() const noexcept {
+			return Vector2(Cmath::ceil(m_x), Cmath::ceil(m_y));
 		}
 
 		constexpr Vector2 abs() const noexcept {

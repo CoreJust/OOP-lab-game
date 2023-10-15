@@ -16,6 +16,9 @@ std::string TextureId::toString() const {
 		"STONE_WALL",
 		"STONE",
 		"STONE_PORTAL",
+		"NEXT_LEVEL_PORTAL",
+		"SAINT_SPRING",
+		"POISON_CLOUD",
 
 		"NUMBER_TEXTURE_IDS"
 	};
@@ -34,6 +37,9 @@ std::string TextureId::getResourceLocation() const {
 		"stone_wall",
 		"stone",
 		"stone_portal",
+		"next_level_portal",
+		"saint_springs",
+		"poison_cloud",
 
 		""
 	};

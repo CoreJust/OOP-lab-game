@@ -4,6 +4,7 @@
 
 #pragma once
 #include "WorldGenerator.h"
+#include <vector>
 
 class PostGenGenerator final : public WorldGenerator {
 private:
@@ -16,4 +17,10 @@ public:
 
 	void generateInitial() override;
 	void generate() override;
+
+private:
+	void createPassages(); // Implementation of POSTGEN_PASSAGE_CREATOR
+
+	uint32_t clusterWorldCavities(std::vector<int32_t>& map); // Clusters the world's passable areas and counts them, returns the count
+	void makePassages(std::vector<int32_t>& map, uint32_t clusterCount); // Marks walls to be removed
 };

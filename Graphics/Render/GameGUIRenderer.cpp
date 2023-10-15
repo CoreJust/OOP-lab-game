@@ -6,7 +6,7 @@
 #include <cassert>
 
 void GameGUIRenderer::eraseGameGUI(gamegui::GameGUI* gui) {
-	for (auto it = m_guis.begin(); it != m_guis.end(); it++) {
+	for (auto it = m_guis.begin(); it != m_guis.end(); ++it) {
 		if (it->get() == gui) {
 			m_guis.erase(it);
 			return;

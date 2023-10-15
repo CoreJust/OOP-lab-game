@@ -11,7 +11,7 @@
 // Basic class for all the entities (existances with position and health, etc) in the game world
 class Entity : public WorldObject {
 protected:
-	const EntityId m_id;
+	EntityId m_id;
 	EntityStats m_stats;
 	EffectPool m_effectPool;
 
@@ -22,6 +22,9 @@ protected:
 
 protected:
 	Entity(math::Vector2f pos, EntityId id, World& pWorld);
+
+	Entity& operator=(const Entity& other);
+	Entity& operator=(Entity&& other) noexcept;
 
 	// Calculates the actual damage according to defence
 	float calcDamage(float amount) const;

@@ -11,14 +11,14 @@
 #include "Game.h"
 
 /*
-*	Long-term TODO: main menu, world saves, inventory, audio, global settings loading from file, minimap
-*	General TODO: Google test, interactive tiles (healing, teleport, etc), custom input from file,
+*	Long-term TODO: main menu, world saves, inventory, audio, global settings loading from file
+*	General TODO: Google test, minimap, custom input from file,
 *				  3D graphics (openGL again? -yes, openGL)
-*	Emergent TODO: more tile types
+*	Emergent TODO:
 * 
 *	Bugs:	collision breaks at top-left and down-right angles of non-passable blocks - fixed
 *			runtime error after closing the main window directly and trying to close the console !
-*			progress bars displayment as big white squares
+*			progress bars displayment as big white squares - fixed
 */
 
 int main() {

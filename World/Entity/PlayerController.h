@@ -8,11 +8,13 @@
 
 namespace gamegui {
 	class ProgressBar;
+	class Text;
 }
 
 class PlayerContoller final : public EntityController {
 private:
 	gamegui::ProgressBar* m_healthBar;
+	gamegui::Text* m_infoText;
 
 public:
 	PlayerContoller(std::unique_ptr<Player> player, World& pWorld);

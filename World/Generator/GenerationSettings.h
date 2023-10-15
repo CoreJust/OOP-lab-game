@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cassert>
 #include <memory>
+#include "Utils/BasicId.h"
 
 struct GenerationSettings {
 	enum GenerationFlags : uint8_t {
@@ -28,6 +29,9 @@ struct GenerationSettings {
 
 		// Post-generators (to fix something in the generated world
 		POSTGEN_PASSAGE_CREATOR,
+
+		// Generates the world not based on the procedural generation but on some fixed template
+		TEMPLATE_GENERATOR,
 
 		NUMBER_GENERATION_FLAGS
 	};
@@ -57,6 +61,11 @@ struct GenerationSettings {
 
 	};
 
+	struct TemplateGenerationSettings {
+		id_t id;
+		int64_t data; // Some additional data for the specific ids
+	};
+
 
 	///  Fields  ///
 
@@ -69,6 +78,7 @@ struct GenerationSettings {
 		MazeGenerationSettings mazeSets;
 		CellularAutomatonGenerationSettings cellASets;
 		PostGenerationSettings postGenSets;
+		TemplateGenerationSettings templateSets;
 	};
 
 
@@ -86,6 +96,8 @@ struct GenerationSettings {
 			cellASets = std::move(other.cellASets);
 		} else if (other.isPostGen()) {
 			postGenSets = std::move(other.postGenSets);
+		} else if (other.isTemplateGen()) {
+			templateSets = std::move(other.templateSets);
 		}
 	}
 
@@ -101,6 +113,8 @@ struct GenerationSettings {
 			cellASets = other.cellASets;
 		} else if (other.isPostGen()) {
 			postGenSets = other.postGenSets;
+		} else if (other.isTemplateGen()) {
+			templateSets = other.templateSets;
 		}
 	}
 
@@ -129,6 +143,11 @@ struct GenerationSettings {
 		assert(isPostGen());
 	}
 
+	constexpr GenerationSettings(size_t seed, GenerationFlags flags, TemplateGenerationSettings sets)
+		: seed(seed), flags(flags), templateSets(std::move(sets)) {
+		assert(isTemplateGen());
+	}
+
 	constexpr bool isRandom() const noexcept {
 		return flags < NOISE_PERLIN_BASIC;
 	}
@@ -146,11 +165,15 @@ struct GenerationSettings {
 	}
 
 	constexpr bool isPostGen() const noexcept {
-		return flags >= POSTGEN_PASSAGE_CREATOR && flags < NUMBER_GENERATION_FLAGS;
+		return flags >= POSTGEN_PASSAGE_CREATOR && flags < TEMPLATE_GENERATOR;
+	}
+
+	constexpr bool isTemplateGen() const noexcept {
+		return flags == TEMPLATE_GENERATOR;
 	}
 
 	constexpr bool canBeInitial() const noexcept {
-		return isRandom() || isNoise() || isMaze();
+		return isRandom() || isNoise() || isMaze() || isTemplateGen();
 	}
 
 	constexpr bool canBeConsecutive() const noexcept {

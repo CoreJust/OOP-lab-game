@@ -28,9 +28,9 @@ namespace math {
 		::std::conditional_t<NumBits <= 4, uint32_t,
 		::std::conditional_t<NumBits <= 8, uint64_t, ::std::uintmax_t>>>>;
 
-	template<::utils::FloatingPoint FloatTy>
-	using CorrespondingInteger = SufficientInteger<sizeof(FloatTy)>;
+	template<utils::Arithmetic T>
+	using CorrespondingInteger = ::std::conditional_t<::std::is_integral_v<T>, T, SufficientInteger<sizeof(T)>>;
 
-	template<::utils::Arithmetic T>
+	template<utils::Arithmetic T>
 	using CorrespondingFloat = ::std::conditional_t<::std::is_floating_point_v<T>, T, double>;
 }

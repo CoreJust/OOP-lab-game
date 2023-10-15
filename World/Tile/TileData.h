@@ -8,6 +8,7 @@
 
 class World;
 class Player;
+class Entity;
 
 // An interface that handles all the interactions with a tile, its unique qualities, etc
 // Cannot be used as is, must be inherited
@@ -18,7 +19,8 @@ protected:
 public:
 	virtual ~TileData() noexcept = default;
 
-	virtual void update(math::Vector2f pos, World& world, Player& player) = 0;
+	virtual void update(math::Vector2f pos, World& world, Player& player, const float deltaTime) = 0;
+	virtual void onStep(math::Vector2f pos, World& world, Entity& entity) = 0; // On entity stepping on the tile
 
 	// Expected to be used with smart pointers
 	virtual std::unique_ptr<TileData> copy() = 0;

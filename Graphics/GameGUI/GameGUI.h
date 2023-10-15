@@ -14,6 +14,9 @@ namespace gamegui {
 	// GameGUI's are GUI that is being displayed during GameState
 	// Contains a vector of derivatives of both sf::Transformable and sf::Drawable
 	class GameGUI {
+	public:
+		constexpr inline static uint32_t DEFAULT_TEXT_SIZE = 30;
+
 	protected:
 		std::vector<std::unique_ptr<sf::Drawable>> m_drawables;
 

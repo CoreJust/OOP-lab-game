@@ -5,53 +5,48 @@
 #include "World.h"
 #include "IO/Logger.h"
 #include "Utils/Random.h"
+#include "Math/Rasterizer/LineRasterizer.h"
 #include "GlobalSettings.h"
 #include "Entity/Player.h"
 #include "Generator/WorldGenerationMaster.h"
 
-constexpr math::Vector2u DEFAULT_WORLD_SIZE { 10, 10 }; // 21x21
-constexpr math::Vector2u MINIMAL_WORLD_SIZE { 1, 1 }; // 3x3
+constexpr math::Vector2i MINIMAL_WORLD_SIZE { 1, 1 }; // 3x3
 
-constexpr size_t DEFAULT_SEED = 1;
+World::World() : World(WorldLevelId::BASIC_LEVEL) { }
 
-void World::initFor(const math::Vector2u& worldSizeFromCenter) {
-	m_size = math::Vector2i(worldSizeFromCenter);
-	m_width = 2 * m_size.x() + 1;
-	m_height = 2 * m_size.y() + 1;
-
-	m_field[0] = new Tile[size_t(m_width) * m_height];
-	m_field[1] = new Tile[size_t(m_width) * m_height];
-
-	m_fieldCenter[0] = m_field[0] + int64_t(m_size.y()) * m_width + m_size.x();
-	m_fieldCenter[1] = m_field[1] + int64_t(m_size.y()) * m_width + m_size.x();
-
-	fillArea({ -m_size, m_size }, false, TileId::EMPTINESS);
-	fillArea({ -m_size, m_size }, true, TileId::EMPTINESS);
-}
-
-World::World() : World(DEFAULT_WORLD_SIZE) { }
-
-World::World(const math::Vector2u& worldSizeFromCenter) {
-	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(worldSizeFromCenter)) {
-		io::Logger::logError("Too small of a size for a world: " + worldSizeFromCenter.toString());
+World::World(const math::Vector2i& size) : m_mapper(size) {
+	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(size)) {
+		io::Logger::logError("Too small of a size for a world: " + size.toString());
 	}
 
-	initFor(worldSizeFromCenter);
+	// Initializing field
+	m_field[0] = new Tile[m_mapper.getArea()];
+	m_field[1] = new Tile[m_mapper.getArea()];
 
+	m_fieldCenter[0] = m_field[0] + m_mapper.getActualCenterIndex();
+	m_fieldCenter[1] = m_field[1] + m_mapper.getActualCenterIndex();
+
+	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 0, TileId::EMPTINESS);
+	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 1, TileId::EMPTINESS);
+}
+
+World::World(WorldLevelId id) : World(id.getWorldSize()) {
 	// Generation
 	WorldGenerationMaster generationMaster(*this);
-	generationMaster.pushInitialGenerator(GenerationSettings(
-		DEFAULT_SEED, 
-		GenerationSettings::NOISE_PERLIN_BASIC,
-		GenerationSettings::NoiseGenerationSettings{ .octaves = 4, .frequency = 0.1f, .persistance = 0.5f }
-	));
-
+	id.loadGenerationSettingsTo(generationMaster);
 	generationMaster.generate();
+}
+
+World::World(const World& other) : World(other.getSize()) {
+	for (const math::Vector2i& pos : m_mapper.getRect()) {
+		atMut(0, pos) = other.at(0, pos);
+		atMut(1, pos) = other.at(1, pos);
+	}
 }
 
 World::World(World&& other) noexcept {
 	if (other.m_field[0] != m_field[0]) { // Not the same/broken world
-		memcpy(this, &other, sizeof(World));
+		memmove(this, &other, sizeof(World));
 		memset(&other, 0, sizeof(World));
 	}
 }
@@ -65,11 +60,43 @@ World::~World() {
 	}
 }
 
+World& World::operator=(const World& other) {
+	if (this == &other) {
+		return *this;
+	}
+
+	this->~World();
+
+	m_mapper.setSize(other.getSize());
+
+	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(getSize())) {
+		io::Logger::logError("Too small of a size for a world: " + getSize().toString());
+	}
+
+	// Initializing field
+	m_field[0] = new Tile[m_mapper.getArea()];
+	m_field[1] = new Tile[m_mapper.getArea()];
+
+	m_fieldCenter[0] = m_field[0] + m_mapper.getActualCenterIndex();
+	m_fieldCenter[1] = m_field[1] + m_mapper.getActualCenterIndex();
+
+	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 0, TileId::EMPTINESS);
+	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 1, TileId::EMPTINESS);
+
+	// Copying the tiles
+	for (const math::Vector2i& pos : m_mapper.getRect()) {
+		atMut(0, pos) = other.at(0, pos);
+		atMut(1, pos) = other.at(1, pos);
+	}
+
+	return *this;
+}
+
 World& World::operator=(World&& other) noexcept {
 	if (other.m_field[0] != m_field[0]) { // Not the same/broken world
 		this->~World();
 
-		memcpy(this, &other, sizeof(World));
+		memmove(this, &other, sizeof(World));
 		memset(&other, 0, sizeof(World));
 	}
 
@@ -77,34 +104,32 @@ World& World::operator=(World&& other) noexcept {
 }
 
 void World::update(Player& player, float deltaTime) {
-	math::Vector2i updateFrom = (-m_size).getMaxByXY(player.getPos().roundFloor().template to<int32_t>() - GlobalSettings::get().getUpdateDistance());
-	math::Vector2i updateTo = m_size.getMinByXY(player.getPos().roundFloor().template to<int32_t>() + GlobalSettings::get().getUpdateDistance());
+	math::Vector2i updateFrom = (-m_mapper.getSize()).getMaxByXY(player.getPos().roundFloor().template to<int32_t>() - GlobalSettings::get().getUpdateDistance());
+	math::Vector2i updateTo = m_mapper.getSize().getMinByXY(player.getPos().roundFloor().template to<int32_t>() + GlobalSettings::get().getUpdateDistance());
+	math::Recti updateRect { updateFrom, updateTo };
 
 	for (uint8_t layer = 0; layer <= 1; layer++) {
-		for (int32_t y = updateFrom.y(); y <= updateTo.y(); y++) {
-			for (int32_t x = updateFrom.x(); x <= updateTo.x(); x++) {
-				if (at(layer, { x, y }).isInteractive()) {
-					atMut(layer, { x, y }).getTileData()->update(math::Vector2f(x, y), *this, player);
-				}
+		for (const math::Vector2i& pos : updateRect) {
+			if (at(layer, pos).isInteractive()) {
+				atMut(layer, pos).getTileData()->update(pos.to<float>(), *this, player, deltaTime);
 			}
 		}
 	}
 }
 
 void World::draw(RenderMaster& renderMaster, Camera& camera) {
-	math::Vector2i from = math::Vector2i(camera.viewTopLeft()).getMaxByXY(-m_size);
-	math::Vector2i to = math::Vector2i(camera.viewDownRight() + 1).getMinByXY(m_size);
+	math::Vector2i from = math::Vector2i(camera.viewTopLeft()).getMaxByXY(-m_mapper.getSize());
+	math::Vector2i to = math::Vector2i(camera.viewDownRight() + 1).getMinByXY(m_mapper.getSize());
 
 	if (!from.isToUpLeftFrom(to)) {
 		return;
 	}
 
+	math::Recti drawRect { from, to };
 	for (uint8_t layer = 0; layer <= 1; layer++) {
-		for (int32_t y = from.y(); y <= to.y(); y++) {
-			for (int32_t x = from.x(); x <= to.x(); x++) {
-				if (const Tile& tile = at(layer, { x, y }); tile.isVisible()) {
-					renderMaster.drawTile(tile.getId(), layer, math::Vector2f(x, y));
-				}
+		for (const math::Vector2i& pos : drawRect) {
+			if (const Tile& tile = at(layer, pos); tile.isVisible()) {
+				renderMaster.drawTile(tile.getId(), layer, pos.to<float>());
 			}
 		}
 	}
@@ -114,18 +139,58 @@ void World::fillArea(const math::Recti& rect, bool isForeground, TileId id) {
 	const math::Vector2i& from = rect.topLeft();
 	const math::Vector2i& to = rect.downRight();
 
-	assert(from.isToDownRightFrom(-m_size));
-	assert(to.isToUpLeftFrom(m_size));
+	assert(from.isToDownRightFrom(-m_mapper.getSize()));
+	assert(to.isToUpLeftFrom(m_mapper.getSize()));
 
-	for (int32_t y = from.y(); y <= to.y(); y++) {
-		for (int32_t x = from.x(); x <= to.x(); x++) {
-			atMut(isForeground, { x, y }) = Tile(id);
+	math::Recti fillRect { from, to };
+	for (const math::Vector2i& pos : fillRect) {
+		atMut(isForeground, pos) = Tile(id);
+	}
+}
+
+void World::fillAreaBounds(const math::Recti& rect, bool isForeground, TileId id) {
+	math::Vector2i topRight { rect.right(), rect.top() };
+	math::Vector2i downLeft { rect.left(), rect.down() };
+
+	fillArea({ rect.topLeft(), topRight },							isForeground, id);
+	fillArea({ rect.topLeft() + math::Vector2i(0, 1), downLeft },	isForeground, id);
+	fillArea({ topRight + math::Vector2i(0, 1), rect.downRight() }, isForeground, id);
+	fillArea({ downLeft + math::Vector2i(1, 0),
+			 rect.downRight() + math::Vector2i(-1, 0) },			isForeground, id);
+}
+
+void World::makeTunnel(const math::Vector2i& from, const math::Vector2i& to, TileId floorId) {
+	math::LineRasterizer rasterizer(from.to<float>(), to.to<float>());
+
+	while (rasterizer.hasMore()) {
+		for (int32_t x = rasterizer.leftX(); x <= rasterizer.rightX(); x++) {
+			makePassable({ x, rasterizer.getY() }, floorId);
 		}
+
+		rasterizer.nextRow();
+	}
+}
+
+void World::makePassable(const math::Vector2i& pos, TileId floorId) {
+	if (at(1, pos).isObstacle()) {
+		atMut(1, pos) = Tile(TileId::EMPTINESS);
+	}
+
+	if (at(0, pos).isObstacle()) {
+		atMut(0, pos) = Tile(floorId);
 	}
 }
 
 const math::Vector2i& World::getSize() const {
-	return m_size;
+	return m_mapper.getSize();
+}
+
+const math::Vector2u& World::getActualSize() const {
+	return m_mapper.getActualSize();
+}
+
+const math::Mapper<>& World::getMapper() const {
+	return m_mapper;
 }
 
 math::Vector2i World::getNearestPassableLocation(const math::Vector2i& from) const noexcept {
@@ -148,25 +213,28 @@ math::Vector2i World::getNearestPassableLocation(const math::Vector2i& from) con
 	math::Vector2i topLeft = from;
 	math::Vector2i downRight = from;
 
-	while (topLeft.isToDownRightFrom<true>(-m_size) || downRight.isToUpLeftFrom<true>(m_size)) {
-		if (topLeft.x() > -m_size.x()) {
+	const int32_t sizeX = m_mapper.getSize().x();
+	const int32_t sizeY = m_mapper.getSize().y();
+
+	while (topLeft.isToDownRightFrom<true>(-m_mapper.getSize()) || downRight.isToUpLeftFrom<true>(m_mapper.getSize())) {
+		if (topLeft.x() > -sizeX) {
 			--topLeft.x();
 			if (math::Vector2i to { topLeft.x(), downRight.y() }; tryLookInRange(topLeft, to, { 0, 1 })) {
 				return to;
 			}
-		} if (topLeft.y() > -m_size.y()) {
+		} if (topLeft.y() > -sizeY) {
 			--topLeft.y();
 			if (math::Vector2i to { downRight.x(), topLeft.y() }; tryLookInRange(topLeft, to, { 1, 0 })) {
 				return to;
 			}
 		}
 
-		if (downRight.x() < m_size.x()) {
+		if (downRight.x() < sizeX) {
 			++downRight.x();
 			if (math::Vector2i to { topLeft.x(), downRight.y() }; tryLookInRange(downRight, to, { -1, 0 })) {
 				return to;
 			}
-		} if (downRight.y() < m_size.y()) {
+		} if (downRight.y() < sizeY) {
 			++downRight.y();
 			if (math::Vector2i to { downRight.x(), topLeft.y() }; tryLookInRange(downRight, to, { 0, -1 })) {
 				return to;
@@ -179,8 +247,8 @@ math::Vector2i World::getNearestPassableLocation(const math::Vector2i& from) con
 
 math::Vector2i World::getRandomLocation() const noexcept {
 	return math::Vector2i {
-		utils::Random<>::rand(-m_size.x() + 1, m_size.x() - 1), 
-		utils::Random<>::rand(-m_size.y() + 1, m_size.y() - 1) 
+		utils::Random<>::rand(-m_mapper.getSize().x() + 1, m_mapper.getSize().x() - 1),
+		utils::Random<>::rand(-m_mapper.getSize().y() + 1, m_mapper.getSize().y() - 1)
 	};
 }
 
@@ -195,17 +263,15 @@ bool World::isObstacleAt(const math::Vector2i& pos) const {
 const Tile& World::at(bool isForeground, const math::Vector2i& pos) const {
 	static Tile s_emptyTile = Tile(TileId::EMPTINESS);
 
-	if (pos.abs().isToUpLeftFrom(m_size)) {
-		return m_fieldCenter[isForeground][pos.y() * int32_t(m_width) + pos.x()];
+	if (m_mapper.contains(pos)) {
+		return m_fieldCenter[isForeground][m_mapper.getIndex(pos)];
 	} else {
 		return s_emptyTile;
 	}
 }
 
 Tile& World::atMut(bool isForeground, const math::Vector2i& pos) {
-	assert(pos.abs().isToUpLeftFrom(m_size));
-
-	return m_fieldCenter[isForeground][pos.y() * int32_t(m_width) + pos.x()];
+	return m_fieldCenter[isForeground][m_mapper.getIndex(pos)];
 }
 
 Tile& World::atMutBackground(const math::Vector2i& pos) {
