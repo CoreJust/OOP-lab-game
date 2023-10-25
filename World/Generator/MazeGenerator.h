@@ -5,6 +5,13 @@
 #pragma once
 #include "WorldGenerator.h"
 
+/*
+*	MazeGenerator(.h/.cpp) contains one of the WorldGenerators.
+*
+*	MazeGenerator does just what wou would expect it to do implies
+*	- generates mazes (or would do so).
+*/
+
 class MazeGenerator final : public WorldGenerator {
 private:
 	GenerationSettings m_sets;

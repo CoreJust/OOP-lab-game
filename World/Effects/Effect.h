@@ -55,6 +55,7 @@ public:
 	virtual bool update(Entity& entity, World& world, const float deltaTime) = 0;
 
 	virtual std::unique_ptr<Effect> copy() = 0;
+	
 	inline virtual std::string toString() const {
 		return m_id.toString() + " level " + std::to_string(m_level);
 	}

@@ -1,0 +1,14 @@
+{
+	"resources_location": "res/",
+	"font": "Visitor_Rus",
+	"render_distance": 12,
+	"update_distance": 15,
+	"input_mode": "keyboard_and_mouse",
+	"input_file": "input_save",
+	"save_input": true,
+	"log_input": false,
+	"log_delta_time": false,
+	"log_settings": true,
+	"log_entities_pos": false,
+	"log_entities_effects": false
+}

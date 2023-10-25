@@ -6,6 +6,14 @@
 #include "Utils/BasicId.h"
 #include "Math/Vector.h"
 
+/*
+*	WorldLevelId(.h/.cpp) contains a class that represents the game level.
+* 
+*	The whole game process is split into levels - separate worlds with their own
+*	settings, goals, enemies, etc. Each level is identified with this class and
+*	via it the level's settings can be retrieved.
+*/
+
 class WorldGenerationMaster;
 
 // World level Id contains information about default worlds in different levels

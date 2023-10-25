@@ -9,6 +9,22 @@
 #include "TileId.h"
 #include "TileData.h"
 
+/*
+*	Tile(.h/.cpp) contains a class that represents a tile in the world.
+*
+*	A tile is the most basic building block (a brick) of the game world.
+*	The whole field is split into a square net with each cell of it being
+*	filled with a tile (actually, with two tiles - the background and the foreground).
+* 
+*	All the tiles collectively are the game world itself, that is then filled with
+*	diverse entities, player included.
+* 
+*	A tile has three characteristics, the most basic of which is its ID.
+*	Also, there are a TileData (and both are explained in detail in the corresponding files)
+*	and the boolean value of the tile being an obstacle? which is set by its ID, but can later
+*	be modified (not a necessary feature, but so the requirements demanded, so what can I do?).
+*/
+
 // A single tile in the world
 class Tile final {
 private:

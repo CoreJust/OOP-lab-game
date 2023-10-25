@@ -40,7 +40,7 @@ gamegui::ProgressBar::ProgressBar(
 	text->setString(name);
 	text->setFillColor(textColor);
 	text->setCharacterSize(GameGUI::DEFAULT_TEXT_SIZE);
-	text->setScale({ textScale, textScale });
+	text->setScale({ textScale * TextAdapter::X_SCALE_MODIFIER, textScale });
 }
 
 void gamegui::ProgressBar::setValue(float val) noexcept {

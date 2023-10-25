@@ -13,7 +13,7 @@
 #include "IO/Logger.h"
 #include "Texture/Texture.h"
 
-Display::Display(uint32_t width, uint32_t height, std::string title) {
+Display::Display(uint32_t width, uint32_t height, std::string title) : m_isOpen(true) {
 	sf::ContextSettings settings;
 	sf::VideoMode videoMode = sf::VideoMode(width, height);
 	uint32_t style = sf::Style::Close | sf::Style::Resize;
@@ -41,8 +41,11 @@ Display::Display(uint32_t width, uint32_t height, std::string title) {
 }
 
 Display::~Display() {
-	ImGui::SFML::Shutdown();
-	m_window.close();
+	if (m_isOpen) {
+		ImGui::SFML::Shutdown();
+		m_window.close();
+		m_isOpen = false;
+	}
 }
 
 void Display::pollEvents() {
@@ -67,6 +70,14 @@ void Display::clear(const sf::Color& color) {
 
 void Display::display() {
 	m_window.display();
+}
+
+void Display::close() {
+	if (m_isOpen) {
+		ImGui::SFML::Shutdown();
+		m_window.close();
+		m_isOpen = false;
+	}
 }
 
 bool Display::isOpen() const noexcept {

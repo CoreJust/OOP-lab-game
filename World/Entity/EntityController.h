@@ -4,11 +4,24 @@
 
 #pragma once
 #include "Utils/NoNullptr.h"
-#include "IO/VirtualInput.h"
+#include "IO/Input/VirtualInput.h"
 #include "Graphics/Render/RenderMaster.h"
 #include "Graphics/Texture/Animation.h"
 #include "Entity.h"
 #include "World/Effects/EffectPool.h"
+
+/*
+*	EntityController(.h/.cpp) contains a class that controls entities.
+*
+*	It acts as a mediator between an entity and the other parts of the game.
+*	The class provides the behaviour of the entity (and there is a separate
+*	*Controller for each Entity inheritor).
+* 
+*	This class is the base of all the other controllers.
+* 
+*	It handles the collisions, the effects put on the entity, the entities speed modifier,
+*	it triggers the events that require stepping on some tile, and some other stuff.
+*/
 
 class World;
 

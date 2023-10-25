@@ -5,6 +5,14 @@
 #pragma once
 #include "WorldGenerator.h"
 
+/*
+*	RandomGenerator(.h/.cpp) contains one of the WorldGenerators.
+*
+*	RandomGenerator allows to bring in some absolute random. Its generation
+*	does not represent any structure and is a kind of white noise. It can be used
+*	for other generators as the initial and/or for some changes in the structured world.
+*/
+
 class RandomGenerator final : public WorldGenerator {
 private:
 	GenerationSettings m_sets;

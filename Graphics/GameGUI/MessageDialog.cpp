@@ -12,33 +12,38 @@
 
 #include "IO/Logger.h"
 
-gamegui::MessageDialog::MessageDialog(const std::string& title, const std::string& text) 
-	: m_title(title), m_text(text) {
+gamegui::MessageDialog::MessageDialog(const std::string& title, const std::string& text, const std::string& button1, const std::string& button2)
+	: m_title(title), m_text(text), m_button1(button1), m_button2(button2) {
 
 }
 
-void gamegui::MessageDialog::open() {
+int8_t gamegui::MessageDialog::open() {
 	assert(s_window != nullptr);
 
-	open(*s_window);
+	return open(*s_window);
 }
 
-void gamegui::MessageDialog::open(sf::RenderWindow& window) {
+int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 	ImGui::GetIO().FontGlobalScale = 2.f;
 	ImGui::SFML::SetCurrentWindow(window);
 
 	sf::Clock deltaClock;
 	bool isOpen = true;
+	int8_t result = 0;
 	while (isOpen) {
 		const sf::Time deltaTime = deltaClock.restart();
 		ImGui::SFML::Update(window, deltaTime);	
 
 		ImGui::SetNextWindowPos({ window.getSize().x / 2.f, window.getSize().y / 2.f }, 0, { 0.5f, 0.5f });
-		ImGui::Begin(m_title.data(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin(m_title.data(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 		ImGui::Text(m_text.data());
 		ImGui::NewLine();
 	
-		if (ImGui::Button("Ok")) {
+		if (ImGui::Button(m_button1.data())) {
+			result = 1;
+			isOpen = false;
+		} else if (!m_button2.empty() && ImGui::Button(m_button2.data())) {
+			result = 2;
 			isOpen = false;
 		}
 
@@ -47,6 +52,8 @@ void gamegui::MessageDialog::open(sf::RenderWindow& window) {
 		ImGui::SFML::Render(window);
 		window.display();
 	}
+
+	return result;
 }
 
 void gamegui::MessageDialog::initGUI(sf::RenderWindow& window) {

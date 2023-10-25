@@ -9,6 +9,13 @@
 #include "WorldLevelId.h"
 #include "Graphics/Render/RenderMaster.h"
 
+/*
+*	World(.h/.cpp) contains a class that represents the game world (or field).
+*
+*	It manages the world's tiles as an integral world map and in the future is
+*	intended to contain the world's entities other than the player.
+*/
+
 class Player;
 
 // The game world

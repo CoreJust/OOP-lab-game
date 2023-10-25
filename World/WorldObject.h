@@ -5,6 +5,12 @@
 #pragma once
 #include "Math/Vector.h"
 
+/*
+*	WorldObject(.h/.cpp) contains a base class for all the objects that are represented
+*	in the world and can move around (mostly and currently the only inheritor of the class
+*	is the Entity).
+*/
+
 // Anything that can be located in the world
 class WorldObject {
 protected:

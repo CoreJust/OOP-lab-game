@@ -8,6 +8,23 @@
 #include "World/WorldObject.h"
 #include "World/Effects/EffectPool.h"
 
+/*
+*	Entity(.h/.cpp) contains a base class for all the Entities.
+*
+*	It inherits the WorldObject, since an Entity is always present in the world
+*	and has some changeable position.
+* 
+*	The Entity class contains entities characteristics - EntityStats - and its
+*	Effects - via EffectPool.
+* 
+*	It manages the entities characteristics, but the class works passively -
+*	it doesn't act on its own and just accepts outer calls (like putting effects,
+*	damaging/healing it, or moving around). The actual logic of Entities behaviour
+*	is handled in the *Controller class.
+* 
+*	There are Entity's inheritors that differ in their data and/or methods.
+*/
+
 // Basic class for all the entities (existances with position and health, etc) in the game world
 class Entity : public WorldObject {
 protected:

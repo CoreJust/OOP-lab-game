@@ -10,6 +10,9 @@ namespace gamegui {
 	// Manages the fonts
 	// Uses singleton
 	class TextAdapter final {
+	public:
+		constexpr inline static float X_SCALE_MODIFIER = 0.77f; // Allows to fix text stretching
+
 	private:
 		sf::Font m_font;
 

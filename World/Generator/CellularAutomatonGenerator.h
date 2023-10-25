@@ -5,6 +5,15 @@
 #pragma once
 #include "WorldGenerator.h"
 
+/*
+*	CellularAutomatonGenerator(.h/.cpp) contains one of the WorldGenerators.
+*
+*	CellularAutomatonGenerator allows to use cellular automatons to generate a world.
+*	It is the generator with the broadest set of possible generations (in terms of 
+*	the general structure), since most of the other generator can be partially reproduced
+*	with this generator (that wouldn't be effecient though).
+*/
+
 class CellularAutomatonGenerator final : public WorldGenerator {
 private:
 	GenerationSettings m_sets;

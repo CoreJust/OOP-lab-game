@@ -7,6 +7,16 @@
 #include "World/World.h"
 #include "World/Entity/Player.h"
 
+/*
+*	LevelChangerTileData(.h/.cpp) contains a class that represents one of the possible TileDatas.
+* 
+*	The LevelChangerTileData can do single but fairly crucial things - change the game level.
+*	The use of this TileData is the only way to change the level (thus advancing in the passage
+*	of the game).
+*
+*	After being invoked it just restarts the field with a new ID (and thus the settings).
+*/
+
 // Teleports player to a new level
 class LevelChangerTileData : public TileData {
 private:

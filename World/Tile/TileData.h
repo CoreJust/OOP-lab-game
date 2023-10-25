@@ -6,6 +6,22 @@
 #include <memory>
 #include "Math/Vector.h"
 
+/*
+*	TileData.h contains a base class for a family of TileDatas.
+*
+*	TileDatas represent all the additional qualities attached to a tile
+*	apart from those dictated by its ID and declared in the corresponding TileInfo.
+* 
+*	The additional qualities are: any additional data (for example some stored item)
+*	as well as the events caused by an entity stepping onto the tile. Also, the TileData
+*	manages the updates of the tile.
+* 
+*	Unlike basic characteristics that are bound to an ID, the TileData is generally assigned
+*	based on the ID, but can then be changed (internally or externally) or reassigned/initially
+*	assigned in a different way rather than the expected. Thus objects like a stone with teleportation
+*	or any other abilities can be created.
+*/
+
 class World;
 class Player;
 class Entity;

@@ -12,6 +12,7 @@ class Display final {
 private:
 	sf::RenderWindow m_window;
 	float m_mouseWheelDelta = 0.f;
+	bool m_isOpen;
 
 public:
 	Display(uint32_t width, uint32_t height, std::string title);
@@ -20,6 +21,7 @@ public:
 	void pollEvents();
 	void clear(const sf::Color& color = sf::Color::White);
 	void display();
+	void close();
 
 	bool isOpen() const noexcept;
 

@@ -8,6 +8,16 @@
 #include <memory>
 #include "Utils/BasicId.h"
 
+/*
+*	GenerationSettings(.h/.cpp) contains a class of the settings that define a generation stage.
+*
+*	Each setting consists of a flag which represents the generator (the class) and its work mode
+*	(or algorithm used) and a generator-specific set of sub-settings.
+* 
+*	Other than that, each setting has a seed (a generator is completely deterministic based on the seed
+*	- so with the same seed you would have the same generated output for some settings set).
+*/
+
 struct GenerationSettings {
 	enum GenerationFlags : uint8_t {
 		// Absolutely random generation, initial only

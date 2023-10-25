@@ -103,5 +103,17 @@ namespace utils {
 		constexpr Value getValue() const noexcept {
 			return static_cast<Value>(m_state);
 		}
+
+		constexpr bool isTrue() const noexcept {
+			return m_state == 1;
+		}
+
+		constexpr bool isFalse() const noexcept {
+			return m_state == 0;
+		}
+
+		constexpr bool isNone() const noexcept {
+			return m_state == -1;
+		}
 	};
 }

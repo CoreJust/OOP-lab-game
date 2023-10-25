@@ -18,7 +18,7 @@ private:
 	RenderMaster m_renderMaster;
 
 public:
-	GameState();
+	GameState(StateManager& pManager);
 
 	void update(float deltaTime, utils::NoNullptr<io::VirtualInput> input) override;
 	void render(sf::RenderWindow& window) override;

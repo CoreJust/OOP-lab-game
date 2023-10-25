@@ -7,6 +7,12 @@
 #include "World/World.h"
 #include "World/Entity/Player.h"
 
+/*
+*	EffectGiverTileData(.h/.cpp) contains a class that represents one of the possible TileDatas.
+*
+*	The EffectGiverTileData gives away effects to entities. Effect is then managed by the EffectPool.
+*/
+
 // Gives some effect and goes inactive
 class EffectGiverTileData : public TileData {
 private:

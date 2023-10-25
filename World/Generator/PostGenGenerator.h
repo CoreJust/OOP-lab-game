@@ -6,6 +6,15 @@
 #include "WorldGenerator.h"
 #include <vector>
 
+/*
+*	PostGenGenerator(.h/.cpp) contains one of the WorldGenerators.
+*
+*	PostGenGenerator allows to use post-generation generation (or postprocess the world).
+* 
+*	It can be used to ensure that the world meets some requirements (e.g. the ability to reach
+*	one point in the world from another).
+*/
+
 class PostGenGenerator final : public WorldGenerator {
 private:
 	GenerationSettings m_sets;

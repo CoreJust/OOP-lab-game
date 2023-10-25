@@ -16,7 +16,7 @@ gamegui::Text::Text(const std::string& contents, const math::Rectf& pos, uint32_
 	text->setString(contents);
 	text->setFillColor(color);
 	text->setCharacterSize(textSize);
-	text->setScale({ textScale, textScale });
+	text->setScale({ textScale * TextAdapter::X_SCALE_MODIFIER, textScale });
 }
 
 void gamegui::Text::setText(const std::string& text) noexcept {

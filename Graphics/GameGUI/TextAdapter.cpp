@@ -5,7 +5,7 @@
 #include "TextAdapter.h"
 #include <cassert>
 
-#include "IO/FileLoader.h"
+#include "IO/File/FileLoader.h"
 #include "GlobalSettings.h"
 
 gamegui::TextAdapter::TextAdapter(std::string_view fileName) {

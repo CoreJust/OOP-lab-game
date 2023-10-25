@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "Utils/NoNullptr.h"
-#include "IO/VirtualInput.h"
+#include "IO/Input/VirtualInput.h"
 #include "State.h"
 
 class StateManager final {

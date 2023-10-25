@@ -4,7 +4,7 @@
 
 #include "StateManager.h"
 
-#include "IO/KeyboardMouseInput.h"
+#include "IO/Input/KeyboardMouseInput.h"
 #include "IO/Logger.h"
 #include "GlobalSettings.h"
 #include "GameState.h"
@@ -13,7 +13,7 @@ StateManager::StateManager(const float& mouseWheelDelta)
 	: m_virtualInput(std::make_unique<io::KeyboardMouseInput>(mouseWheelDelta)) {
 	io::Logger::logInfo("Initialized input");
 
-	addState(std::make_unique<GameState>());
+	addState(std::make_unique<GameState>(*this));
 }
 
 void StateManager::update(sf::RenderWindow& window, float deltaTime) {

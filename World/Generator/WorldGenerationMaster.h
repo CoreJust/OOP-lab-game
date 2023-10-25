@@ -7,6 +7,12 @@
 #include "WorldGenerator.h"
 
 /*
+*	WorldGenerationMaster(.h/.cpp) contains a class that manages the generators.
+* 
+*	It can be fed with consecutive generation stages' settings and than be applied
+*	to a world to generate it totally and completely - the world does not need any further
+*	actions to get ready to use.
+* 
 *	Usage:
 *	Initializing with a world:
 *		WorldGenerationMaster master(world);

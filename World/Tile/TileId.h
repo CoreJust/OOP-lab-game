@@ -7,6 +7,13 @@
 #include "Graphics/Texture/TextureId.h"
 #include "TileInfo.h"
 
+/*
+*	TileId(.h/.cpp) contains a class that represents an Id of a Tile.
+*
+*	Tile id sets the tiles basic qualities (described in the TileInfo.h) and
+*	out of them only the passabality is available for modification.
+*/
+
 class TileId : public BasicId {
 public:
 	enum Value : id_t {

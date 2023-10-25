@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "IO/FileLoader.h"
+#include "IO/File/FileLoader.h"
 #include "IO/Logger.h"
 #include "GlobalSettings.h"
 

@@ -5,9 +5,11 @@
 #include "GameState.h"
 #include "IO/Logger.h"
 #include "Graphics/GameGUI/MessageDialog.h"
+#include "StateManager.h"
 
-GameState::GameState()
-	: m_world(WorldLevelId::BASIC_LEVEL),
+GameState::GameState(StateManager& pManager)
+	: State(pManager),
+	m_world(WorldLevelId::BASIC_LEVEL),
 	m_playerController(std::make_unique<Player>(math::Vector2f(0.5, 0.5), m_world), m_world)
 {
 	m_playerController.setAnimation(m_renderMaster.getResources().getAnimationData(AnimationId::PLAYER));
@@ -41,8 +43,10 @@ void GameState::render(sf::RenderWindow& window) {
 void GameState::processPlayerDeath() {
 	io::Logger::logInfo("Player died. Restarting game...");
 
-	gamegui::MessageDialog dialog("Game message", "You died! Restarting the game");
-	dialog.open();
+	gamegui::MessageDialog dialog("Game message", "You died! One more try?", "I have some confidence", "Accept defeat");
+	if (dialog.open() == 2) { // Accepted defeat
+		m_pManager.popState();
+	}
 
 	m_world = World(WorldLevelId::BASIC_LEVEL);
 	m_playerController.getPlayer() = Player(math::Vector2f(0.5, 0.5), m_world);

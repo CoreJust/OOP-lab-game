@@ -6,6 +6,22 @@
 #include "Utils/BasicId.h"
 #include "EntityStats.h"
 
+/*
+*	EntityId(.h/.cpp) contains a class that represents the entity Id - the type of entity.
+*
+*	The entities differ based on their Ids and the classes.
+*	The basic entity class represent a basic entity - with no behaviour of its own.
+*	So the class of the entity represents its behaviour.
+* 
+*	Unlike entity class, its Id represents the characteristics of the entity - those that
+*	are common for all the entities - EntityStats and entity's visual part - its texture (and animation).
+* 
+*	It is similar to how we have TileId and different TileDatas. Thus EntityId is the static part
+*	of a certain entities definition.
+* 
+*	As of now, there is only one entity presented - the player (this is going to change soon though).
+*/
+
 class EntityId : public BasicId {
 public:
 	enum Value : id_t {

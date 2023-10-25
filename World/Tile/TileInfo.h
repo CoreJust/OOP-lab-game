@@ -5,6 +5,24 @@
 #pragma once
 #include <cassert>
 
+/*
+*	TileInfo.h contains two corelated types:
+*		1) TileCategory - all tiles in the game are split with two aspects:
+*			Whether they belong to the passable (abstactly) type - floor,
+*				or to the obstacle type - wall
+*			And whether they are in the background or in the foreground.
+*			Also, there is a separate category of emptiness that belongs
+*			to neither one.
+* 
+*		2) TileInfo - represent the general information on a certain kind of tile
+*			(the tile ID). It includes the category and also:
+*			1. Hardness - the ability of the tile to withstand damage (not used as of now).
+*			2. Speed modifier - some tiles can accelerate entities during their movement
+*				over the tiles, and some can do the opposite. Also, the modifier may be
+*				zero, thus making the tile impassable. That's how the obstacles are marked.
+*			3. Transparantness - some tiles might be opaque and some - transparent. That's it.
+*/
+
 enum class TileCategory : uint8_t {
 	EMPTINESS = 0,
 

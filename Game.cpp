@@ -24,4 +24,6 @@ void Game::run() {
 
 		m_display.display();
 	}
+
+	m_display.close();
 }

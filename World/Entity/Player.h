@@ -5,6 +5,14 @@
 #pragma once
 #include "Entity.h"
 
+/*
+*	Player(.h/.cpp) contains a class that represents the player.
+*
+*	It inherits the Entity class, and just as its parent it do not
+*	contain much logic on its own (or rather it mostly relies on its parent
+*	and on the PlayerController, thus being simple in its implementation).
+*/
+
 class World;
 
 class Player final : public Entity {
