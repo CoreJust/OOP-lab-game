@@ -5,28 +5,22 @@
 #include "KeyboardMouseInput.h"
 
 io::KeyboardMouseInput::KeyboardMouseInput(const float& mouseWheelDelta) noexcept
-	: m_keyBindings({ sf::Keyboard::W, sf::Keyboard::A, sf::Keyboard::S, sf::Keyboard::D,
-					sf::Keyboard::LShift, sf::Keyboard::Space, sf::Keyboard::Escape, sf::Keyboard::Enter }),
-	m_mouseButtonBindings({ sf::Mouse::Left, sf::Mouse::Right, sf::Mouse::Middle }),
-	m_mouseWheelDelta(mouseWheelDelta) { }
-
-io::KeyboardMouseInput::KeyboardMouseInput(KeyBindings keyBindings, MouseButtonBindings mouseButtonBindings, const float& mouseWheelDelta) noexcept
-	: m_keyBindings(std::move(keyBindings)), m_mouseButtonBindings(std::move(mouseButtonBindings)), m_mouseWheelDelta(mouseWheelDelta) { }
+	: m_mouseWheelDelta(mouseWheelDelta) { }
 
 bool io::KeyboardMouseInput::isKeyPressed(const Key key) const {
-	return sf::Keyboard::isKeyPressed(m_keyBindings[key]);
+	return sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));
 }
 
 bool io::KeyboardMouseInput::isKeyReleased(const Key key) const {
-	return !sf::Keyboard::isKeyPressed(m_keyBindings[key]);
+	return !sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));
 }
 
 bool io::KeyboardMouseInput::isMouseButtonPressed(const MouseButton btn) const {
-	return sf::Mouse::isButtonPressed(m_mouseButtonBindings[btn]);
+	return sf::Mouse::isButtonPressed(m_keyBindings.getMouseButton(btn));
 }
 
 bool io::KeyboardMouseInput::isMouseButtonReleased(const MouseButton btn) const {
-	return !sf::Mouse::isButtonPressed(m_mouseButtonBindings[btn]);
+	return !sf::Mouse::isButtonPressed(m_keyBindings.getMouseButton(btn));
 }
 
 math::Vector2f io::KeyboardMouseInput::getMousePosition() const {

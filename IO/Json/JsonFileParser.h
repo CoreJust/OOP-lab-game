@@ -26,7 +26,7 @@ namespace io {
 		io::FileLoader m_loader;
 
 	public:
-		constexpr JsonFileParser(std::string directory) : m_loader(std::move(directory), ".json") { }
+		constexpr JsonFileParser(std::string directory = "") : m_loader(std::move(directory), ".json") { }
 
 		inline utils::Result<io::JsonValue> parse(std::string_view fileName) {
 			std::string jsonText = m_loader.loadFile(fileName);

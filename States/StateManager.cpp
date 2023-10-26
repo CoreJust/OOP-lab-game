@@ -10,7 +10,8 @@
 #include "GameState.h"
 
 StateManager::StateManager(const float& mouseWheelDelta)
-	: m_virtualInput(std::make_unique<io::KeyboardMouseInput>(mouseWheelDelta)) {
+	: m_virtualInput(io::VirtualInput::makeVirtualInput(GlobalSettings::get().getInputMode(), mouseWheelDelta)) {
+	m_virtualInput->initBindings();
 	io::Logger::logInfo("Initialized input");
 
 	addState(std::make_unique<GameState>(*this));

@@ -18,13 +18,13 @@ void PlayerContoller::update(const float deltaTime, utils::NoNullptr<io::Virtual
 	EntityController::update(deltaTime, input);
 
 	math::Vector2f offset = math::Direction<float>::getDirectionVector(
-		input->isKeyPressed(io::VirtualInput::KEY_UP),
-		input->isKeyPressed(io::VirtualInput::KEY_DOWN),
-		input->isKeyPressed(io::VirtualInput::KEY_RIGHT),
-		input->isKeyPressed(io::VirtualInput::KEY_LEFT)
+		input->isKeyPressed(io::KEY_UP),
+		input->isKeyPressed(io::KEY_DOWN),
+		input->isKeyPressed(io::KEY_RIGHT),
+		input->isKeyPressed(io::KEY_LEFT)
 	);
 
-	float shiftSpeedModifier = input->isKeyPressed(io::VirtualInput::KEY_ACCEL) ? 1.6f : 1;
+	float shiftSpeedModifier = input->isKeyPressed(io::KEY_ACCEL) ? 1.6f : 1;
 
 	if (offset != math::Vector2f(0, 0)) {
 		offset *= calculateSpeed() * shiftSpeedModifier * deltaTime;

@@ -1,0 +1,11 @@
+{
+	"up": "w",
+	"left": "a",
+	"down": "s",
+	"right": "d",
+
+	"accel": "left_shift",
+	"space": "space",
+	"escape": "escape",
+	"enter": "enter"
+}

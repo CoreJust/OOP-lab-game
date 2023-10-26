@@ -7,6 +7,12 @@
 #include <source_location>
 #include <ostream>
 
+/*
+*	Logger(.h/.cpp) contains a class that allows to log information and errors.
+*
+*	After initializing, it writes formatted messages into the given output.
+*/
+
 namespace io {
 // Mostly consists of static interface
 // Implements the singleton pattern

@@ -56,6 +56,10 @@ uint32_t GlobalSettings::getUpdateDistance() const noexcept {
 	return m_updateDistance;
 }
 
+const std::string& GlobalSettings::getBindingsFile() const noexcept {
+	return m_bindingsFile;
+}
+
 io::InputMode GlobalSettings::getInputMode() const noexcept {
 	return m_inputMode;
 }

@@ -38,6 +38,7 @@ private:
 	uint32_t m_maxRenderDistance = 10;
 	uint32_t m_updateDistance = 15;
 
+	std::string m_bindingsFile = "bindings";
 	io::InputMode m_inputMode = io::KEYBOARD_AND_MOUSE_INPUT;
 	std::string m_inputFile = "input_save";
 	bool m_isToSaveInput = true;
@@ -69,6 +70,7 @@ public:
 	uint32_t getMaxRenderDistance() const noexcept;
 	uint32_t getUpdateDistance() const noexcept;
 
+	const std::string& getBindingsFile() const noexcept;
 	io::InputMode getInputMode() const noexcept;
 	const std::string& getInputFile() const noexcept;
 	bool isToSaveInput() const noexcept;

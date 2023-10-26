@@ -21,6 +21,7 @@
 *		"font": "Visitor_Rus",
 *		"render_distance": 12,
 *		"update_distance": 15,
+*		"bindings_file": "bindings",
 *		"input_mode": "keyboard_and_mouse",
 *		"input_file": "input_save",
 *		"save_input": true,

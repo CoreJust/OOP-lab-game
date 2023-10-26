@@ -13,11 +13,15 @@ namespace io {
 		std::string m_extension;
 
 	public:
-		constexpr FileLoader(std::string directory, std::string extension = "") 
+		constexpr FileLoader(std::string directory = "", std::string extension = "")
 			: m_directory(std::move(directory)), m_extension(std::move(extension)) { }
 
 		constexpr void setExtension(std::string extension) {
 			m_extension = std::move(extension);
+		}
+
+		constexpr void setDirectory(std::string directory) {
+			m_directory = std::move(directory);
 		}
 
 		constexpr std::string getFullPath(std::string_view fileName) const {

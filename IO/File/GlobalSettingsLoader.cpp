@@ -53,6 +53,12 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 			} else {
 				m_sets.m_updateDistance = val.asINumber();
 			}
+		} else if (key == "bindings_file") {
+			if (!val.isString()) {
+				io::Logger::logError("Invalid global settings file: bindings_file must be a string");
+			} else {
+				m_sets.m_bindingsFile = val.asString();
+			}
 		} else if (key == "input_mode") {
 			if (!val.isString()) {
 				io::Logger::logError("Invalid global settings file: input_mode must be a string");
