@@ -7,6 +7,19 @@
 #include "Vector.h"
 #include "Rect.h"
 
+/*
+*	Mapper.h contains an auxiliary class that allows convenient remapping
+*	of coordinates.
+* 
+*	It works with 3 interconvertable coordinate systems:
+*		1) Plain index - a 1D index in an array.
+*		2) Center coords - 2D coordinates with the zero in the center of the area.
+*		   This allows coordinates to be negative, but no out of the area.
+*		3) Corner coords - 2D coordinates with the zero at the corner.
+*		   Unlike the previous case, these coords cannot be negative, 
+*		   but still are expected to be within the area's bounds.
+*/
+
 namespace math {
 	// Mapper allows to map 2D coordinates into 1D coordinates
 	// Works with the center of field and with the top-left corner as the zero point

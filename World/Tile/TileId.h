@@ -4,7 +4,7 @@
 
 #pragma once
 #include "Utils/BasicId.h"
-#include "Graphics/Texture/TextureId.h"
+#include "Graphics/Model/TextureCoords.h"
 #include "TileInfo.h"
 
 /*
@@ -13,6 +13,10 @@
 *	Tile id sets the tiles basic qualities (described in the TileInfo.h) and
 *	out of them only the passabality is available for modification.
 */
+
+namespace model {
+	class ModelDescription;
+}
 
 class TileId : public BasicId {
 public:
@@ -56,8 +60,9 @@ public:
 	}
 
 	const TileInfo& getTileInfo() const;
-	TextureId getTileTexture() const;
 	TileCategory getCategory() const;
+	const model::ModelDescription& getModelDescription() const;
+	model::TextureCoords& loadToTexCoords(model::TextureCoords& texCoords) const;
 
 	bool isBackground() const;
 	bool isForeground() const;

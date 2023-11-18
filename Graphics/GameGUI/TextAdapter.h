@@ -6,6 +6,14 @@
 #include <string>
 #include <SFML/Graphics/Text.hpp>
 
+/*
+*	TextAdapter(.h/.cpp) contains a class that is responsible for
+*	the fonts management.
+*
+*	It uses a singleton and must be explicitely initialized and then destroyed once
+*	somewhere on the higher level.
+*/
+
 namespace gamegui {
 	// Manages the fonts
 	// Uses singleton

@@ -7,6 +7,28 @@
 #include <vector>
 #include "Utils/Random.h"
 
+/*
+*	ChanceDistribution.h contains a class that allows to distribute the probability.
+*
+*	The general idea is that we have a set of mutually exclusive outcomes with some chances.
+*	Than we can feed them and their probabilities to the class and for each random value 
+*	get the outcome according to their probabilities.
+* 
+*	Usage:
+*		utils::Random<...> random;
+*		math::ChanceDistribution<decltype(random)::RG, -outcome type-> chanceDist(random, -default outcome-);
+*		chanceDist.push(-chance-, -outcome-);
+*		chanceDist.push(-chance-, -outcome-);
+*		size_t someChanceIndex = chanceDist.push(-chance-, -outcome-); // allows to modify the chance
+*
+*		...
+* 
+*		-type- outcome = chanceDist.pick(); // Picking a random outcome according to the probabilities
+*		if (...) {
+*			chanceDist.setChance(someChanceIndex, -new chance-);
+*		}
+*/
+
 namespace math {
 	// Allows to have to choose a random value according to chances
 	template<class T, class Value, bool IgnoreChanceOverflow = false>

@@ -6,6 +6,12 @@
 #include "Math/Vector.h"
 #include "SingleRasterizer.h"
 
+/*
+*	LineRasterizer.h contains a class for the line rasterization.
+*
+*	Allows to calculate all the points that make up a line.
+*/
+
 namespace math {
 	// Allows to get the pairs of the first and last points in a row for each row
 	// For a line with width of 1 pixel

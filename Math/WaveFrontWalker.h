@@ -8,6 +8,71 @@
 #include "Utils/Concepts.h"
 #include "Vector.h"
 
+/*
+*	WaveFrontWalker.h contains a class that allows to walk through some cavities
+*	using the wave front.
+* 
+*	The general underlying principle is that we have a map and some point on it.
+*	For some purpose, we need to walk through all the points on the map that are
+*	connected with the point (that is, they are located in the same cavity/area).
+*	To do so, we use a "wave" that is being triggered in the point and then goes
+*	in all the directions.
+* 
+*	This scheme allows to access all the points within the cavity once:
+* 
+*	Some sketches (step by step) to understand the class's work:
+*		(W - the wall, . - the cavity, @ - the wave front, x - the old wave front)
+* 
+*		Step 1:
+*		W W W W W W W W
+*		W W W W . W W W
+*		W . . . . . . W
+*		W W W . @ . W W
+*		. . W . . . W W
+*		. . W W W W W W
+* 
+*		Step 2:
+*		W W W W W W W W
+*		W W W W . W W W
+*		W . . . @ . . W
+*		W W W @ x @ W W
+*		. . W . @ . W W
+*		. . W W W W W W
+* 
+*		Step 3:
+*		W W W W W W W W
+*		W W W W @ W W W
+*		W . . @ x @ . W
+*		W W W x . x W W
+*		. . W @ x @ W W
+*		. . W W W W W W
+* 
+*		Step 4:
+*		W W W W W W W W
+*		W W W W x W W W
+*		W . @ x . x @ W
+*		W W W . . . W W
+*		. . W x . x W W
+*		. . W W W W W W
+* 
+*		Step 5:
+*		W W W W W W W W
+*		W W W W . W W W
+*		W @ x . . . x W
+*		W W W . . . W W
+*		. . W . . . W W
+*		. . W W W W W W
+* 
+*	Usage:
+*		math::WaveFrontWalker<-condition type-, false/true> walker(-point-, -condition-);
+*		math::Vector2i walkerPos;
+*
+*		while (walker.next(walkerPos)) {
+*			... here we have a point of another positions
+*			This code would be executed for each point within the cavity.
+*		}
+*/
+
 namespace math {
 	// Allows to once walk through all the cells in some area that meets some requirement
 	// Uses wave front algorithm

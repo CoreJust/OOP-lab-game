@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Utils/BasicId.h"
+#include "Graphics/Model/DynamicModelDescription.h"
 #include "EntityStats.h"
 
 /*
@@ -47,6 +48,7 @@ public:
 	}
 
 	const EntityStats& getEntityStats() const;
+	const model::DynamicModelDescription& getDynamicModelDescription() const;
 
 	std::string toString() const override;
 };

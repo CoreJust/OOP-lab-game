@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "GlobalSettingsLoader.h"
 
 #include "IO/Logger.h"
@@ -52,6 +56,18 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 				io::Logger::logError("Invalid global settings file: update_distance must be a whole number greater than zero");
 			} else {
 				m_sets.m_updateDistance = val.asINumber();
+			}
+		} else if (key == "fog_power") {
+			if (!val.isINumber()) {
+				io::Logger::logError("Invalid global settings file: fog_power must be a whole number");
+			} else {
+				m_sets.m_fogPower = val.asINumber();
+			}
+		} else if (key == "enable_vertical_view_moving") {
+			if (!val.isBool()) {
+				io::Logger::logError("Invalid global settings file: enable_vertical_view_moving must be a boolean");
+			} else {
+				m_sets.m_enableVerticalViewMoving = val.asBool();
 			}
 		} else if (key == "bindings_file") {
 			if (!val.isString()) {

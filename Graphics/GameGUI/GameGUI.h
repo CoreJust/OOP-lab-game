@@ -10,6 +10,13 @@
 
 #include "Math/Vector.h"
 
+/*
+*	GameGUI(.h/.cpp) contains a class that is base to some of the ingame GUIs.
+*
+*	Unlike those rendered by the ImGui, these ones rely solely on the SFML or the Graphics module.
+*	Being the base class, the GameGUI is expected to be used solely via its inheritors.
+*/
+
 namespace gamegui {
 	// GameGUI's are GUI that is being displayed during GameState
 	// Contains a vector of derivatives of both sf::Transformable and sf::Drawable

@@ -32,10 +32,11 @@ public:
 
 	// Handles player input and controls player
 	void update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input) override;
-
 	void draw(RenderMaster& renderMaster) override;
 
 	void initGUI(RenderMaster& renderMaster, Camera& camera);
+
+	Camera::RotationCallback createOnRotation();
 
 	Player& getPlayer();
 };

@@ -6,11 +6,14 @@
 #include <cassert>
 
 #include "IO/File/FileLoader.h"
+#include "IO/Logger.h"
 #include "GlobalSettings.h"
 
 gamegui::TextAdapter::TextAdapter(std::string_view fileName) {
 	io::FileLoader loader(GlobalSettings::get().getFontsLocation(), ".ttf");
-	assert(m_font.loadFromFile(loader.getFullPath(fileName)));
+	if (!m_font.loadFromFile(loader.getFullPath(fileName))) {
+		io::Logger::logError("Failed to load font: " + std::string(fileName));
+	}
 }
 
 void gamegui::TextAdapter::initTextAdapter() {

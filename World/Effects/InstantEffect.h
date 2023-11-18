@@ -8,6 +8,14 @@
 #include "World/World.h"
 #include "World/Entity/Entity.h"
 
+/*
+*	InstantEffect(.h/.cpp) contains class InstantEffect that inherits
+*	parent class Effect.
+*
+*	Instant effect is acquired, instantly applied and removed - it doesn't
+*	remain on the entity.
+*/
+
 // Implements the instant effects
 class InstantEffect : public Effect {
 public:

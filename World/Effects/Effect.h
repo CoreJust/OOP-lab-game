@@ -7,15 +7,12 @@
 #include "EffectId.h"
 #include "World/Entity/EntityId.h"
 
-class World;
-class Entity;
-
 /*
-* Basic class for effect that are being put upon an entity for some time
-* For most effects the impact is multiplying the corresponding stat by 1.1 * level
-* Such effects: acceleration/decceleration, health increase/health decrease, power increase/power decrease,
+*	Basic class for effect that are being put upon an entity for some time
+*	For most effects the impact is multiplying the corresponding stat by 1.1 * level
+*	Such effects: acceleration/decceleration, health increase/health decrease, power increase/power decrease,
 *				defence increase/defence decrease
-* Other effects:
+*	Other effects:
 *		1) Instant heal/damage : heals/damages for 50 hp per level
 *		2) Continuous heal/damage : heals/damages for 10 hp per level each 4 seconds
 *		3) Immortality : self-obvious - you can't die, no levels
@@ -23,6 +20,9 @@ class Entity;
 *		5) Invisibility : self-obvious - enemies wouldn't notice you (the more the higher the level up to the 10th)
 *		6) Random teleportation : teleports you to a random passable place within the map
 */
+
+class World;
+class Entity;
 
 class Effect {
 public:

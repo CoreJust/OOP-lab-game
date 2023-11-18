@@ -1,12 +1,19 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #pragma once
 #include <SFML/Window/Mouse.hpp>
+
 #include "VirtualInput.h"
+#include "IO/File/InputFileLoader.h"
 
 /*
 *	KeyboardMouseInput(.h/.cpp) contains a class that inherits VirtualInput and represents
 *	the input from the mouse and keyboard.
 *
 *	It redirects the input scanning from the real keyboard and mouse into the virtual input.
+*	The class also writes the input state to a file if such global setting is set.
 */
 
 namespace io {
@@ -15,10 +22,12 @@ namespace io {
 	// Doesn't allow bindings for mouse position / mouse wheel
 	class KeyboardMouseInput final : public VirtualInput {
 	private:
-		const float& m_mouseWheelDelta;
+		InputFileLoader m_loader; // To write the input there if it is required
 
 	public:
 		KeyboardMouseInput(const float& mouseWheelDelta) noexcept;
+
+		bool update(float& deltaTime) override;
 
 		bool isKeyPressed(const Key key) const override;
 		bool isKeyReleased(const Key key) const override;

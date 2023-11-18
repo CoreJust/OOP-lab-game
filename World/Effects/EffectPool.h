@@ -8,6 +8,14 @@
 
 #include "Effect.h"
 
+/*
+*	EffectPool(.h/.cpp) contains a class that inherits manages entity's effects.
+*
+*	Whenever an effect is given to an entity, it is actually pushed to the entity's
+*	effect pool, that then updates all of the effects and remove them from the list
+*	whenever it is required.
+*/
+
 // Handles a set of effects
 class EffectPool final {
 private:

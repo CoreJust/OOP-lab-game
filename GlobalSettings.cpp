@@ -56,6 +56,14 @@ uint32_t GlobalSettings::getUpdateDistance() const noexcept {
 	return m_updateDistance;
 }
 
+int32_t GlobalSettings::getFogPower() const noexcept {
+	return m_fogPower;
+}
+
+bool GlobalSettings::isEnableVerticalViewMoving() const noexcept {
+	return m_enableVerticalViewMoving;
+}
+
 const std::string& GlobalSettings::getBindingsFile() const noexcept {
 	return m_bindingsFile;
 }

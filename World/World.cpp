@@ -118,8 +118,8 @@ void World::update(Player& player, float deltaTime) {
 }
 
 void World::draw(RenderMaster& renderMaster, Camera& camera) {
-	math::Vector2i from = math::Vector2i(camera.viewTopLeft()).getMaxByXY(-m_mapper.getSize());
-	math::Vector2i to = math::Vector2i(camera.viewDownRight() + 1).getMinByXY(m_mapper.getSize());
+	math::Vector2i from = math::Vector2i(camera.viewTopLeft().roundFloor()).getMaxByXY(-m_mapper.getSize());
+	math::Vector2i to = math::Vector2i(camera.viewDownRight().roundCeil()).getMinByXY(m_mapper.getSize());
 
 	if (!from.isToUpLeftFrom(to)) {
 		return;
@@ -129,7 +129,7 @@ void World::draw(RenderMaster& renderMaster, Camera& camera) {
 	for (uint8_t layer = 0; layer <= 1; layer++) {
 		for (const math::Vector2i& pos : drawRect) {
 			if (const Tile& tile = at(layer, pos); tile.isVisible()) {
-				renderMaster.drawTile(tile.getId(), layer, pos.to<float>());
+				renderMaster.drawTile(tile.getId(), pos.to<float>(), getVNSFor(pos));
 			}
 		}
 	}
@@ -254,6 +254,32 @@ math::Vector2i World::getRandomLocation() const noexcept {
 
 math::Vector2i World::getRandomPassableLocation() const noexcept {
 	return getNearestPassableLocation(getRandomLocation());
+}
+
+math::DirectionFlag World::getVNSFor(const math::Vector2i& pos) {
+	// A note: in regard of the walls, the out-of-bounds-area is considered not as emptiness but something
+	// It is made this way because otherwise the bounding walls would have been rendered, thus looking unnatural
+
+	if (pos.isToDownRightFrom((m_mapper.getSize() + 1).abs())) { // Out of bounds
+		return math::DirectionFlag::ALL_DIRECTIONS;
+	}
+
+	uint8_t result = math::DirectionFlag::ALL_DIRECTIONS;
+	auto check = [&result, &pos, this](math::DirectionFlag flag) {
+		math::Vector2i offset = math::Direction<int32_t>::getDirectionVector(flag);
+		if ((m_mapper.contains(pos + offset) && at(false, pos + offset).getCategory() != TileCategory::WALL)) {
+			result ^= flag;
+		}
+	};
+
+	check(math::DirectionFlag::UP);
+	check(math::DirectionFlag::DOWN);
+	check(math::DirectionFlag::RIGHT);
+	check(math::DirectionFlag::LEFT);
+
+	assert(result <= math::DirectionFlag::ALL_DIRECTIONS);
+
+	return math::DirectionFlag(result);
 }
 
 bool World::isObstacleAt(const math::Vector2i& pos) const {

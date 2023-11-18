@@ -8,18 +8,29 @@
 #include "StateManager.h"
 
 GameState::GameState(StateManager& pManager)
-	: State(pManager),
+	: RenderableState(pManager),
 	m_world(WorldLevelId::BASIC_LEVEL),
-	m_playerController(std::make_unique<Player>(math::Vector2f(0.5, 0.5), m_world), m_world)
+	m_playerController(std::make_unique<Player>(m_world), m_world)
 {
-	m_playerController.setAnimation(m_renderMaster.getResources().getAnimationData(AnimationId::PLAYER));
+	m_camera.addRotationCallback(m_playerController.createOnRotation());
+	m_camera.setFOV(50.f);
+
 	m_playerController.initGUI(m_renderMaster, m_camera);
 
 	io::Logger::logInfo("Initialized GameState");
 }
 
+void GameState::freeze() {
+	// Nothing in here
+}
+
+void GameState::revive() {
+	// Nothing in here
+}
+
 void GameState::update(float deltaTime, utils::NoNullptr<io::VirtualInput> input) {
 	m_playerController.update(deltaTime, input);
+	m_camera.update(input);
 	m_camera.setPos(m_playerController.getPlayer().getViewPos());
 
 	m_world.update(m_playerController.getPlayer(), deltaTime);
@@ -41,15 +52,19 @@ void GameState::render(sf::RenderWindow& window) {
 }
 
 void GameState::processPlayerDeath() {
-	io::Logger::logInfo("Player died. Restarting game...");
+	io::Logger::logInfo("Player died");
 
 	gamegui::MessageDialog dialog("Game message", "You died! One more try?", "I have some confidence", "Accept defeat");
 	if (dialog.open() == 2) { // Accepted defeat
+		io::Logger::logInfo("Player accepted defeat");
 		m_pManager.popState();
+		return;
 	}
+	
+	io::Logger::logInfo("Restarting the game...");
 
 	m_world = World(WorldLevelId::BASIC_LEVEL);
-	m_playerController.getPlayer() = Player(math::Vector2f(0.5, 0.5), m_world);
+	m_playerController.getPlayer() = Player(m_world);
 
 	io::Logger::logInfo("Game restarted successfully");
 }

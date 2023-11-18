@@ -8,6 +8,14 @@
 #include "World/World.h"
 #include "World/Entity/Entity.h"
 
+/*
+*	ContinuousEffect(.h/.cpp) contains class ContinuousEffect that inherits
+*	parent class Effect.
+*
+*	Continuous effect is acquired, instantly applied, then after a period of time
+*	the effect is cancelled and removed.
+*/
+
 // Implements continuous effects with single activation
 // Basic class for other continuous effects
 class ContinuousEffect : public Effect {

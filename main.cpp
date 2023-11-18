@@ -5,29 +5,34 @@
 #include <iostream>
 
 #include "IO/Logger.h"
+#include "Utils/Random.h"
 #include "GlobalSettings.h"
 #include "Graphics/GameGUI/TextAdapter.h"
 
 #include "Game.h"
 
-#include "IO/Json/JsonParser.h"
-
 /*
-*	main.cpp contains a single function int main() - the only non-OOP function in this work.
+*	main.cpp contains a single function int main() - the only non-method function in this work.
 * 
 *	In this function all global states (such as I/O and settings) are being initialized and later
 *	released. In between these two stages the game is being run.
 */
 
 /*
-*	Long-term TODO: world saves, inventory, audio
-*	General TODO: Google test, minimap, main menu, more levels, cellular automatons and random generation,
-*				  3D graphics (openGL again? -yes, openGL)
-*	Emergent TODO: custom input from file
+*	Long-term TODO: world saves, inventory, audio, enemies, player stats interface, frustum
+*	General TODO: Google test, minimap, more levels, cellular automatons generation, zooming the player in/out
+*	Emergent TODO:
 * 
 *	Bugs:	collision breaks at top-left and down-right angles of non-passable blocks - fixed
-*			runtime error after closing the main window directly and trying to close the console !
 *			progress bars displayment as big white squares - fixed
+*			having partially default bindings with user ones allows doubling of real commands - fixed
+* 
+*			accidental runtime error after closing the main window directly and trying to close the console ?
+*			if the console is selected and we tap "play", then move the mouse out of the window
+*				and remove selection, then the mouse gets stuck there unless we press escape and
+*				move the mouse back to the window !
+*			in the recentmost version the file input acts strange - it reproduces actions not exactly !
+*			in the file input mode user cannot conveniently close the game !
 */
 
 int main() {
@@ -57,16 +62,24 @@ int main() {
 	gamegui::TextAdapter::initTextAdapter();
 	io::Logger::logInfo("Loaded text font");
 
+	utils::Random<>::initRandom();
+	io::Logger::logInfo("Initialized random");
+
 
 	///  Running the game  ///
 
-	Game game;
-	game.run();
+	{
+		Game game;
+		game.run();
+	}
 
 
 	///  Releasing resources  ///
 
-	io::Logger::logInfo("Game cycle finished: beginning resources release");
+	io::Logger::logInfo("Game cycle finished; releasing resources...");
+
+	utils::Random<>::destroyRandom();
+	io::Logger::logInfo("Destroyed random");
 
 	gamegui::TextAdapter::destroyTextAdapter();
 	io::Logger::logInfo("Destroyed text font");

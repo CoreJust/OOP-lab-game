@@ -13,19 +13,14 @@
 #include "GlobalSettings.h"
 
 EntityController::EntityController(std::unique_ptr<Entity> entity, World& pWorld)
-	: m_entity(std::move(entity)), m_pWorld(pWorld) {
+	: m_entity(std::move(entity)), 
+	m_pWorld(pWorld),
+	m_model(std::make_unique<model::EntityModel>(m_entity->getId())) {
 
 }
 
 void EntityController::update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input) {
 	m_entity->getEffectPoolMut().update(deltaTime);
-
-	if (m_isMoving) {
-		m_animation->update(deltaTime);
-		m_isMoving = false;
-	} else {
-		m_animation->reset();
-	}
 
 	for (const math::Vector2i& pos : math::Rectf(m_entity->getPos(), m_entity->getId().getEntityStats().hitbox)) {
 		if (!m_pWorld.getMapper().contains(pos)) {
@@ -42,36 +37,11 @@ void EntityController::update(const float deltaTime, utils::NoNullptr<io::Virtua
 }
 
 void EntityController::draw(RenderMaster& renderMaster) {
-	renderMaster.drawEntity(*m_animation, m_entity->getPos() - 0.5f);
+	renderMaster.drawEntity(*m_model);
 }
 
 void EntityController::tryToMove(math::Vector2f offset) {
-	// Updating animation
-	math::Vector2f currentDirection;
-	switch (m_animation->getAnimationId()) {
-		case 0: currentDirection = math::Direction<float>::UP_VEC; break;
-		case 1: currentDirection = math::Direction<float>::DOWN_VEC; break;
-		case 2: currentDirection = math::Direction<float>::RIGHT_VEC; break;
-		case 3: currentDirection = math::Direction<float>::LEFT_VEC; break;
-	default: break;
-	}
-
-	float angle = offset.angleWith(currentDirection);
-	if (abs(angle) > std::numbers::pi_v<float> / 4) {
-		if (abs(offset.x()) >= abs(offset.y())) {
-			if (offset.x() > 0) {
-				m_animation->setAnimation(2); // right
-			} else {
-				m_animation->setAnimation(3); // left
-			}
-		} else {
-			if (offset.y() > 0) {
-				m_animation->setAnimation(1); // down
-			} else {
-				m_animation->setAnimation(0); // up
-			}
-		}
-	}
+	offset = offset.rotate(m_entity->getRot());
 
 	// Collision check
 
@@ -93,11 +63,12 @@ void EntityController::tryToMove(math::Vector2f offset) {
 	
 	// Moving
 	m_entity->move(offset);
-	m_isMoving = true;
-}
+	m_model->sceneObject().pos.x = m_entity->getX();
+	m_model->sceneObject().pos.z = m_entity->getY();
 
-void EntityController::setAnimation(AnimationData& animationData) {
-	m_animation = std::make_unique<Animation>(animationData);
+	if (offset.x() || offset.y()) {
+		m_model->sceneObject().rot.y = -offset.rotationNegOY();
+	}
 }
 
 float EntityController::calculateSpeed() const {

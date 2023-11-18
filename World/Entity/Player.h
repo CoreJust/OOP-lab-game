@@ -17,7 +17,8 @@ class World;
 
 class Player final : public Entity {
 public:
-	Player(math::Vector2f pos, World& pWorld);
+	Player(const math::Vector2f& pos, const float rot, World& pWorld);
+	Player(World& pWorld);
 
 	math::Vector2f getViewPos() const;
 };

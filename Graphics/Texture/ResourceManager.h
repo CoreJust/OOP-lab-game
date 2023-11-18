@@ -7,27 +7,29 @@
 #include <map>
 #include <memory>
 
-#include "AnimationId.h"
-#include "TextureId.h"
+#include "World/Entity/EntityId.h"
 #include "Texture.h"
 #include "TextureAtlas.h"
-#include "AnimationData.h"
+
+/*
+*	ResourceManager(.h/.cpp) contains a class that contains and manages 
+*	the game's resources - medias such as textures, animations, sounds, etc.
+*
+*	It must be filled in by the ResourceRegisterer before usage.
+*/
 
 // Manages images/animations/...
 class ResourceManager final {
-protected:
-	std::map<std::string, std::unique_ptr<TextureAtlas>> m_atlases;
-	std::vector<Texture> m_textures;
-	std::vector<AnimationData> m_animations;
+private:
+	std::unique_ptr<TextureAtlas> m_atlas;
+	std::unique_ptr<Texture> m_entityTextures[EntityId::NUMBER_ENTITY_IDS];
 
 public:
 	ResourceManager();
 
-	TextureAtlas& getOrLoadTextureAtlas(const std::string& name);
+	TextureAtlas& getTextureAtlas();
+	Texture& getEntityTexture(const EntityId id);
 
-	void registerTexture(const TextureId texId, Texture texture);
-	void registerAnimation(const AnimationId animId, AnimationData animation);
-
-	Texture& getTexture(const TextureId texId);
-	AnimationData& getAnimationData(const AnimationId animId);
+	void loadTextureAtlas();
+	void loadEntityTexture(const EntityId id, const std::string& fileName);
 };

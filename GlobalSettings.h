@@ -37,6 +37,9 @@ private:
 
 	uint32_t m_maxRenderDistance = 10;
 	uint32_t m_updateDistance = 15;
+	int32_t m_fogPower = 2;
+
+	bool m_enableVerticalViewMoving = true;
 
 	std::string m_bindingsFile = "bindings";
 	io::InputMode m_inputMode = io::KEYBOARD_AND_MOUSE_INPUT;
@@ -69,6 +72,9 @@ public:
 
 	uint32_t getMaxRenderDistance() const noexcept;
 	uint32_t getUpdateDistance() const noexcept;
+	int32_t getFogPower() const noexcept;
+
+	bool isEnableVerticalViewMoving() const noexcept;
 
 	const std::string& getBindingsFile() const noexcept;
 	io::InputMode getInputMode() const noexcept;

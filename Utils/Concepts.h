@@ -6,6 +6,11 @@
 #include <concepts>
 #include <ostream>
 
+/*
+*	Concepts.h contains a number of diverse concepts used throughout 
+*	the project.
+*/
+
 namespace utils {
 	template<class T>
 	concept Arithmetic = std::is_arithmetic_v<T>;

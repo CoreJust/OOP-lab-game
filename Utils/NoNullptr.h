@@ -5,6 +5,15 @@
 #pragma once
 #include <cassert>
 
+/*
+*	Result.h contains an auxiliary class NoNullptr<T>.
+*
+*	It allows to contain a pointer that is guaranteed to be non-nullptr.
+* 
+*	The class does not manage the pointer, only allows accessing it.
+*	The creation and destruction of the object is up to the class's user.
+*/
+
 namespace utils {
 	// A wrapper over a pointer to make sure it is not nullptr
 	// Doesn't manage pointer allocation/deallocation and is expected to be just a temporary storage

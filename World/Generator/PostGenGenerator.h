@@ -29,6 +29,8 @@ public:
 
 private:
 	void createPassages(); // Implementation of POSTGEN_PASSAGE_CREATOR
+	void createBounds(); // Implementation of POSTGEN_BOUNDS_CREATOR
+	void createDecorations(); // Implementation of POSTGEN_DECORATOR
 
 	uint32_t clusterWorldCavities(std::vector<int32_t>& map); // Clusters the world's passable areas and counts them, returns the count
 	void makePassages(std::vector<int32_t>& map, uint32_t clusterCount); // Marks walls to be removed

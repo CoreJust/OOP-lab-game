@@ -6,6 +6,12 @@
 #include <iterator>
 #include "Vector.h"
 
+/*
+*	RectIterator.h contains a class that allows iteration over a rect.
+*
+*	The RectIterator goes though all the whole points within some rectangle.
+*/
+
 namespace math {
 	template<utils::Arithmetic T>
 	class Rect;

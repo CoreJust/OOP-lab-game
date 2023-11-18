@@ -7,10 +7,15 @@
 #include <string>
 #include <string_view>
 
+#include "IO/Logger.h"
+
 /*
 *	Result.h contains an auxiliary class Result<T>.
 *
 *	It allows to conveniently handle errors without exceptions (which I don't like).
+*	
+*	Similar to rust's Result<T, E>, but the error type E is fixed as std::string,
+*	so utils::Result<T> = rust's Result<T, std::string>
 */
 
 namespace utils {
@@ -152,6 +157,48 @@ namespace utils {
 
 			m_isNonEmpty = false;
 			return std::move(m_value);
+		}
+
+		// Extracts the value or returns some default if no value is available
+		inline Value_type&& extract_or(Value_type byDefault) {
+			m_isVerified = true;
+			if (m_isOk && m_isNonEmpty) {
+				m_isNonEmpty = false;
+
+				return std::move(m_value);
+			}
+
+			m_isNonEmpty = false;
+			return std::move(byDefault);
+		}
+
+		// Extracts the value or returns some default if no value is available and prints the error
+		inline Value_type&& extract_or(Value_type byDefault, std::string_view errorMessage) {
+			m_isVerified = true;
+			if (m_isOk && m_isNonEmpty) {
+				m_isNonEmpty = false;
+
+				return std::move(m_value);
+			}
+
+			m_isNonEmpty = false;
+			io::Logger::logError(errorMessage);
+
+			return std::move(byDefault);
+		}
+
+		// Extracts the value or prints the message instead of the failure and fails
+		inline Value_type&& expect(std::string_view errorMessage) {
+			m_isVerified = true;
+			if (m_isOk && m_isNonEmpty) {
+				m_isNonEmpty = false;
+
+				return std::move(m_value);
+			}
+
+			io::Logger::logError(errorMessage);
+			system("pause");
+			terminate();
 		}
 	};
 

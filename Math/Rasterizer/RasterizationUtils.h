@@ -5,6 +5,12 @@
 #pragma once
 #include "Math/Vector.h"
 
+/*
+*	RasterizationUtils.h contains a class with a set of static auxiliary functions.
+*
+*	These functions are used in rasterizers (self-obvious due to the name).
+*/
+
 namespace math {
 	// Some auxiliary functions used in rasterizers
 	class RasterizationUtils final {

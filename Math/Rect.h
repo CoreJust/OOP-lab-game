@@ -9,6 +9,13 @@
 #include "SquareArray.h"
 #include "RectIterator.h"
 
+/*
+*	Rect.h contains a class that implements a rectangle.
+*
+*	Rect<T> consists of 2 vectors. It allows a number of operations
+*	over some rectangular area.
+*/
+
 namespace math {
 	// Literally a rectangle
 	template<::utils::Arithmetic T>
@@ -37,6 +44,9 @@ namespace math {
 			}
 		}
 
+		constexpr Rect(ValueTy left, ValueTy top, ValueTy right, ValueTy down) noexcept
+			: Rect(VectorTy(left, top), VectorTy(right, down)) { }
+
 		constexpr Rect(const VectorTy& center, T halfDiagonal) noexcept
 			: m_topLeft(center - halfDiagonal), m_downRight(center + halfDiagonal) { }
 
@@ -58,6 +68,50 @@ namespace math {
 			return m_topLeft == other.topLeft() && m_downRight == other.downRight();
 		}
 
+		constexpr Rect operator-() const noexcept {
+			return Rect(-m_topLeft, -m_downRight);
+		}
+
+		constexpr Rect operator+(const ValueTy val) const noexcept {
+			return Rect(m_topLeft + val, m_downRight + val);
+		}
+
+		constexpr Rect operator-(const ValueTy val) const noexcept {
+			return Rect(m_topLeft - val, m_downRight - val);
+		}
+
+		constexpr Rect operator*(const ValueTy val) const noexcept {
+			return Rect(m_topLeft * val, m_downRight * val);
+		}
+
+		constexpr Rect operator/(const ValueTy val) const noexcept {
+			return Rect(m_topLeft / val, m_downRight / val);
+		}
+
+		constexpr Rect& operator+=(const ValueTy val) noexcept {
+			m_topLeft += val;
+			m_downRight += val;
+			return *this;
+		}
+
+		constexpr Rect& operator-=(const ValueTy val) noexcept {
+			m_topLeft -= val;
+			m_downRight -= val;
+			return *this;
+		}
+
+		constexpr Rect& operator*=(const ValueTy val) noexcept {
+			m_topLeft *= val;
+			m_downRight *= val;
+			return *this;
+		}
+
+		constexpr Rect& operator/=(const ValueTy val) noexcept {
+			m_topLeft /= val;
+			m_downRight /= val;
+			return *this;
+		}
+
 		template<utils::Arithmetic U>
 		constexpr Rect<U> to() const noexcept {
 			return Rect<U>(m_topLeft.to<U>(), m_downRight.to<U>());
@@ -69,6 +123,10 @@ namespace math {
 
 		constexpr Rect clip(T n) const noexcept {
 			return Rect(m_topLeft + n, m_downRight - n);
+		}
+
+		constexpr Rect multByCoords(const VectorTy& vec) const noexcept {
+			return Rect(m_topLeft.x() * vec.x(), m_topLeft.y() * vec.y(), m_downRight.x() * vec.x(), m_downRight.y() * vec.y());
 		}
 
 		// Returns the percent of the rect's area for each of tiles (where tile [0, 0] is the tile of topLeft)

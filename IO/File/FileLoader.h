@@ -6,6 +6,19 @@
 #include <string>
 #include <string_view>
 
+/*
+*	FileLoader(.h/.cpp) contains a class that allows to load files comfortably.
+*
+*	We first create a loader for some directory and file extension,
+*	then load files by their name completely into a string.
+* 
+*	Usage:
+*		io::FileLoader loader("some_dir/", ".extension");
+*		std::string contents = loader.loadFile("file_name");
+* 
+*		// contents now contain the contents of file some_dir/file_name.extension
+*/
+
 namespace io {
 	// Loads file contents
 	class FileLoader final {

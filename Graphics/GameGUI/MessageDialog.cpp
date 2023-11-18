@@ -11,6 +11,7 @@
 #include <imgui/imgui-SFML.h>
 
 #include "IO/Logger.h"
+#include "Graphics/Display.h"
 
 gamegui::MessageDialog::MessageDialog(const std::string& title, const std::string& text, const std::string& button1, const std::string& button2)
 	: m_title(title), m_text(text), m_button1(button1), m_button2(button2) {
@@ -24,15 +25,20 @@ int8_t gamegui::MessageDialog::open() {
 }
 
 int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
+	Display display(window, true);
+
 	ImGui::GetIO().FontGlobalScale = 2.f;
 	ImGui::SFML::SetCurrentWindow(window);
 
 	sf::Clock deltaClock;
-	bool isOpen = true;
 	int8_t result = 0;
-	while (isOpen) {
+	while (display.isOpen()) {
+		if (deltaClock.getElapsedTime().asMilliseconds() < 1) {
+			continue;
+		}
+
 		const sf::Time deltaTime = deltaClock.restart();
-		ImGui::SFML::Update(window, deltaTime);	
+		display.update();
 
 		ImGui::SetNextWindowPos({ window.getSize().x / 2.f, window.getSize().y / 2.f }, 0, { 0.5f, 0.5f });
 		ImGui::Begin(m_title.data(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
@@ -41,16 +47,16 @@ int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 	
 		if (ImGui::Button(m_button1.data())) {
 			result = 1;
-			isOpen = false;
+			display.close();
 		} else if (!m_button2.empty() && ImGui::Button(m_button2.data())) {
 			result = 2;
-			isOpen = false;
+			display.close();
 		}
 
 		ImGui::End();
 
-		ImGui::SFML::Render(window);
-		window.display();
+		display.clear(sf::Color::Black);
+		display.display();
 	}
 
 	return result;

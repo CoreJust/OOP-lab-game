@@ -38,7 +38,8 @@ protected:
 	bool m_spiritualMode = false;
 
 protected:
-	Entity(math::Vector2f pos, EntityId id, World& pWorld);
+	Entity(const math::Vector2f& pos, const float rot, const EntityId id, World& pWorld);
+	Entity(const math::Vector2f& pos, const EntityId id, World& pWorld);
 
 	Entity& operator=(const Entity& other);
 	Entity& operator=(Entity&& other) noexcept;
@@ -52,13 +53,16 @@ public:
 	void move(const math::Vector2f& offset);
 	void setPos(const math::Vector2f& pos);
 
-	void heal(float amount);
-	void dealDamage(float amount);
-	void dealPureDamage(float amount); // Ignores defence
+	void rotate(const float angle);
+	void setRotation(const float angle);
 
-	void setImmortalMode(bool mode) noexcept;
-	void setInvisibleMode(bool mode) noexcept;
-	void setSpiritualMode(bool mode) noexcept;
+	void heal(const float amount);
+	void dealDamage(const float amount);
+	void dealPureDamage(const float amount); // Ignores defence
+
+	void setImmortalMode(const bool mode) noexcept;
+	void setInvisibleMode(const bool mode) noexcept;
+	void setSpiritualMode(const bool mode) noexcept;
 
 	float getHealth() const noexcept;
 	const EntityStats& getStats() const noexcept;

@@ -8,6 +8,14 @@
 
 #include "Concepts.h"
 
+/*
+*	TriBool.h contains a class that implements a tribool.
+*
+*	Tribool is a type with three values: true, false and none.
+*	It allows to add a new state to the boolean value: the state
+*	of being unset/undefined.
+*/
+
 namespace utils {
 	// Can be either true, false, or None
 	class Tribool final {

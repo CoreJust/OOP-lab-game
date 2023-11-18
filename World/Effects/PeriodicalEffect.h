@@ -5,6 +5,18 @@
 #pragma once
 #include "ContinuousEffect.h"
 
+/*
+*	PeridoicalEffect(.h/.cpp) contains class PeriodicalEffect that inherits 
+*	parent class ContinuousEffect.
+*
+*	Periodical effect is a kind of effect that activates on the acquisition
+*	and once in a period till the effect end.
+*	
+*								Time line
+*					 Applied	  Applied	  Applied    Applied
+*	Effect acquired:	X --------- X --------- X --------- X ---  Effect End
+*/
+
 // Activates once in a while for some time
 class PeriodicalEffect : public ContinuousEffect {
 protected:

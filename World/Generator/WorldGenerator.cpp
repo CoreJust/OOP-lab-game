@@ -31,4 +31,5 @@ std::unique_ptr<WorldGenerator> WorldGenerator::makeWorldGenerator(World& pWorld
 	}
 
 	assert(false && "Unknown generation type");
+	return nullptr;
 }

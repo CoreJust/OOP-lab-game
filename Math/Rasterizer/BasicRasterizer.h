@@ -5,6 +5,20 @@
 #pragma once
 #include "Utils/Concepts.h"
 
+/*
+*	BasicRasterizer.h contains a base class for rasterizers.
+*
+*	A rasterizer is a class that allows to access all the points of some custom shape.
+*	The iteration goes over the rows of the shape.
+* 
+*	Usage example:
+*		BasicRasterizer* some_r = ...;
+*		while (some_r->hasMore()) {
+*			...
+*			some_r->nextRow();
+*		}
+*/
+
 namespace math {
 	class SingleRasterizer;
 

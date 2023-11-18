@@ -5,13 +5,18 @@
 #include "GLVBO.h"
 
 void gl::VBO::setData(const Vertices& data, const GLenum usage) {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), data.data(), usage);
 }
 
+void gl::VBO::setVertexAttribute(GLuint vboCount, const GLint dim) {
+	glVertexAttribPointer(vboCount, dim, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glEnableVertexAttribArray(vboCount);
+}
+
 void gl::VBO::bind() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_id);
 }

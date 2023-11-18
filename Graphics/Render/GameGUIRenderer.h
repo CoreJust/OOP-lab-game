@@ -8,12 +8,20 @@
 #include "Graphics/GameGUI/GameGUI.h"
 #include "Graphics/Camera.h"
 
-// Unlike other Renderers, GameGUIRenderer does not need to reupload its contents every tick
-// All you need to do is just once register the GUI and then once delete it
-// To access GUI's you need a pointer returned by registerGameGUI()
+/*
+*	GameGUIRenderer(.h/.cpp) contains a class that is responsible for rendering GUI elements.
+* 
+*	Unlike other Renderers, GameGUIRenderer does not need to reupload its contents every tick
+*	All you need to do is just once register the GUI and then once delete it
+*	To access GUI's you need a pointer returned by registerGameGUI()
+*/
+
 class GameGUIRenderer final {
 private:
 	std::vector<std::unique_ptr<gamegui::GameGUI>> m_guis;
+
+	sf::Clock m_deltaTimer;
+	bool m_isOpen = false;
 
 public:
 	template<class T, class... Args>
@@ -26,4 +34,6 @@ public:
 	void eraseGameGUI(gamegui::GameGUI* gui);
 
 	void render(sf::RenderWindow& window, Camera& camera);
+
+private:
 };

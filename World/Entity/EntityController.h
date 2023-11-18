@@ -6,7 +6,6 @@
 #include "Utils/NoNullptr.h"
 #include "IO/Input/VirtualInput.h"
 #include "Graphics/Render/RenderMaster.h"
-#include "Graphics/Texture/Animation.h"
 #include "Entity.h"
 #include "World/Effects/EffectPool.h"
 
@@ -31,8 +30,7 @@ protected:
 	std::unique_ptr<Entity> m_entity;
 	World& m_pWorld;
 
-	std::unique_ptr<Animation> m_animation; // must be here to control animation states (e.g. the direction of moving)
-	bool m_isMoving = false;
+	std::unique_ptr<model::EntityModel> m_model;
 
 public:
 	EntityController(std::unique_ptr<Entity> entity, World& pWorld);
@@ -43,8 +41,7 @@ public:
 	virtual void update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input);
 	virtual void draw(RenderMaster& renderMaster);
 
-	void tryToMove(math::Vector2f offset);
-	void setAnimation(AnimationData& animationData);
+	void tryToMove(math::Vector2f offset); // Offset is considered in relation to the entity's rotation
 
 	float calculateSpeed() const; // Takes into account the basic speed and the speed mofifiers of tiles
 	

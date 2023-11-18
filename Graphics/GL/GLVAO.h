@@ -5,6 +5,13 @@
 #pragma once
 #include "GLObject.h"
 
+/*
+*	GLVAO.h contains a class that manages VAO.
+*
+*	VAO stands for Vertex Array Object - the state of a model.
+*	It manages the attributes of the vertices.
+*/
+
 namespace gl {
 	// Vertex Array Object
 	class VAO final : public Object {

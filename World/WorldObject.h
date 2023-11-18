@@ -15,11 +15,24 @@
 class WorldObject {
 protected:
 	math::Vector2f m_pos;
+	float m_rot;
 
 public:
-	WorldObject(math::Vector2f pos);
+	constexpr WorldObject(const math::Vector2f& pos, float rot) noexcept : m_pos(pos), m_rot(rot) { }
 
-	const math::Vector2f& getPos() const;
-	float getX() const;
-	float getY() const;
+	constexpr float getRot() const noexcept {
+		return m_rot;
+	}
+
+	constexpr const math::Vector2f& getPos() const noexcept {
+		return m_pos;
+	}
+
+	constexpr float getX() const noexcept {
+		return m_pos.x();
+	}
+
+	constexpr float getY() const noexcept {
+		return m_pos.y();
+	}
 };

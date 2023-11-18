@@ -7,6 +7,13 @@
 #include "Math/Rect.h"
 #include "GameGUI.h"
 
+/*
+*	ProgressBar(.h/.cpp) contains a class that inherits GameGUI
+*	and implements, well, a progress bar.
+*
+*	It is actually a colored rectangle filled to some degree and with a text inside.
+*/
+
 namespace gamegui {
 	class ProgressBar : public GameGUI {
 	private:

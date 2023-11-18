@@ -4,8 +4,33 @@
 
 #include "KeyboardMouseInput.h"
 
+#include "GlobalSettings.h"
+
 io::KeyboardMouseInput::KeyboardMouseInput(const float& mouseWheelDelta) noexcept
-	: m_mouseWheelDelta(mouseWheelDelta) { }
+	: VirtualInput(mouseWheelDelta),
+	m_loader(GlobalSettings::get().isToSaveInput() ? GlobalSettings::get().getInputFile() : "", /* is reading = */false)
+	{ }
+
+bool io::KeyboardMouseInput::update(float& deltaTime) {
+	if (m_loader.isOpen()) {
+		for (uint8_t key = 0; key < sf::Keyboard::KeyCount; key++) {
+			m_loader.state().keysState.set(key, sf::Keyboard::isKeyPressed(sf::Keyboard::Key(key)));
+		}
+
+		for (uint8_t btn = 0; btn < sf::Mouse::ButtonCount; btn++) {
+			m_loader.state().miceState.set(btn, sf::Mouse::isButtonPressed(sf::Mouse::Button(btn)));
+		}
+
+		m_loader.state().mousePos = getMousePosition();
+		m_loader.state().mouseWheelDelta = getMouseWheelDelta();
+
+		m_loader.state().deltaTime = deltaTime;
+
+		m_loader.write();
+	}
+
+	return false; // Why switching to itself?
+}
 
 bool io::KeyboardMouseInput::isKeyPressed(const Key key) const {
 	return sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));

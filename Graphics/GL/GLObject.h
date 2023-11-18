@@ -6,38 +6,45 @@
 #include <cassert>
 #include <GL/glew.h>
 
+/*
+*	GLObject.h contains a base class for all the opengl objects.
+*
+*	An object in opengl is actually an id for some internal representation.
+*	A zero as an id represents object's absence.
+* 
+*	An object can be created, destroyed, be binded and unbinded.
+*/
+
 namespace gl {
 	// The base class for all the objects in OpenGL
 	// Abstract class
 	class Object {
 	protected:
 		GLuint m_id; // All gl objects (in the way they are represented in the code) are GLuints by nature
-		bool m_isEmpty; // Was the object not created as a GL object? (Or else: was it initialized?)
 
 	public:
-		constexpr Object() noexcept : m_id(0), m_isEmpty(true) { }
-		constexpr Object(Object&& other) noexcept : m_id(other.m_id), m_isEmpty(other.m_isEmpty) {
-			other.m_isEmpty = true;
+		constexpr Object() noexcept : m_id(0) { }
+		constexpr Object(Object&& other) noexcept : m_id(other.m_id) {
+			other.m_id = 0;
 		}
 
 		constexpr virtual ~Object() {
-			this->releaseIfNotEmpty();
+			releaseIfNotEmpty();
 		}
 
 		constexpr Object& operator=(Object&& other) noexcept {
 			releaseIfNotEmpty();
 
 			m_id = other.m_id;
-			m_isEmpty = other.m_isEmpty;
-			other.m_isEmpty = true;
+			other.m_id = 0;
 
 			return *this;
 		}
 
 		constexpr void releaseIfNotEmpty() noexcept {
-			if (!m_isEmpty) {
+			if (m_id != 0) {
 				this->release();
-				m_isEmpty = true;
+				m_id = 0;
 			}
 		}
 
@@ -52,7 +59,7 @@ namespace gl {
 		}
 
 		constexpr bool isEmpty() const noexcept {
-			return m_isEmpty;
+			return m_id == 0;
 		}
 	};
 }

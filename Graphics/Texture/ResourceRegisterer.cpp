@@ -4,27 +4,21 @@
 
 #include "ResourceRegisterer.h"
 
-#include "AnimationId.h"
-#include "TextureId.h"
-
 ResourceRegisterer::ResourceRegisterer(ResourceManager& resManager)
 	: m_resManager(resManager) {
 }
 
 void ResourceRegisterer::registerAll() {
-	for (id_t id = 1; id < TextureId::NUMBER_TEXTURE_IDS; id++) {
-		registerTexture(TextureId::Value(id));
+	for (id_t id = 0; id < EntityId::NUMBER_ENTITY_IDS; id++) {
+		registerEntityTexture(EntityId::Value(id));
 	}
 
-	registerAnimation(AnimationId::PLAYER, { 4, 4, 4, 4 }, 0.2f);
+	m_resManager.loadTextureAtlas();
 }
 
-void ResourceRegisterer::registerTexture(const TextureId texId) {
-	TextureAtlas& atlas = m_resManager.getOrLoadTextureAtlas(texId.getResourceLocation());
-	m_resManager.registerTexture(texId, atlas.getTexture(math::Vector2u(0, 0)));
-}
+void ResourceRegisterer::registerEntityTexture(const EntityId id) {
+	std::string name = id.toString();
+	std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
 
-void ResourceRegisterer::registerAnimation(const AnimationId animId, const std::vector<uint32_t>& animationLegths, const float slideDuration) {
-	TextureAtlas& atlas = m_resManager.getOrLoadTextureAtlas(animId.getResourceLocation());
-	m_resManager.registerAnimation(animId, AnimationData(atlas, animationLegths, slideDuration));
+	m_resManager.loadEntityTexture(id, name);
 }

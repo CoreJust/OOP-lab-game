@@ -6,6 +6,23 @@
 #include <string>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+/*
+*	MessageDialog(.h/.cpp) contains a class that implements a message dialog.
+*
+*	It is similar to the message box, but relies on the ImGui. Unlike the other guis,
+*	the MessageDialog is used separately and can be employed anywhere in the code - 
+*	a rare case when the Graphics module's contents are used not via the general 
+*	RenderMaster's interface.
+* 
+*	Usage:.
+*		MessageDialog dialog(<title>, <message>, <the first button's text>, <the second button's text>);
+*		auto choice = dialog.open();
+* 
+*		// choice would be 1 if the user pressed the first button, 2 if the second, and zero if just closed the dialog.
+* 
+*	Note: while the dialog is open, the control is completely taken over by it.
+*/
+
 namespace gamegui {
 	// Allows to create a message dialog box via ImGui
 	class MessageDialog final {

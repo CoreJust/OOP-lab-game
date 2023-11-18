@@ -4,4 +4,4 @@
 
 #include "TileShader.h"
 
-TileShader::TileShader() : gl::Shader("tile_vertex", "tile_fragment") { }
+TileShader::TileShader() : ModelShader("tile_vertex", "tile_fragment") { }

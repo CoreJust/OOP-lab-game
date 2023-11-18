@@ -7,6 +7,14 @@
 #include <cstdint>
 #include <string>
 
+/*
+*	BasicId.h contains a base class for all the Id classes.
+* 
+*	All of the Id classes are wrappers over an enumeration.
+*	It allows for a type that is generally used as an enumeration
+*	to have own operators and, most importantly, methods.
+*/
+
 using id_t = uint32_t;
 
 // Basic class for all the Ids

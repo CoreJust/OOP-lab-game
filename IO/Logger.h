@@ -11,11 +11,13 @@
 *	Logger(.h/.cpp) contains a class that allows to log information and errors.
 *
 *	After initializing, it writes formatted messages into the given output.
+*   The general interface is static (first we statically initialize the 
+*   logger, then use it, and in the end we destroy it).
 */
 
 namespace io {
 // Mostly consists of static interface
-// Implements the singleton pattern
+// Implements a modified singleton pattern
     class Logger final {
     public:
         struct Settings {
@@ -29,6 +31,10 @@ namespace io {
         std::ostream& m_out;
         Settings m_settings;
 
+    private:
+        inline constinit static Logger* s_infoLogger = nullptr;
+        inline constinit static Logger* s_errorLogger = nullptr;
+
     protected:
         Logger(std::ostream& out, Settings settings);
 
@@ -41,9 +47,5 @@ namespace io {
 
         static void logInfo(std::string_view message, const std::source_location loc = std::source_location::current());
         static void logError(std::string_view message, const std::source_location loc = std::source_location::current());
-
-    private:
-        inline constinit static Logger* s_infoLogger = nullptr;
-        inline constinit static Logger* s_errorLogger = nullptr;
     };
 }

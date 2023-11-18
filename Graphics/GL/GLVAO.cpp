@@ -6,21 +6,20 @@
 #include <cassert>
 
 void gl::VAO::create() {
-	assert(m_isEmpty);
+	assert(isEmpty());
 
 	glGenVertexArrays(1, &m_id);
-	m_isEmpty = false;
 }
 
 void gl::VAO::release() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glDeleteVertexArrays(1, &m_id);
-	m_isEmpty = true;
+	m_id = 0;
 }
 
 void gl::VAO::bind() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glBindVertexArray(m_id);
 }

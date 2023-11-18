@@ -6,28 +6,30 @@
 
 #include <cassert>
 
-TextureAtlas::TextureAtlas(const std::string& fileName) {
-	loadFrom(fileName);
+TextureAtlas::TextureAtlas(const std::string& fileName) : m_texture(fileName) { }
+
+model::TextureCoords TextureAtlas::genTexCoordsGenerator() const {
+	return model::TextureCoords(math::Vector2f{ UNIT_SIZE, UNIT_SIZE });
 }
 
 void TextureAtlas::loadFrom(const std::string& fileName) {
-	m_texture.loadFromFile(fileName);
+	if (auto result = m_texture.loadFromFile(fileName); !result.isOk()) {
+		io::Logger::logError(result.error());
+	}
 }
 
-void TextureAtlas::loadToSprite(sf::Sprite& sprite, math::Vector2u pos) const {
-	assert(pos.isToUpLeftFrom(getSize()));
-
-	pos *= Texture::TEXTURE_SIZE;
-	sprite = sf::Sprite(m_texture, sf::IntRect(pos.x(), pos.y(), Texture::TEXTURE_SIZE, Texture::TEXTURE_SIZE));
+void TextureAtlas::bind() {
+	m_texture.bind();
 }
 
-Texture TextureAtlas::getTexture(const math::Vector2u& pos) const {
-	sf::Sprite sprite;
+void TextureAtlas::unbind() {
+	m_texture.unbind();
+}
 
-	loadToSprite(sprite, pos);
-	return Texture(std::move(sprite));
+const Texture& TextureAtlas::getTexture() const {
+	return m_texture;
 }
 
 math::Vector2u TextureAtlas::getSize() const {
-	return math::Vector2u(m_texture.getSize().x / Texture::TEXTURE_SIZE, m_texture.getSize().y / Texture::TEXTURE_SIZE);
+	return math::Vector2u(ATLAS_SIZE);
 }

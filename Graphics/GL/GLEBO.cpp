@@ -5,13 +5,13 @@
 #include "GLEBO.h"
 
 void gl::EBO::setData(const Indices& data, const GLenum usage) {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(GLuint), data.data(), usage);
 }
 
 void gl::EBO::bind() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
 }

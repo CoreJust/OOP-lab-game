@@ -7,6 +7,11 @@
 #include "Math/Rect.h"
 #include "GameGUI.h"
 
+/*
+*	Text(.h/.cpp) contains a class that inherits GameGUI
+*	and implements a simple text label.
+*/
+
 namespace gamegui {
 	class Text : public GameGUI {
 	public:

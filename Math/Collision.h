@@ -5,6 +5,23 @@
 #pragma once
 #include "Rect.h"
 
+/*
+*	Collision.h contains a class that allows to handle collisions.
+* 
+*	Considering the demands caused by the tile system,
+*	the class handles only collisions of moving square object
+*	within a fixed-size and fized-position square map.
+* 
+*	Usage:
+*		math::Vector2f offset = ...; // The current move of the object;
+*		offset = math::Collision(
+*			-current object's pos-,
+*			-object's size (half-side-length)-,
+*			offset,
+*			-some function of 2 coords that would return whether the tile is passable-
+*		).calculatePossibleMove().getOffset(); // This would return the possible offset considering the collisions
+*/
+
 namespace math {
 	// Allows to evaluate the possible movement according to the obstacles around
 	class Collision final {

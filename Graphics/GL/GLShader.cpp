@@ -5,6 +5,7 @@
 #include "GLShader.h"
 
 #include <string>
+#include <glm\gtc\type_ptr.hpp>
 
 #include "IO/File/FileLoader.h"
 #include "IO/Logger.h"
@@ -34,7 +35,7 @@ gl::Shader::Shader(std::string_view vertexShaderFile, std::string_view fragmentS
 	auto vertexShader = compileShader(vertexShaderFile, GL_VERTEX_SHADER);
 	auto fragmentShader = compileShader(fragmentShaderFile, GL_FRAGMENT_SHADER);
 
-	compileProgram(vertexShader, 0, vertexShader);
+	compileProgram(vertexShader, 0, fragmentShader);
 }
 
 gl::Shader::Shader(std::string_view vertexShaderFile, std::string_view geometryShaderFile, std::string_view fragmentShaderFile) {
@@ -42,31 +43,85 @@ gl::Shader::Shader(std::string_view vertexShaderFile, std::string_view geometryS
 	auto geometryShader = compileShader(geometryShaderFile, GL_GEOMETRY_SHADER);
 	auto fragmentShader = compileShader(fragmentShaderFile, GL_FRAGMENT_SHADER);
 
-	compileProgram(vertexShader, geometryShader, vertexShader);
+	compileProgram(vertexShader, geometryShader, fragmentShader);
+}
+
+gl::Shader::~Shader() {
+	if (!isEmpty()) {
+		release();
+	}
 }
 
 void gl::Shader::create() {
-	assert(m_isEmpty);
+	assert(isEmpty());
 
 	m_id = glCreateProgram();
-	m_isEmpty = false;
 }
 
 void gl::Shader::release() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glDeleteProgram(m_id);
-	m_isEmpty = true;
+	m_id = 0;
 }
 
 void gl::Shader::bind() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glUseProgram(m_id);
 }
 
 void gl::Shader::unbind() {
 	glUseProgram(0);
+}
+
+utils::Result<GLint> gl::Shader::getVariableLocation(const char* name) const {
+	GLint location = glGetUniformLocation(m_id, name);
+	if (location == -1) {
+		return utils::Failure("Variable not found: " + std::string(name));
+	}
+
+	return location;
+}
+
+void gl::Shader::setVariable(const GLint id, const GLint value) {
+	glUniform1i(id, value);
+}
+
+void gl::Shader::setVariable(const GLint id, const GLfloat value) {
+	glUniform1f(id, value);
+}
+
+void gl::Shader::setVariable(const GLint id, const GLdouble value) {
+	glUniform1d(id, value);
+}
+
+void gl::Shader::setVariable(const GLint id, const math::Vector2f& value) {
+	glUniform2f(id, value.x(), value.y());
+}
+
+void gl::Shader::setVariable(const GLint id, const math::Vector2i& value) {
+	glUniform2i(id, value.x(), value.y());
+}
+
+void gl::Shader::setVariable(const GLint id, const math::Vector2u& value) {
+	glUniform2ui(id, value.x(), value.y());
+}
+
+void gl::Shader::setVariable(const GLint id, const glm::vec2& value) {
+	glUniform2f(id, value.x, value.y);
+}
+
+void gl::Shader::setVariable(const GLint id, const glm::vec3& value) {
+	glUniform3f(id, value.x, value.y, value.z);
+}
+
+void gl::Shader::setVariable(const GLint id, const glm::vec4& value) {
+	glUniform4f(id, value.x, value.y, value.z, value.w);
+}
+
+void gl::Shader::setVariable(const GLint id, const glm::mat4& value) {
+	glUniformMatrix4fv(id, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 gl::Shader::ShaderObject gl::Shader::compileShader(std::string_view shaderFile, const GLenum shaderType) const {
@@ -79,7 +134,7 @@ gl::Shader::ShaderObject gl::Shader::compileShader(std::string_view shaderFile, 
 	std::string shaderText = fileLoader.loadFile(shaderFile);
 	const char* data = shaderText.data();
 
-	glShaderSource(id, 1, &data, nullptr);
+	glShaderSource(id, 1, &data, NULL);
 	glCompileShader(id);
 
 	glGetShaderiv(id, GL_COMPILE_STATUS, &compilationResult);
@@ -111,4 +166,11 @@ void gl::Shader::compileProgram(const GLuint vertexShader, const GLuint geometry
 		glGetProgramInfoLog(m_id, 1024, nullptr, s_infoLog);
 		io::Logger::logError(std::string("Shader program linking error: ") + s_infoLog);
 	}
+
+	glDetachShader(m_id, vertexShader);
+	if (geometryShader) {
+		glDetachShader(m_id, geometryShader);
+	}
+
+	glDetachShader(m_id, fragmentShader);
 }

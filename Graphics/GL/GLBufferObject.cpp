@@ -5,15 +5,14 @@
 #include "GLBufferObject.h"
 
 void gl::BufferObject::create() {
-	assert(m_isEmpty);
+	assert(isEmpty());
 
 	glGenBuffers(1, &m_id);
-	m_isEmpty = false;
 }
 
 void gl::BufferObject::release() {
-	assert(!m_isEmpty);
+	assert(!isEmpty());
 
 	glDeleteBuffers(1, &m_id);
-	m_isEmpty = true;
+	m_id = 0;
 }

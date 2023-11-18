@@ -5,21 +5,38 @@
 #pragma once
 #include "Vector.h"
 
+/*
+*	Direction.h provides some utilities for the primary directions
+*	and the corresponding vectors usage.
+*/
+
 namespace math {
 	enum DirectionFlag : uint8_t {
 		NONE = 0,
 		UP = 1,
 		DOWN = 2,
 		RIGHT = 4,
-		LEFT = 8
+		LEFT = 8,
+
+		ALL_DIRECTIONS = UP | DOWN | RIGHT | LEFT
 	};
 
 	template<utils::Arithmetic T>
 		requires std::is_signed_v<T>
-	struct Direction {
+	struct Direction final {
+	private:
+		consteval static T calcDiagonalValue() {
+			if constexpr (std::is_integral_v<T>) {
+				return 1;
+			} else {
+				return T(1) / std::numbers::sqrt2_v<T>;
+			}
+		}
+
+	public:
 		// The distance of length 1 diagonally, for floating points it is 1/sqrt(2)
 		// For integers it is 1, since it is the nearest whole to 1/sqrt(2)
-		constexpr static T DIAGONAL_VALUE = std::is_integral_v<T> ? 1 : (T(1) / std::numbers::sqrt2_v<T>);
+		constexpr static T DIAGONAL_VALUE = calcDiagonalValue(); // 'cause in direct calculation std::numbers::...<int> fails
 
 		constexpr static Vector2<T> UP_VEC = Vector2<T>(0, -1);
 		constexpr static Vector2<T> DOWN_VEC = Vector2<T>(0, 1);

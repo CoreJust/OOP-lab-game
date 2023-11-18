@@ -9,42 +9,27 @@
 #include "GlobalSettings.h"
 
 ResourceManager::ResourceManager() {
-	m_textures.resize(static_cast<uint32_t>(TextureId::NUMBER_TEXTURE_IDS));
-	m_animations.resize(static_cast<uint32_t>(AnimationId::NUMBER_ANIMATION_IDS));
+
 }
 
-TextureAtlas& ResourceManager::getOrLoadTextureAtlas(const std::string& name) {
-	if (!m_atlases.contains(name)) {
-		m_atlases[name] = std::make_unique<TextureAtlas>(GlobalSettings::get().getTexturesLocation() + name + ".png");
-	}
+TextureAtlas& ResourceManager::getTextureAtlas() {
+	assert(m_atlas);
 
-	return *m_atlases[name];
+	return *m_atlas;
 }
 
-void ResourceManager::registerTexture(const TextureId texId, Texture texture) {
-	uint32_t id = static_cast<uint32_t>(texId);
-	assert(id < static_cast<uint32_t>(TextureId::NUMBER_TEXTURE_IDS));
+Texture& ResourceManager::getEntityTexture(const EntityId id) {
+	assert(m_entityTextures[id]);
 
-	m_textures[id] = std::move(texture);
+	return *m_entityTextures[id];
 }
 
-void ResourceManager::registerAnimation(const AnimationId animId, AnimationData animation) {
-	uint32_t id = static_cast<uint32_t>(animId);
-	assert(id < static_cast<uint32_t>(AnimationId::NUMBER_ANIMATION_IDS));
+void ResourceManager::loadTextureAtlas() {
+	assert(!m_atlas);
 
-	m_animations[id] = std::move(animation);
+	m_atlas = std::make_unique<TextureAtlas>(GlobalSettings::get().getTexturesLocation() + "texture_atlas.png");
 }
 
-Texture& ResourceManager::getTexture(const TextureId texId) {
-	uint32_t id = static_cast<uint32_t>(texId);
-	assert(id < m_textures.size());
-
-	return m_textures[id];
-}
-
-AnimationData& ResourceManager::getAnimationData(const AnimationId animId) {
-	uint32_t id = static_cast<uint32_t>(animId);
-	assert(id < m_animations.size());
-
-	return m_animations[id];
+void ResourceManager::loadEntityTexture(const EntityId id, const std::string& fileName) {
+	m_entityTextures[id] = std::make_unique<Texture>(GlobalSettings::get().getTexturesLocation() + fileName + ".png");
 }

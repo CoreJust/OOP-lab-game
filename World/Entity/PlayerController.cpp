@@ -68,6 +68,12 @@ void PlayerContoller::initGUI(RenderMaster& renderMaster, Camera& camera) {
 	);
 }
 
+Camera::RotationCallback PlayerContoller::createOnRotation() {
+	return [this](const math::Vector2f& rot) { 
+		getPlayer().setRotation(-rot.x()); // 'cause the camera's rotation is the opposite of the entities rotation
+	};
+}
+
 Player& PlayerContoller::getPlayer() {
 	return *(Player*)m_entity.get();
 }

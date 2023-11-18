@@ -7,6 +7,13 @@
 
 #include "GLObject.h"
 
+/*
+*	GLBufferObject.h contains a base class for all the opengl buffer objects.
+*
+*	A buffer object is an object that contains a sequence of some values
+*	that are used for quick access without recalculation.
+*/
+
 namespace gl {
 	using Vertices = std::vector<GLfloat>;
 	using Indices = std::vector<GLuint>;

@@ -3,6 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "TileId.h"
+#include "Graphics/Model/ModelDescription.h"
 
 #include <cassert>
 
@@ -28,8 +29,52 @@ const TileInfo& TileId::getTileInfo() const {
 	return s_tileIdInfos[m_id];
 }
 
-TextureId TileId::getTileTexture() const {
-	return TextureId(static_cast<TextureId::Value>(m_id));
+const model::ModelDescription& TileId::getModelDescription() const {
+	static model::ModelDescription s_tileIdModels[] {
+		// emptiness
+		model::ModelDescription(model::ShapeId::EMPTINESS),
+
+		// stone floor
+		model::ModelDescription(model::ShapeId::FLAT_FLOOR),
+
+		// stone wall
+		model::ModelDescription(model::ShapeId::SIMPLE_WALL, math::DirectionFlag::ALL_DIRECTIONS),
+
+		// stone
+		model::ModelDescription(model::ShapeId::FLOOR_BOX, /* WHD (sizes) =  */{ 0.75, 0.375, 0.75 }),
+
+		// stone portal
+		model::ModelDescription(model::ShapeId::FLAT_FLOOR),
+
+		// next level portal
+		model::ModelDescription(model::ShapeId::FLOOR_BOX, /* WHD (sizes) =  */{ 0.75, 0.375, 0.75 }),
+
+		// saint spring
+		model::ModelDescription(model::ShapeId::FLAT_FLOOR_OBJECT),
+
+		// poison cloud
+		model::ModelDescription(model::ShapeId::FLOOR_BOX, /* WHD (sizes) =  */{ 1, 1, 1 })
+	};
+
+	assert(m_id < std::size(s_tileIdModels));
+
+	return s_tileIdModels[m_id];
+}
+
+model::TextureCoords& TileId::loadToTexCoords(model::TextureCoords& texCoords) const {
+	switch (m_id) {
+		case EMPTINESS: break;
+		case STONE_FLOOR: texCoords.addTextureRect(math::Rectf(0, 0, 1, 1)); break;
+		case STONE_WALL: texCoords.addTextureRect(math::Rectf(0, 1, 1, 3)).repeat(4); break;
+		case STONE: texCoords.addTextureBox(math::Vector2f(0.25f, 2.25f), 0.75f, 0.375f, 0.75f); break;
+		case STONE_PORTAL: texCoords.addTextureRect(math::Rectf(1, 0, 2, 1)); break;
+		case NEXT_LEVEL_PORTAL: texCoords.addTextureBox(math::Vector2f(0.25f, 3.375f), 0.75f, 0.375f, 0.75f); break;
+		case SAINT_SPRINGS: texCoords.addTextureRect(math::Rectf(0.25f, 3.375f, 1.f, 4.125f)); break;
+		case POISON_CLOUD: texCoords.addTextureRect(math::Rectf(2, 0, 3, 1)).repeat(6); break;
+	default: assert(false && "Unknown tile ID"); break;
+	}
+
+	return texCoords;
 }
 
 TileCategory TileId::getCategory() const {

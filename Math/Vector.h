@@ -12,6 +12,14 @@
 
 #include "Utils/Concepts.h"
 #include "Cmath.h"
+#include "MathUtils.h"
+
+/*
+*	Vector.h contains a class that represents a 2D vector or point.
+*
+*	It consists of a pair of coordinates of an arithmetic type and allows a number of
+*	operations over a vector.
+*/
 
 namespace math {
 	template<::utils::Arithmetic T>
@@ -164,6 +172,7 @@ namespace math {
 			return sf::Vector2<T>(m_x, m_y);
 		}
 
+
 		///  Methods  ///
 
 		constexpr T dotProduct(const Vector2& other) const noexcept {
@@ -174,13 +183,54 @@ namespace math {
 			return dotProduct(other) / (length() * other.length());
 		}
 
-		constexpr FloatTy angleWith(const Vector2& other) const {
-			float result = Cmath::acos(cosOfAngleWith(other));
-			if (result > std::numbers::pi_v<FloatTy>) {
-				result -= 2 * std::numbers::pi_v<FloatTy>;
+		// Angle with the positive direction of Ox
+		constexpr FloatTy rotationOX() const noexcept {
+			FloatTy result = Cmath::acos(cosOfAngleWith({ 1, 0 }));
+			if (m_y < 0) {
+				return -result;
+			} else {
+				return result;
 			}
+		}
 
-			return result;
+		// Angle with the positive direction of Oy
+		constexpr FloatTy rotationOY() const noexcept {
+			FloatTy result = Cmath::acos(cosOfAngleWith({ 0, 1 }));
+			if (m_x > 0) {
+				return -result;
+			} else {
+				return result;
+			}
+		}
+
+		// Angle with the negative direction of Ox
+		constexpr FloatTy rotationNegOX() const noexcept {
+			FloatTy result = Cmath::acos(cosOfAngleWith({ -1, 0 }));
+			if (m_y > 0) {
+				return -result;
+			} else {
+				return result;
+			}
+		}
+
+		// Angle with the negative direction of Oy
+		constexpr FloatTy rotationNegOY() const noexcept {
+			FloatTy result = Cmath::acos(cosOfAngleWith({ 0, -1 }));
+			if (m_x < 0) {
+				return -result;
+			} else {
+				return result;
+			}
+		}
+
+		constexpr FloatTy rotation() const noexcept {
+			return rotationOX();
+		}
+
+		constexpr FloatTy angleWith(const Vector2& other) const {
+			FloatTy result = rotation() - other.rotation();
+
+			return MathUtils::encycleInRange<FloatTy, std::numbers::pi_v<FloatTy>>(result);
 		}
 
 		constexpr FloatTy length() const {
@@ -193,6 +243,13 @@ namespace math {
 
 		constexpr Vector2 normalize() const noexcept {
 			return *this / length();
+		}
+
+		constexpr Vector2 rotate(const float angle) const noexcept {
+			const T _cos = Cmath::cos(angle);
+			const T _sin = Cmath::sin(angle);
+
+			return Vector2(m_x * _cos - m_y * _sin, m_x * _sin + m_y * _cos);
 		}
 
 		// Returns the area of the rectangle ((0, 0) : Vector)

@@ -5,6 +5,12 @@
 #pragma once
 #include <cstring>
 
+/*
+*	SquareArray.h contains an auxiliary class SquareArray<T, Size>.
+*
+*	It contains a 2D array of T with size Size x Size.
+*/
+
 namespace math {
 	// Literally a square array the size of Size x Size
 	template<class T, uint32_t Size>

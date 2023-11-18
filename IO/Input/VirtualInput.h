@@ -23,10 +23,15 @@ namespace io {
 	class VirtualInput {
 	protected:
 		KeyBindings m_keyBindings;
+		const float& m_mouseWheelDelta;
 
 	public:
-		VirtualInput() = default;
+		VirtualInput(const float& mouseWheelDelta);
 		virtual ~VirtualInput() noexcept = default;
+
+		// delta is changed in FileInput and is (possibly) read in KeyboardMouseInput
+		// If returns true, then the input mode is changed to keyboard and mouse no matter the current
+		virtual bool update(float& deltaTime) = 0; 
 
 		virtual bool isKeyPressed(const Key key) const = 0;
 		virtual bool isKeyReleased(const Key key) const = 0;
@@ -39,6 +44,8 @@ namespace io {
 
 		void initBindings();
 
-		static std::unique_ptr<VirtualInput> makeVirtualInput(InputMode mode, const float& mouseWheelDelta);
+		const float& getMouseWheelDeltaRef() const noexcept;
+
+		static std::unique_ptr<VirtualInput> makeVirtualInput(const InputMode mode, const float& mouseWheelDelta);
 	};
 }

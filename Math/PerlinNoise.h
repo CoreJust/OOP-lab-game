@@ -11,7 +11,15 @@
 #include "Utils/Concepts.h"
 #include "NoiseUtils.h"
 
-// Based on PerlinNoise by Reputeless under MIT License: https://github.com/Reputeless/PerlinNoise/tree/master
+/*
+*	Based on PerlinNoise by Reputeless under MIT License: https://github.com/Reputeless/PerlinNoise/tree/master
+* 
+*	PerlinNoise.h contains a class that allows the generation of Perlin noise.
+*
+*	Perlin noise is a noise function that creates some kind of structure
+*	suitable for generation of natural looking randomly shaped areas, e.g.
+*	the fire texture of the islands map.
+*/
 
 namespace math {
 	template<utils::FloatingPoint FloatTy>
@@ -188,7 +196,5 @@ namespace math {
 			std::iota(m_permutationTable, m_permutationTable + 256, 0);
 			std::shuffle(m_permutationTable, m_permutationTable + 256, gen);
 		}
-
-		
 	};
 }

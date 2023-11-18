@@ -8,15 +8,15 @@
 #include <algorithm> // for std::min/max
 #include <format>
 
-Entity::Entity(math::Vector2f pos, EntityId id, World& pWorld)
-	: WorldObject(std::move(pos)),
+Entity::Entity(const math::Vector2f& pos, const float rot, const EntityId id, World& pWorld) 
+	: WorldObject(pos, rot),
 	m_id(id),
 	m_stats(id.getEntityStats()),
 	m_health(id.getEntityStats().maxHealth),
-	m_effectPool(*this, pWorld) 
-{
+	m_effectPool(*this, pWorld) { }
 
-}
+Entity::Entity(const math::Vector2f& pos, const EntityId id, World& pWorld)
+	: Entity(pos, 0.f, id, pWorld) { }
 
 Entity& Entity::operator=(const Entity& other) {
 	m_pos = other.m_pos;
@@ -81,13 +81,21 @@ void Entity::setPos(const math::Vector2f& pos) {
 	m_pos = pos;
 }
 
-void Entity::heal(float amount) {
+void Entity::rotate(const float angle) {
+	m_rot += angle;
+}
+
+void Entity::setRotation(const float angle) {
+	m_rot = angle;
+}
+
+void Entity::heal(const float amount) {
 	assert(amount >= 0); // Healing can be negative, but must be processed as damage in the higher-level logic
 
 	m_health = std::min(m_health + amount, m_stats.maxHealth);
 }
 
-void Entity::dealDamage(float amount) {
+void Entity::dealDamage(const float amount) {
 	assert(amount >= 0); // Damage can be negative, but must be processed as healing in the higher-level logic
 
 	if (m_immortalMode) {
@@ -97,7 +105,7 @@ void Entity::dealDamage(float amount) {
 	m_health = std::max(m_health - calcDamage(amount), 0.f);
 }
 
-void Entity::dealPureDamage(float amount) {
+void Entity::dealPureDamage(const float amount) {
 	assert(amount >= 0); // Damage can be negative, but must be processed as healing in the higher-level logic
 
 	if (m_immortalMode) {
@@ -107,15 +115,15 @@ void Entity::dealPureDamage(float amount) {
 	m_health = std::max(m_health - amount, 0.f);
 }
 
-void Entity::setImmortalMode(bool mode) noexcept {
+void Entity::setImmortalMode(const bool mode) noexcept {
 	m_immortalMode = mode;
 }
 
-void Entity::setInvisibleMode(bool mode) noexcept {
+void Entity::setInvisibleMode(const bool mode) noexcept {
 	m_invisibleMode = mode;
 }
 
-void Entity::setSpiritualMode(bool mode) noexcept {
+void Entity::setSpiritualMode(const bool mode) noexcept {
 	m_spiritualMode = mode;
 }
 

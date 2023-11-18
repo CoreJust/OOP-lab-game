@@ -3,8 +3,18 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #pragma once
-
 #include <chrono>
+
+/*
+*	Timer(.h/.cpp) contains a class that implements a timer.
+* 
+*	It allows to measure time durations between some events.
+*	Usage:
+*		Timer timer;
+*		while (...) {
+*			float duration = timer.calculateDeltaTime();
+*		}
+*/
 
 namespace utils {
 	class Timer final {

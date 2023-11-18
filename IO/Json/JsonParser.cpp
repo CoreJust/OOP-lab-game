@@ -43,9 +43,9 @@ utils::Result<io::JsonValue> io::JsonParser::parseObject() {
             if (p.first == str) {
                 return true;
             }
-
-            return false;
         }
+
+        return false;
     };
 
     do {
@@ -101,7 +101,7 @@ utils::Result<io::JsonValue> io::JsonParser::parseArray() {
             return val;
         }
 
-        vec.push_back(val.extract());
+        vec.emplace_back(val.extract());
     } while (peek() == ',' && next());
 
     skipWS();
@@ -134,7 +134,7 @@ utils::Result<io::JsonValue> io::JsonParser::parseString() {
                 case 'f': ch = '\f'; break;
                 case 'a': ch = '\a'; break;
                 case 'b': ch = '\b'; break;
-            default: return utils::Failure("Unknown escape sequence: \\" + ch);
+            default: return utils::Failure("Unknown escape sequence: \\" + std::string(1, ch));
             }
         }
 

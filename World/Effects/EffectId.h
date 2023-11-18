@@ -5,6 +5,11 @@
 #pragma once
 #include "Utils/BasicId.h"
 
+/*
+*	EffectId(.h/.cpp) contains a class that inherits parent class BasicId
+*	and enumerates the possible effects.
+*/
+
 class EffectId final : public BasicId {
 public:
 	enum Value : id_t {

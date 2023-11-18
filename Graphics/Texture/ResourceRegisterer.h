@@ -5,6 +5,15 @@
 #pragma once
 #include "ResourceManager.h"
 
+/*
+*	ResourceRegisterer(.h/.cpp) contains a class that allows to load resources.
+*
+*	It accepts the resource manager and loads all the game medias to it.
+* 
+*	Usage:
+*		ResourceRegisterer(manager).registerAll();
+*/
+
 class ResourceRegisterer final {
 private:
 	ResourceManager& m_resManager;
@@ -15,10 +24,5 @@ public:
 	void registerAll();
 
 private:
-	void registerTexture(const TextureId texId);
-	void registerAnimation(
-		const AnimationId animId,
-		const std::vector<uint32_t>& animationLegths, 
-		const float slideDuration = 0.3
-	);
+	void registerEntityTexture(const EntityId id);
 };

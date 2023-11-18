@@ -4,18 +4,28 @@
 
 #pragma once
 #include <vector>
+#include <SFML/Graphics/RenderWindow.hpp>
 
+#include "Utils/NoNullptr.h"
 #include "Math/Vector.h"
-#include "Graphics/Texture/Animation.h"
 #include "Graphics/Camera.h"
+#include "Graphics/Texture/ResourceManager.h"
+#include "Graphics/Shader/EntityShader.h"
+#include "Graphics/Model/EntityModel.h"
+
+/*
+*	EntityRenderer(.h/.cpp) contains a class that implements a renderer
+*	responsible for rendering the entities - the player, the enemies, etc.
+*/
 
 class EntityRenderer final {
 private:
-	std::vector<std::reference_wrapper<Animation>> m_animations;
-	std::vector<math::Vector2f> m_positions;
+	std::vector<utils::NoNullptr<model::EntityModel>> m_entities;
+
+	EntityShader m_shader;
 
 public:
-	void addAnimation(std::reference_wrapper<Animation> animation, const math::Vector2f& position);
+	void addEntity(utils::NoNullptr<model::EntityModel> model);
 
-	void render(sf::RenderWindow& window, Camera& camera);
+	void render(sf::RenderWindow& window, Camera& camera, ResourceManager& resources);
 };

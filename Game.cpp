@@ -14,7 +14,7 @@ Game::Game()
 
 void Game::run() {
 	while (m_display.isOpen()) {
-		m_display.pollEvents();
+		m_display.update();
 
 		m_stateManager.update(m_display.getWindow(), m_timer.calculateDeltaTime());
 

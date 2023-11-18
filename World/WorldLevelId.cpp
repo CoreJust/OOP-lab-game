@@ -3,28 +3,45 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "WorldLevelId.h"
+#include "Utils/Seed.h"
 #include "Generator/WorldGenerationMaster.h"
 
 void WorldLevelId::loadGenerationSettingsTo(WorldGenerationMaster& generationMaster) const {
-	constexpr size_t DEFAULT_SEED = 1;
-
 	switch (m_id) {
 	case BASIC_LEVEL: {
 		generationMaster.pushInitialGenerator(GenerationSettings(
-			DEFAULT_SEED,
+			utils::Seed::seed(),
 			GenerationSettings::NOISE_PERLIN_BASIC,
 			GenerationSettings::NoiseGenerationSettings { .octaves = 4, .frequency = 0.1f, .persistance = 0.5f }
 		));
 
 		generationMaster.pushGenerator(GenerationSettings(
-			DEFAULT_SEED,
+			utils::Seed::seed(),
+			GenerationSettings::POSTGEN_BOUNDS_CREATOR,
+			GenerationSettings::PostGenerationSettings { }
+		));
+
+		generationMaster.pushGenerator(GenerationSettings(
+			utils::Seed::seed(),
+			GenerationSettings::POSTGEN_PASSAGE_CREATOR,
+			GenerationSettings::PostGenerationSettings { }
+		));
+
+		generationMaster.pushGenerator(GenerationSettings(
+			utils::Seed::seed(),
+			GenerationSettings::POSTGEN_DECORATOR,
+			GenerationSettings::PostGenerationSettings { }
+		));
+
+		generationMaster.pushGenerator(GenerationSettings(
+			utils::Seed::seed(),
 			GenerationSettings::POSTGEN_PASSAGE_CREATOR,
 			GenerationSettings::PostGenerationSettings { }
 		));
 	} break;
 	case SANCTUARY_LEVEL: {
 		generationMaster.pushInitialGenerator(GenerationSettings(
-			DEFAULT_SEED,
+			utils::Seed::seed(),
 			GenerationSettings::TEMPLATE_GENERATOR,
 			GenerationSettings::TemplateGenerationSettings{ .id = SANCTUARY_LEVEL, .data = 0 }
 		));

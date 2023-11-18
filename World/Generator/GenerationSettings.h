@@ -28,7 +28,7 @@ struct GenerationSettings {
 
 		// Maze generation
 		// Used information from: https://www.astrolog.org/labyrnth/algrithm.htm
-		MAZE_PERFECT, // no loops/inaccessible areas - always one way from a point to another one
+		MAZE_PERFECT, // No loops/inaccessible areas - always one way from a point to another one
 		MAZE_BRAID, // No dead ends (but with loops)
 		MAZE_UNICURSAL, // Single way - no junctions
 		MAZE_SPARSE, // A lot of unused space - a number of rooms and areas without passages
@@ -38,7 +38,9 @@ struct GenerationSettings {
 		CA_ARCHIPELAGO,
 
 		// Post-generators (to fix something in the generated world
-		POSTGEN_PASSAGE_CREATOR,
+		POSTGEN_PASSAGE_CREATOR, // Ensuring all the passables are interconnected
+		POSTGEN_BOUNDS_CREATOR, // Creating bounds around the world
+		POSTGEN_DECORATOR, // Fills the world with decorations
 
 		// Generates the world not based on the procedural generation but on some fixed template
 		TEMPLATE_GENERATOR,

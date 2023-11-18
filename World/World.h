@@ -55,6 +55,7 @@ public:
 	math::Vector2i getRandomLocation() const noexcept;
 	math::Vector2i getRandomPassableLocation() const noexcept;
 
+	math::DirectionFlag getVNSFor(const math::Vector2i& pos); // Von Neumann Surrounding
 	bool isObstacleAt(const math::Vector2i& pos) const;
 
 	const Tile& at(bool isForeground, const math::Vector2i& pos) const;

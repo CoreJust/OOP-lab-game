@@ -7,6 +7,12 @@
 #include "Utils/Concepts.h"
 #include "MathUtils.h"
 
+/*
+*	NoiseUtils.h contains a class with a set of static auxiliary math functions.
+*
+*	These functions are generally used for the noise generation, thus the name.
+*/
+
 namespace math {
 	template<utils::FloatingPoint FloatTy>
 	class NoiseUtils final {

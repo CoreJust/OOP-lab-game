@@ -4,18 +4,22 @@
 
 #include "EntityRenderer.h"
 
-void EntityRenderer::addAnimation(std::reference_wrapper<Animation> animation, const math::Vector2f& position) {
-	m_animations.push_back(animation);
-	m_positions.push_back(position);
+void EntityRenderer::addEntity(utils::NoNullptr<model::EntityModel> model) {
+	m_entities.push_back(model);
 }
 
-void EntityRenderer::render(sf::RenderWindow& window, Camera& camera) {
-	for (size_t i = 0; i < m_animations.size(); i++) {
-		if (camera.isInView(m_positions[i])) {
-			m_animations[i].get().render(window, camera.getPosInView(m_positions[i]), camera.getSingularObjectSize());
-		}
+void EntityRenderer::render(sf::RenderWindow& window, Camera& camera, ResourceManager& resources) {
+	m_shader.bind();
+	m_shader.loadDefaultFogPower();
+	m_shader.setPlayerPos(camera.getPos());
+	m_shader.setProjViewMatrix(camera.genProjViewMatrix());
+
+	for (auto& model : m_entities) {
+		resources.getEntityTexture(model->getEntityID()).bind();
+		model->render(m_shader);
 	}
 
-	m_animations.clear();
-	m_positions.clear();
+	m_shader.unbind();
+
+	m_entities.clear();
 }
