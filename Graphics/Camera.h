@@ -28,13 +28,11 @@ private:
 
 	math::Vector2f m_viewSize; // View for world objects, not the window view space
 	math::Vector2f m_windowSize;
-	math::Vector2f m_singularObjectSize; // The size of a world object 1x1 on the screen
 
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_projViewMatrix;
 
 	float m_aspectRatio; // width/height
-	float m_scale; // min(width, height) / some constant
 	float m_FOV; // field of view
 
 	std::vector<RotationCallback> m_rotationCallbacks; // Accepts new rotation
@@ -55,9 +53,7 @@ public:
 	void addRotationCallback(RotationCallback callback);
 
 	// Returns the pos relatively to camera pos
-	math::Vector2f getPosInView(math::Vector2f pos) const; // World position to screen position
 	math::Vector2f getGuiPos(math::Vector2f pos) const; // Adapts screen position of GUI
-
 	math::Vector2f getGuiTransform() const; // Returns the transformation for GUI's
 
 	const glm::mat4& genProjViewMatrix() const; // The matrix for moving and object into the view
@@ -65,10 +61,7 @@ public:
 	const math::Vector2f& getPos() const noexcept;
 	const math::Vector2f& getViewSize() const noexcept;
 	const math::Vector2f& getWindowSize() const noexcept;
-	const math::Vector2f& getSingularObjectSize() const noexcept;
-
 	float getAspectRatio() const noexcept;
-	float getScale() const noexcept;
 
 private:
 	void recomputeProjViewMatrix();

@@ -37,6 +37,9 @@ void EntityController::update(const float deltaTime, utils::NoNullptr<io::Virtua
 }
 
 void EntityController::draw(RenderMaster& renderMaster) {
+	m_model->sceneObject().pos.x = m_entity->getX();
+	m_model->sceneObject().pos.z = m_entity->getY();
+
 	renderMaster.drawEntity(*m_model);
 }
 
@@ -63,8 +66,6 @@ void EntityController::tryToMove(math::Vector2f offset) {
 	
 	// Moving
 	m_entity->move(offset);
-	m_model->sceneObject().pos.x = m_entity->getX();
-	m_model->sceneObject().pos.z = m_entity->getY();
 
 	if (offset.x() || offset.y()) {
 		m_model->sceneObject().rot.y = -offset.rotationNegOY();

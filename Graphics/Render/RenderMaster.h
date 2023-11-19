@@ -5,6 +5,7 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "Graphics/GL/GLContextManager.h"
 #include "Graphics/Texture/ResourceManager.h"
 #include "Graphics/Camera.h"
 #include "EntityRenderer.h"
@@ -51,6 +52,9 @@ private:
 	EntityRenderer m_entityRenderer;
 	TileRenderer m_tileRenderer;
 	GameGUIRenderer m_guiRenderer;
+
+	gl::ContextManager m_contextManager;
+	gl::ContextManager::ContextRef m_generalContext;
 
 public:
 	RenderMaster();

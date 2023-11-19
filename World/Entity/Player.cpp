@@ -11,5 +11,5 @@ Player::Player(World& pWorld)
 	: Player({ 0.5f, 0.5f }, 0.f, pWorld) { }
 
 math::Vector2f Player::getViewPos() const {
-	return getPos() - math::Vector2f(0, 1);
+	return getPos();
 }

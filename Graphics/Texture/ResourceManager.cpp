@@ -3,14 +3,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "ResourceManager.h"
-
 #include <cassert>
 
 #include "GlobalSettings.h"
-
-ResourceManager::ResourceManager() {
-
-}
 
 TextureAtlas& ResourceManager::getTextureAtlas() {
 	assert(m_atlas);

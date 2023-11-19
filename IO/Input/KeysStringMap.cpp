@@ -130,19 +130,19 @@ io::KeysStringMap::KeysStringMap()
 	}) 
 	{
 		for (const auto& [key, val] : m_realKeysMap) {
-			m_realKeysMapReversed.emplace(val, key);
+			m_realKeysMapReversed.try_emplace(val, key);
 		}
 
 		for (const auto& [key, val] : m_realMouseMap) {
-			m_realMouseMapReversed.emplace(val, key);
+			m_realMouseMapReversed.try_emplace(val, key);
 		}
 
 		for (const auto& [key, val] : m_virtualKeysMap) {
-			m_virtualKeysMapReversed.emplace(val, key);
+			m_virtualKeysMapReversed.try_emplace(val, key);
 		}
 
 		for (const auto& [key, val] : m_virtualMouseMap) {
-			m_virtuallMouseMapReversed.emplace(val, key);
+			m_virtuallMouseMapReversed.try_emplace(val, key);
 		}
 	}
 

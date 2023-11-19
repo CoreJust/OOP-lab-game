@@ -7,7 +7,7 @@
 
 #include "IO/Logger.h"
 
-Texture::Texture(const std::string& filePath) {
+Texture::Texture(const std::string& filePath) : m_textureID(0) {
 	if (auto result = loadFromFile(filePath); !result.isOk()) {
 		io::Logger::logError(result.error());
 	}

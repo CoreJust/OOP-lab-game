@@ -52,7 +52,7 @@ void MainMenuState::render(sf::RenderWindow& window) {
 		ImGui::SetNextWindowPos({ window.getSize().x / 2.f, window.getSize().y / 2.f }, 0, { 0.5f, 0.5f });
 		ImGui::Begin("Main menu", nullptr,  ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 
-		textCentered(0.1f, "===  OOP lab v.4  ===");
+		textCentered(0.1f, "===  OOP lab v.5  ===");
 		textCentered(0.4f, "Enter the world seed or leave the default:");
 		ImGui::NewLine();
 
@@ -60,6 +60,8 @@ void MainMenuState::render(sf::RenderWindow& window) {
 		ImGui::SetCursorPosX(inputTextStartX);
 		if (ImGui::InputText("##", &seedStr, ImGuiInputTextFlags_EnterReturnsTrue)) {
 			utils::Seed::setSeed(utils::Seed::fromString(seedStr));
+			ImGui::End();
+
 			m_pManager.addState(std::make_unique<GameState>(m_pManager));
 			return;
 		}
@@ -67,6 +69,8 @@ void MainMenuState::render(sf::RenderWindow& window) {
 		ImGui::SetCursorPosX(inputTextStartX);
 		if (ImGui::Button("Play")) {
 			utils::Seed::setSeed(utils::Seed::fromString(seedStr));
+			ImGui::End();
+
 			m_pManager.addState(std::make_unique<GameState>(m_pManager));
 			return;
 		}
@@ -75,6 +79,7 @@ void MainMenuState::render(sf::RenderWindow& window) {
 		ImGui::SetCursorPosX(inputTextStartX + ImGui::CalcItemWidth() - ImGui::CalcTextSize("Quit").x - 8);
 		if (ImGui::Button("Quit")) {
 			m_pManager.popState();
+			ImGui::End();
 			return;
 		}
 

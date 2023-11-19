@@ -13,6 +13,14 @@ RenderMaster::RenderMaster()
 	: m_tileRenderer(m_resources) {
 	ResourceRegisterer registerer(m_resources);
 	registerer.registerAll();
+
+	m_contextManager.setClearColor(0.6f, 0.46f, 0.46f);
+	m_contextManager.addContext(m_generalContext)
+		.enableTerminationUponErrors()
+		.enableDepthTest()
+		.enableMultisampling()
+		.enableCullFace()
+		.enableBlending();
 }
 
 void RenderMaster::drawEntity(model::EntityModel& entityModel) {
@@ -28,24 +36,21 @@ void RenderMaster::drawTile(const TileId id, const math::Vector2f& position, con
 }
 
 void RenderMaster::render(sf::RenderWindow& window, Camera& camera) {
-	glClearColor(0.6f, 0.46f, 0.46f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// Core OpenGL using code
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	m_contextManager.newFrame();
+	m_contextManager.forContext(m_generalContext, [this, &window, &camera]() {
+		m_entityRenderer.render(window, camera, m_resources);
+		m_tileRenderer.render(window, camera);
+	});
 
-	m_entityRenderer.render(window, camera, m_resources);
-	m_tileRenderer.render(window, camera);
+	m_contextManager.endFrame();
 
-	window.pushGLStates();
+	// SFML using code
+	// Note: SFML uses some legacy OpenGL functions, so it cannot be mixed up with the core OpenGL
+
 	window.resetGLStates();
-
 	m_guiRenderer.render(window, camera);
-
-	window.popGLStates();
 }
 
 GameGUIRenderer& RenderMaster::getGameGuiRenderer() noexcept {

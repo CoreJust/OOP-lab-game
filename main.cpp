@@ -20,12 +20,14 @@
 
 /*
 *	Long-term TODO: world saves, inventory, audio, enemies, player stats interface, frustum
-*	General TODO: Google test, minimap, more levels, cellular automatons generation, zooming the player in/out
+*	General TODO: Google test, minimap, more levels, cellular automatons generation, zooming the player in/out,
+*				  review effects stacking
 *	Emergent TODO:
 * 
 *	Bugs:	collision breaks at top-left and down-right angles of non-passable blocks - fixed
 *			progress bars displayment as big white squares - fixed
 *			having partially default bindings with user ones allows doubling of real commands - fixed
+*			if player didn't move after teleportation, the camera was left in the previous position - fixed
 * 
 *			accidental runtime error after closing the main window directly and trying to close the console ?
 *			if the console is selected and we tap "play", then move the mouse out of the window

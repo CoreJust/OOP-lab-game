@@ -21,9 +21,12 @@ model::Mesh model::Shape::createMesh() {
                 2, 3, 0
             }
         }.setTexCoords(std::move(m_texCoords));
-    } else {
-        assert(false && "wrong shape id");
     }
+    
+    assert(false && "wrong shape id");
+#ifdef NDEBUG
+    std::terminate();
+#endif // NDEBUG
 }
 
 model::Mesh model::Shape::createMesh(const glm::vec3& from, const glm::vec3& to) {
@@ -82,9 +85,12 @@ model::Mesh model::Shape::createMesh(const glm::vec3& from, const glm::vec3& to)
             .mergeWith(Shape(ShapeId::QUAD).createMesh({ to.x, from.y, from.z }, to).reverseIndices()) // right
             .setTexCoords(std::move(m_texCoords))
             .optimize();
-    } else {
-        assert(false && "wrong shape id");
     }
+        
+    assert(false && "wrong shape id");
+#ifdef NDEBUG
+    std::terminate();
+#endif // NDEBUG
 }
 
 model::Mesh model::Shape::createMesh(const math::DirectionFlag flags) {

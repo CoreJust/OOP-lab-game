@@ -18,5 +18,5 @@ void model::DynamicModel::render(ModelShader& shader, const SceneObject& parentS
 }
 
 void model::DynamicModel::addSubModel(DynamicModel subModel) {
-	m_submodels.push_back(std::move(subModel));
+	m_submodels.emplace_back(std::move(subModel));
 }

@@ -25,7 +25,7 @@ private:
 	std::unique_ptr<Texture> m_entityTextures[EntityId::NUMBER_ENTITY_IDS];
 
 public:
-	ResourceManager();
+	ResourceManager() = default;
 
 	TextureAtlas& getTextureAtlas();
 	Texture& getEntityTexture(const EntityId id);

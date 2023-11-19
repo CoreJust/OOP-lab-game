@@ -12,21 +12,18 @@
 #include "GlobalSettings.h"
 #include "Texture/Texture.h"
 
-constexpr float SCALE_FACTOR = 10.f * Texture::TEXTURE_SIZE;
-
 constexpr float Z_PROJ_NEAR = 0.002f;
 constexpr float Z_PROJ_FAR = 100.f;
 
-constexpr glm::vec3 CAMERA_OFFSET = glm::vec3(0.8f, 3.5f, 2.6f);
+constexpr glm::vec3 CAMERA_OFFSET = glm::vec3(0.3f, 2.5f, 3.2f);
+constexpr float CAMERA_LOOK_AT_HEIGHT = 0.8f;
 
 constexpr float MOUSE_SENSIBILITY = 0.0032f;
 
 Camera::Camera()
 	: m_viewSize(0), 
 	m_windowSize(0), 
-	m_singularObjectSize(0), 
-	m_aspectRatio(0), 
-	m_scale(0), 
+	m_aspectRatio(0),
 	m_angle(0.f, 0.f),
 	m_FOV(90.f),
 	m_projectionMatrix(glm::perspective(glm::radians<float>(90), 1.f, Z_PROJ_NEAR, Z_PROJ_FAR)) {
@@ -39,6 +36,9 @@ void Camera::update(utils::NoNullptr<io::VirtualInput> input) {
 
 	constexpr float PI = std::numbers::pi_v<float>;
 
+	constexpr float minCameraYRotation = PI * -0.15f;
+	constexpr float maxCameraYRotation = PI * 0.2f;
+
 	// Computing the camera rotation
 	const float dx = math::MathUtils::clampInRange<float, 30.f>(mouseOffset.x()); // For freezes
 	m_angle.x() -= dx * MOUSE_SENSIBILITY;
@@ -47,7 +47,7 @@ void Camera::update(utils::NoNullptr<io::VirtualInput> input) {
 	if (GlobalSettings::get().isEnableVerticalViewMoving()) {
 		const float dy = math::MathUtils::clampInRange<float, 30.f>(mouseOffset.y()); // For freezes
 		m_angle.y() -= dy * MOUSE_SENSIBILITY * 0.4f;
-		m_angle.y() = math::MathUtils::clamp<float, PI * -0.15f, PI * 0.2f>(m_angle.y());
+		m_angle.y() = math::MathUtils::clamp<float, minCameraYRotation, maxCameraYRotation>(m_angle.y());
 
 		if (dx || dy) {
 			onRotation();
@@ -70,16 +70,13 @@ math::Vector2f Camera::viewDownRight() const {
 }
 
 void Camera::setPos(const math::Vector2f& pos) {
-	m_pos = pos + math::Vector2f{ 0, 1 };
+	m_pos = pos;
 	recomputeProjViewMatrix();
 }
 
 bool Camera::updateViewSize(const math::Vector2f& windowSize) {
 	if (windowSize != m_windowSize) {
 		m_aspectRatio = windowSize.x() / windowSize.y();
-		m_scale = math::Cmath::min(windowSize.x(), windowSize.y()) / SCALE_FACTOR;
-		m_singularObjectSize = 1.f / (m_scale * Texture::TEXTURE_SIZE);
-
 		m_viewSize = math::Vector2f(GlobalSettings::get().getMaxRenderDistance());
 		m_windowSize = windowSize;
 
@@ -101,12 +98,7 @@ void Camera::setFOV(float degrees) {
 }
 
 void Camera::addRotationCallback(RotationCallback callback) {
-	m_rotationCallbacks.push_back(std::move(callback));
-}
-
-math::Vector2f Camera::getPosInView(math::Vector2f pos) const {
-	pos -= m_pos;
-	return pos / m_scale;
+	m_rotationCallbacks.emplace_back(std::move(callback));
 }
 
 math::Vector2f Camera::getGuiPos(math::Vector2f pos) const {
@@ -147,20 +139,12 @@ const math::Vector2f& Camera::getWindowSize() const noexcept {
 	return m_windowSize;
 }
 
-const math::Vector2f& Camera::getSingularObjectSize() const noexcept {
-	return m_singularObjectSize;
-}
-
 float Camera::getAspectRatio() const noexcept {
 	return m_aspectRatio;
 }
 
-float Camera::getScale() const noexcept {
-	return m_scale;
-}
-
 void Camera::recomputeProjViewMatrix() {
-	glm::vec3 lookAtCenter { m_pos.x(), 0.5f, m_pos.y() };
+	glm::vec3 lookAtCenter { m_pos.x(), CAMERA_LOOK_AT_HEIGHT, m_pos.y() };
 	glm::vec3 cameraPos = glm::rotateX(CAMERA_OFFSET, m_angle.y());
 	cameraPos = glm::rotateY(cameraPos, m_angle.x()) + lookAtCenter;
 
