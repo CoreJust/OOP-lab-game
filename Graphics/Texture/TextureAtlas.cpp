@@ -3,7 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "TextureAtlas.h"
-
+#include "IO/Logger/Logger.h"
 #include <cassert>
 
 TextureAtlas::TextureAtlas(const std::string& fileName) : m_texture(fileName) { }
@@ -14,7 +14,7 @@ model::TextureCoords TextureAtlas::genTexCoordsGenerator() const {
 
 void TextureAtlas::loadFrom(const std::string& fileName) {
 	if (auto result = m_texture.loadFromFile(fileName); !result.isOk()) {
-		io::Logger::logError(result.error());
+		io::Logger::error("TextureAtlas: " + result.error());
 	}
 }
 

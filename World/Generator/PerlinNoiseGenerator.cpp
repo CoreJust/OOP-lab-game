@@ -3,7 +3,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "PerlinNoiseGenerator.h"
-#include "IO/Logger.h"
 #include "Math/PerlinNoise.h"
 #include "Utils/Random.h"
 #include "Math/ChanceDistribution.h"

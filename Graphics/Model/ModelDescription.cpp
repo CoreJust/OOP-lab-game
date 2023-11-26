@@ -5,7 +5,7 @@
 #include "ModelDescription.h"
 #include "Shape.h"
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 
 model::Mesh model::ModelDescription::generateMesh(gl::Vertices texCoords, const math::DirectionFlag VNSurroundings) const {
 	if (m_id == ShapeId::SIMPLE_WALL) {
@@ -27,7 +27,7 @@ model::Mesh model::ModelDescription::generateMesh(gl::Vertices texCoords, const 
 	}
 
 	if (auto validation = result.validate(); !validation.isOk()) {
-		io::Logger::logError("Failure while generation mesh for a model: " + validation.error());
+		io::Logger::error("ModelDescription: failure while generating mesh for a model: " + validation.error());
 		return Mesh { };
 	}
 

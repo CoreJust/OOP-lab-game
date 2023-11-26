@@ -10,12 +10,12 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui-SFML.h>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Graphics/Display.h"
 
 gamegui::MessageDialog::MessageDialog(const std::string& title, const std::string& text, const std::string& button1, const std::string& button2)
 	: m_title(title), m_text(text), m_button1(button1), m_button2(button2) {
-
+	io::Logger::trace("MessageDialog: created with title " + title + " and text " + text);
 }
 
 int8_t gamegui::MessageDialog::open() {
@@ -25,6 +25,8 @@ int8_t gamegui::MessageDialog::open() {
 }
 
 int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
+	io::Logger::debug("MessageDialog: opened with title " + m_title);
+
 	Display display(window, true);
 
 	ImGui::GetIO().FontGlobalScale = 2.f;
@@ -48,9 +50,13 @@ int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 		if (ImGui::Button(m_button1.data())) {
 			result = 1;
 			display.close();
+			
+			io::Logger::debug("MessageDialog: button 1 pressed");
 		} else if (!m_button2.empty() && ImGui::Button(m_button2.data())) {
 			result = 2;
 			display.close();
+
+			io::Logger::debug("MessageDialog: button 2 pressed");
 		}
 
 		ImGui::End();
@@ -64,4 +70,6 @@ int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 
 void gamegui::MessageDialog::initGUI(sf::RenderWindow& window) {
 	s_window = &window;
+
+	io::Logger::trace("MessageDialog: initialized GUI (static) with a window");
 }

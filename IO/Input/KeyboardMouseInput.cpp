@@ -5,6 +5,8 @@
 #include "KeyboardMouseInput.h"
 
 #include "GlobalSettings.h"
+#include "IO/Logger/Logger.h"
+#include "IO/Message/KeyMessage.h"
 
 io::KeyboardMouseInput::KeyboardMouseInput(const float& mouseWheelDelta) noexcept
 	: VirtualInput(mouseWheelDelta),
@@ -33,11 +35,21 @@ bool io::KeyboardMouseInput::update(float& deltaTime) {
 }
 
 bool io::KeyboardMouseInput::isKeyPressed(const Key key) const {
-	return sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));
+	bool result = sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));
+	if (result) {
+		Logger::message(KeyMessage(m_keyBindings.getKey(key), key, true));
+	}
+
+	return result;
 }
 
 bool io::KeyboardMouseInput::isKeyReleased(const Key key) const {
-	return !sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));
+	bool result = !sf::Keyboard::isKeyPressed(m_keyBindings.getKey(key));
+	if (result) {
+		Logger::message(KeyMessage(m_keyBindings.getKey(key), key, false));
+	}
+
+	return result;
 }
 
 bool io::KeyboardMouseInput::isMouseButtonPressed(const MouseButton btn) const {

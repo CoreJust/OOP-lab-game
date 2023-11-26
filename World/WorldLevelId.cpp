@@ -7,7 +7,7 @@
 #include "Generator/WorldGenerationMaster.h"
 
 void WorldLevelId::loadGenerationSettingsTo(WorldGenerationMaster& generationMaster) const {
-	switch (m_id) {
+	switch (m_value) {
 	case BASIC_LEVEL: {
 		generationMaster.pushInitialGenerator(GenerationSettings(
 			utils::Seed::seed(),
@@ -51,14 +51,14 @@ void WorldLevelId::loadGenerationSettingsTo(WorldGenerationMaster& generationMas
 }
 
 math::Vector2i WorldLevelId::getWorldSize() const noexcept {
-	switch (m_id) {
+	switch (m_value) {
 		case BASIC_LEVEL: return math::Vector2i(40, 40);
 		case SANCTUARY_LEVEL: return math::Vector2i(6, 6);
 	default: return math::Vector2i();
 	}
 }
 
-std::string WorldLevelId::toString() const {
+std::string_view WorldLevelId::toString() const {
 	static std::string s_worldLevelIdNames[] {
 		"BASIC_WORLD",
 		"SANCTUARY_WORLD",
@@ -66,7 +66,7 @@ std::string WorldLevelId::toString() const {
 		"NUMBER_WORLD_LEVEL_IDS"
 	};
 
-	assert(m_id < std::size(s_worldLevelIdNames));
+	assert(m_value < std::size(s_worldLevelIdNames));
 
-	return s_worldLevelIdNames[m_id];
+	return s_worldLevelIdNames[m_value];
 }

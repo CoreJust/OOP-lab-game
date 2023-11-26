@@ -3,7 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "GLContext.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 
 
 using GLStateFunc = decltype(glEnable)*;
@@ -86,13 +86,13 @@ void gl::Context::use(const Context& previous) const noexcept {
 void gl::Context::checkErrors() const noexcept {
 	if (GLenum err = glGetError(); err != GL_NO_ERROR) {
 		switch (err) {
-			case GL_INVALID_ENUM: io::Logger::logError("OpenGL error: invalid enum parameter"); break;
-			case GL_INVALID_VALUE: io::Logger::logError("OpenGL error: invalid parameter value"); break;
-			case GL_INVALID_OPERATION: io::Logger::logError("OpenGL error: invalid operation"); break;
-			case GL_STACK_OVERFLOW: io::Logger::logError("OpenGL error: stack overflow"); break;
-			case GL_STACK_UNDERFLOW: io::Logger::logError("OpenGL error: stack underflow"); break;
-			case GL_OUT_OF_MEMORY: io::Logger::logError("OpenGL error: out of memory"); break;
-			case GL_INVALID_FRAMEBUFFER_OPERATION: io::Logger::logError("OpenGL error: invalid framebuffer operation"); break;
+			case GL_INVALID_ENUM: io::Logger::warning("OpenGL error: invalid enum parameter"); break;
+			case GL_INVALID_VALUE: io::Logger::warning("OpenGL error: invalid parameter value"); break;
+			case GL_INVALID_OPERATION: io::Logger::warning("OpenGL error: invalid operation"); break;
+			case GL_STACK_OVERFLOW: io::Logger::error("OpenGL error: stack overflow"); break;
+			case GL_STACK_UNDERFLOW: io::Logger::error("OpenGL error: stack underflow"); break;
+			case GL_OUT_OF_MEMORY: io::Logger::error("OpenGL error: out of memory"); break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION: io::Logger::warning("OpenGL error: invalid framebuffer operation"); break;
 		default: break;
 		}
 

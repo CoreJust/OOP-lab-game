@@ -38,17 +38,17 @@ public:
 	}
 
 	constexpr EntityId& operator=(EntityId other) noexcept {
-		m_id = id_t(other);
+		m_value = id_t(other);
 
 		return *this;
 	}
 
 	constexpr explicit operator Value() const noexcept {
-		return static_cast<Value>(m_id);
+		return static_cast<Value>(m_value);
 	}
 
 	const EntityStats& getEntityStats() const;
 	const model::DynamicModelDescription& getDynamicModelDescription() const;
 
-	std::string toString() const override;
+	std::string_view toString() const override;
 };

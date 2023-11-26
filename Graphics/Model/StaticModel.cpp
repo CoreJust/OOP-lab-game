@@ -92,6 +92,10 @@ void model::StaticModel::unbind() {
     m_vao.unbind();
 }
 
+const model::SceneObject& model::StaticModel::getSceneObject() const noexcept {
+    return m_sceneObject;
+}
+
 const gl::VAO& model::StaticModel::getVAO() const noexcept {
     return m_vao;
 }

@@ -8,7 +8,7 @@
 #include <bitset>
 
 #include "GlobalSettings.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "IO/Input/KeysStringMap.h"
 
 void io::KeyBindingsLoader::load() {
@@ -17,7 +17,7 @@ void io::KeyBindingsLoader::load() {
 	auto parseResult = JsonFileParser::parse(GlobalSettings::get().getBindingsFile());
 
 	if (!parseResult.isOk()) {
-		io::Logger::logError("Failure occured while loading key bindings: " + parseResult.error() + ", default bindings are set");
+		io::Logger::error("KeyBindingsLoader: failure occured while loading key bindings: " + parseResult.error() + ", default bindings are set");
 		return;
 	}
 
@@ -34,7 +34,7 @@ void io::KeyBindingsLoader::loadDefaultBindings() {
 
 void io::KeyBindingsLoader::loadFromParsed(io::JsonValue value) {
 	if (!value.isObject()) {
-		io::Logger::logError("Invalid key bindings file: an object expected");
+		io::Logger::error("KeyBindingsLoader: invalid key bindings file: an object expected");
 		return;
 	}
 
@@ -56,25 +56,25 @@ void io::KeyBindingsLoader::loadFromParsed(io::JsonValue value) {
 		}
 
 		if (!val.isString()) {
-			io::Logger::logError("Invalid key bindings file: a string expected as a value of a binding, got: " + val.toString());
+			io::Logger::error("KeyBindingsLoader: invalid key bindings file: a string expected as a value of a binding, got: " + val.toString());
 			return;
 		}
 
 		if (ksMap.virtualKeys().contains(key)) {
 			Key binding = ksMap.virtualKeys().at(key);
 			if (keys[binding] != sf::Keyboard::KeyCount) {
-				io::Logger::logError("Invalid key bindings file: binding duplicate: " + key);
+				io::Logger::error("KeyBindingsLoader: invalid key bindings file: binding duplicate: " + key);
 				return;
 			}
 
 			if (!ksMap.realKeys().contains(val.asString())) {
-				io::Logger::logError("Invalid key bindings file: no such real key: " + val.asString());
+				io::Logger::error("KeyBindingsLoader: invalid key bindings file: no such real key: " + val.asString());
 				return;
 			}
 
 			keys[binding] = ksMap.realKeys().at(val.asString());
 			if (usedRealKeys.test(keys[binding])) { // Real key reusage
-				io::Logger::logError("Invalid key bindings file: real binding duplicate: " + val.toString());
+				io::Logger::error("KeyBindingsLoader: invalid key bindings file: real binding duplicate: " + val.toString());
 				return;
 			} else {
 				usedRealKeys.set(keys[binding]);
@@ -82,18 +82,18 @@ void io::KeyBindingsLoader::loadFromParsed(io::JsonValue value) {
 		} else if (ksMap.virtualMouse().contains(key)) {
 			MouseButton binding = ksMap.virtualMouse().at(key);
 			if (mice[binding] != sf::Mouse::ButtonCount) {
-				io::Logger::logError("Invalid key bindings file: mouse binding duplicate: " + key);
+				io::Logger::error("KeyBindingsLoader: invalid key bindings file: mouse binding duplicate: " + key);
 				return;
 			}
 
 			if (!ksMap.realMouse().contains(val.asString())) {
-				io::Logger::logError("Invalid key bindings file: no such real mouse key: " + val.asString());
+				io::Logger::error("KeyBindingsLoader: invalid key bindings file: no such real mouse key: " + val.asString());
 				return;
 			}
 
 			mice[binding] = ksMap.realMouse().at(val.asString());
 			if (usedRealMouseButtons.test(mice[binding])) { // Real mouse button reusage
-				io::Logger::logError("Invalid key bindings file: real mouse binding duplicate: " + val.toString());
+				io::Logger::error("KeyBindingsLoader: invalid key bindings file: real mouse binding duplicate: " + val.toString());
 				return;
 			} else {
 				usedRealMouseButtons.set(mice[binding]);
@@ -103,10 +103,10 @@ void io::KeyBindingsLoader::loadFromParsed(io::JsonValue value) {
 
 	if (std::find(std::begin(keys), std::end(keys), Key::NUMBER_KEYS) != std::end(keys)
 		|| std::find(std::begin(mice), std::end(mice), MouseButton::NUMBER_MOUSE_BUTTONS) != std::end(mice)) {
-		io::Logger::logError("Invalid bindings: not all the keys/mouse buttons defined");
+		io::Logger::error("KeyBindingsLoader: invalid bindings: not all the keys/mouse buttons defined");
 		return;
 	}
 
-	io::Logger::logInfo("Loaded bindings successfully");
+	io::Logger::debug("KeyBindingsLoader: loaded bindings successfully");
 	m_bindings.updateBindings(keys, mice);
 }

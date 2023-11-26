@@ -3,7 +3,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "GameState.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
+#include "IO/Message/NewLevelMessage.h"
+#include "IO/Message/PlayerLostMessage.h"
 #include "Graphics/GameGUI/MessageDialog.h"
 #include "StateManager.h"
 
@@ -12,12 +14,14 @@ GameState::GameState(StateManager& pManager)
 	m_world(WorldLevelId::BASIC_LEVEL),
 	m_playerController(std::make_unique<Player>(m_world), m_world)
 {
+	io::Logger::message(io::NewLevelMessage(m_world.getActualSize(), m_playerController.getPlayer().getPos()));
+
 	m_camera.addRotationCallback(m_playerController.createOnRotation());
 	m_camera.setFOV(50.f);
 
 	m_playerController.initGUI(m_renderMaster, m_camera);
 
-	io::Logger::logInfo("Initialized GameState");
+	io::Logger::trace("GameState: initialized");
 }
 
 void GameState::freeze() {
@@ -52,19 +56,22 @@ void GameState::render(sf::RenderWindow& window) {
 }
 
 void GameState::processPlayerDeath() {
-	io::Logger::logInfo("Player died");
+	io::Logger::info("GameState: player died");
+	io::Logger::message(io::PlayerLostMessage(m_playerController.getPlayer().getPos()));
 
 	gamegui::MessageDialog dialog("Game message", "You died! One more try?", "I have some confidence", "Accept defeat");
 	if (dialog.open() == 2) { // Accepted defeat
-		io::Logger::logInfo("Player accepted defeat");
+		io::Logger::info("GameState: player accepted defeat");
+
 		m_pManager.popState();
 		return;
 	}
-	
-	io::Logger::logInfo("Restarting the game...");
+
+	io::Logger::info("GameState: restarting the game");
 
 	m_world = World(WorldLevelId::BASIC_LEVEL);
 	m_playerController.getPlayer() = Player(m_world);
+	io::Logger::message(io::NewLevelMessage(m_world.getActualSize(), m_playerController.getPlayer().getPos()));
 
-	io::Logger::logInfo("Game restarted successfully");
+	io::Logger::debug("GameState: game restarted successfully");
 }

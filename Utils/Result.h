@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 
 /*
 *	Result.h contains an auxiliary class Result<T>.
@@ -182,7 +182,7 @@ namespace utils {
 			}
 
 			m_isNonEmpty = false;
-			io::Logger::logError(errorMessage);
+			io::Logger::error("Result: failed to extract, " + std::string(errorMessage));
 
 			return std::move(byDefault);
 		}
@@ -196,7 +196,7 @@ namespace utils {
 				return std::move(m_value);
 			}
 
-			io::Logger::logError(errorMessage);
+			io::Logger::error("Result: expectation failed, " + std::string(errorMessage));
 			system("pause");
 			terminate();
 		}

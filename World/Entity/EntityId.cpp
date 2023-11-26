@@ -11,9 +11,9 @@ const EntityStats& EntityId::getEntityStats() const {
 		EntityStats{ .maxHealth = 1000, .defence = 0, .power = 20, .speed = 3, .hitbox = 0.26f }, // Player
 	};
 
-	assert(m_id < std::size(s_entityIdStats));
+	assert(m_value < std::size(s_entityIdStats));
 
-	return s_entityIdStats[m_id];
+	return s_entityIdStats[m_value];
 }
 
 const model::DynamicModelDescription& EntityId::getDynamicModelDescription() const {
@@ -26,10 +26,10 @@ const model::DynamicModelDescription& EntityId::getDynamicModelDescription() con
 
 	assert(m_id < std::size(s_entityIdDMDs));
 
-	return s_entityIdDMDs[m_id];
+	return s_entityIdDMDs[m_value];
 }
 
-std::string EntityId::toString() const {
+std::string_view EntityId::toString() const {
 	// I'd like to use something like magic_enum here, but it is not OOP
 	static std::string s_entityIdNames[] {
 		"PLAYER",
@@ -37,7 +37,7 @@ std::string EntityId::toString() const {
 		"NUMBER_ENTITY_IDS"
 	};
 
-	assert(m_id < std::size(s_entityIdNames));
+	assert(m_value < std::size(s_entityIdNames));
 
-	return s_entityIdNames[m_id];
+	return s_entityIdNames[m_value];
 }

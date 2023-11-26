@@ -17,7 +17,7 @@ void ResourceRegisterer::registerAll() {
 }
 
 void ResourceRegisterer::registerEntityTexture(const EntityId id) {
-	std::string name = id.toString();
+	std::string name = std::string(id.toString());
 	std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
 
 	m_resManager.loadEntityTexture(id, name);

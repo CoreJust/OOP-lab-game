@@ -4,7 +4,7 @@
 
 #include "ShapeId.h"
 
-std::string model::ShapeId::toString() const {
+std::string_view model::ShapeId::toString() const {
 	static std::string s_tileShapeIdNames[] {
 		"EMPTINESS",
 
@@ -20,7 +20,7 @@ std::string model::ShapeId::toString() const {
 		"NUMBER_TILE_SHAPE_IDS"
 	};
 
-	assert(m_id < std::size(s_tileShapeIdNames));
+	assert(m_value < std::size(s_tileShapeIdNames));
 
-	return s_tileShapeIdNames[m_id];
+	return s_tileShapeIdNames[m_value];
 }

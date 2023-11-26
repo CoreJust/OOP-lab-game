@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 
 io::InputFileLoader::InputFileLoader(const std::string& fileName, bool isReading) 
 	: m_readingMode(isReading) {
@@ -16,12 +16,12 @@ io::InputFileLoader::InputFileLoader(const std::string& fileName, bool isReading
 
 	m_file.open(fileName, std::ios::binary | (isReading ? std::ios::in : (std::ios::out | std::ios::trunc)));
 	if (!m_file.is_open()) {
-		io::Logger::logInfo("File not found: " + fileName + ", switching to manual input mode");
+		io::Logger::warning("InputFileLoader: file not found: " + fileName + ", switching to manual input mode");
 		return;
 	}
 
 	if (!m_file.good()) {
-		io::Logger::logError("Failed to open the input file: " + fileName);
+		io::Logger::warning("InputFileLoaed: failed to open the input file: " + fileName);
 	}
 }
 

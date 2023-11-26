@@ -7,12 +7,12 @@
 #include <fstream>
 #include <sstream>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 
 std::string io::FileLoader::loadFile(std::string_view fileName) const {
     std::ifstream file(getFullPath(fileName));
     if (!file.is_open()) {
-        io::Logger::logError("Failed to load file: " + getFullPath(fileName));
+        io::Logger::error("FileLoader: failed to load file: " + getFullPath(fileName));
         return "";
     }
 

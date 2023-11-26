@@ -3,9 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #pragma once
-#include <cassert>
-#include <cstdint>
 #include <string>
+#include "EnumWrap.h"
 
 /*
 *	BasicId.h contains a base class for all the Id classes.
@@ -13,48 +12,28 @@
 *	All of the Id classes are wrappers over an enumeration.
 *	It allows for a type that is generally used as an enumeration
 *	to have own operators and, most importantly, methods.
+* 
+*	Despite being in the Utils module, the BasicId is not a part 
+*	of the utils namespace since it doesn't logically belong to the
+*	module - it is more of a compromise with no better alternative.
 */
 
 using id_t = uint32_t;
 
 // Basic class for all the Ids
-class BasicId {
-protected:
-	id_t m_id;
-
+class BasicId : public utils::EnumWrap<id_t> {
 public:
 	constexpr BasicId() = delete;
-	constexpr BasicId(const id_t id) noexcept : m_id(id) { }
-	constexpr BasicId(const BasicId&) noexcept = default;
-	constexpr BasicId(BasicId&&) noexcept = default;
+	constexpr BasicId(const id_t value) noexcept : utils::EnumWrap<id_t>(value) { }
 
 	constexpr BasicId& operator=(const BasicId other) noexcept {
-		m_id = other;
+		m_value = other;
 
 		return *this;
 	}
 
-	/*
-	constexpr bool operator==(const BasicId other) const noexcept {
-		return m_id == id_t(other);
-	}
-
-	constexpr auto operator<=>(const BasicId other) const noexcept {
-		return m_id <=> id_t(other);
-	}
-	*/
-
-	constexpr operator id_t() const noexcept {
-		return m_id;
-	}
-
-	constexpr explicit operator bool() const noexcept {
-		return m_id != 0;
-	}
-
-	inline virtual std::string toString() const {
+	inline virtual std::string_view toString() const override {
 		assert(false && "unreachable; BasicId::toString() not expected to be called");
-
 		return "";
 	}
 };

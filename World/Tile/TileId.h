@@ -50,13 +50,13 @@ public:
 	}
 
 	constexpr TileId& operator=(TileId other) noexcept {
-		m_id = id_t(other);
+		m_value = id_t(other);
 
 		return *this;
 	}
 
 	constexpr explicit operator Value() const noexcept {
-		return static_cast<Value>(m_id);
+		return static_cast<Value>(m_value);
 	}
 
 	const TileInfo& getTileInfo() const;
@@ -67,5 +67,5 @@ public:
 	bool isBackground() const;
 	bool isForeground() const;
 
-	std::string toString() const override;
+	std::string_view toString() const override;
 };

@@ -8,7 +8,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "IO/File/FileLoader.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "GlobalSettings.h"
 
 gl::Shader::ShaderObject::ShaderObject(GLenum shaderType) {
@@ -36,6 +36,8 @@ gl::Shader::Shader(std::string_view vertexShaderFile, std::string_view fragmentS
 	auto fragmentShader = compileShader(fragmentShaderFile, GL_FRAGMENT_SHADER);
 
 	compileProgram(vertexShader, 0, fragmentShader);
+
+	io::Logger::debug("GLShader: compiled shader from " + std::string(vertexShaderFile) + " and " + std::string(fragmentShaderFile));
 }
 
 gl::Shader::Shader(std::string_view vertexShaderFile, std::string_view geometryShaderFile, std::string_view fragmentShaderFile) {
@@ -44,6 +46,13 @@ gl::Shader::Shader(std::string_view vertexShaderFile, std::string_view geometryS
 	auto fragmentShader = compileShader(fragmentShaderFile, GL_FRAGMENT_SHADER);
 
 	compileProgram(vertexShader, geometryShader, fragmentShader);
+
+	io::Logger::debug("GLShader: compiled shader from " 
+					  + std::string(vertexShaderFile) 
+					  + ", "
+					  + std::string(geometryShaderFile)
+					  + " and " 
+					  + std::string(fragmentShaderFile));
 }
 
 gl::Shader::~Shader() {
@@ -78,6 +87,8 @@ void gl::Shader::unbind() {
 utils::Result<GLint> gl::Shader::getVariableLocation(const char* name) const {
 	GLint location = glGetUniformLocation(m_id, name);
 	if (location == -1) {
+		io::Logger::warning("GLShader: failed to find variable " + std::string(name));
+
 		return utils::Failure("Variable not found: " + std::string(name));
 	}
 
@@ -140,7 +151,7 @@ gl::Shader::ShaderObject gl::Shader::compileShader(std::string_view shaderFile, 
 	glGetShaderiv(id, GL_COMPILE_STATUS, &compilationResult);
 	if (!compilationResult) { // Shader compilation failed
 		glGetShaderInfoLog(id, 1024, nullptr, s_infoLog);
-		io::Logger::logError(std::string("Shader compilation error: ") + s_infoLog + "\nShader file: " + fileLoader.getFullPath(shaderFile));
+		io::Logger::error(std::string("Shader compilation error: ") + s_infoLog + "\nShader file: " + fileLoader.getFullPath(shaderFile));
 	}
 
 	return id;
@@ -164,7 +175,7 @@ void gl::Shader::compileProgram(const GLuint vertexShader, const GLuint geometry
 	glGetProgramiv(m_id, GL_LINK_STATUS, &compilationResult);
 	if (!compilationResult) {
 		glGetProgramInfoLog(m_id, 1024, nullptr, s_infoLog);
-		io::Logger::logError(std::string("Shader program linking error: ") + s_infoLog);
+		io::Logger::error(std::string("Shader program linking error: ") + s_infoLog);
 	}
 
 	glDetachShader(m_id, vertexShader);

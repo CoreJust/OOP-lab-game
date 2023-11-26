@@ -6,13 +6,15 @@
 #include <cassert>
 
 #include "IO/File/FileLoader.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "GlobalSettings.h"
 
 gamegui::TextAdapter::TextAdapter(std::string_view fileName) {
 	io::FileLoader loader(GlobalSettings::get().getFontsLocation(), ".ttf");
 	if (!m_font.loadFromFile(loader.getFullPath(fileName))) {
-		io::Logger::logError("Failed to load font: " + std::string(fileName));
+		io::Logger::error("TextAdapter: failed to load font " + std::string(fileName));
+	} else {
+		io::Logger::debug("TextAdapter: loaded font successfully");
 	}
 }
 
@@ -20,6 +22,7 @@ void gamegui::TextAdapter::initTextAdapter() {
 	assert(s_instance == nullptr);
 
 	s_instance = new TextAdapter(GlobalSettings::get().getTextFont());
+	io::Logger::debug("TextAdapter: initialized");
 }
 
 void gamegui::TextAdapter::destroyTextAdapter() {
@@ -27,6 +30,7 @@ void gamegui::TextAdapter::destroyTextAdapter() {
 
 	delete s_instance;
 	s_instance = nullptr;
+	io::Logger::debug("TextAdapter: destroyed");
 }
 
 sf::Font& gamegui::TextAdapter::getFont() {

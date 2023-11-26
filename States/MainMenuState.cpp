@@ -8,13 +8,13 @@
 #include <imgui/imgui-SFML.h>
 #include <imgui/imgui_stdlib.h>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Utils/Seed.h"
 #include "StateManager.h"
 #include "GameState.h"
 
 MainMenuState::MainMenuState(StateManager& pManager) : State(pManager) {
-	io::Logger::logInfo("Initialized MainMenuState");
+	io::Logger::trace("MainMenuState: initialized");
 }
 
 void MainMenuState::freeze() {

@@ -3,6 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #pragma once
+#include <string>
 
 /*
 *	EntityStats.h contains a struct that represents a set of characteristics common
@@ -39,4 +40,6 @@ struct EntityStats {
 	float speed;
 	
 	float hitbox;
+
+	std::string toString(const float health) const;
 };

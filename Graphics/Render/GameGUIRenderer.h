@@ -20,11 +20,9 @@ class GameGUIRenderer final {
 private:
 	std::vector<std::unique_ptr<gamegui::GameGUI>> m_guis;
 
-	sf::Clock m_deltaTimer;
-	bool m_isOpen = false;
-
 public:
 	template<class T, class... Args>
+		requires std::is_base_of_v<gamegui::GameGUI, T>
 	T* registerGameGUI(Args... args) {
 		m_guis.push_back(std::make_unique<T>(std::forward<Args>(args)...));
 
@@ -34,6 +32,4 @@ public:
 	void eraseGameGUI(gamegui::GameGUI* gui);
 
 	void render(sf::RenderWindow& window, Camera& camera);
-
-private:
 };

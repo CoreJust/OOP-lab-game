@@ -5,11 +5,11 @@
 #include "Texture.h"
 #include <SFML/Graphics/Texture.hpp>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 
 Texture::Texture(const std::string& filePath) : m_textureID(0) {
 	if (auto result = loadFromFile(filePath); !result.isOk()) {
-		io::Logger::logError(result.error());
+		io::Logger::error("Texture: " + result.error());
 	}
 }
 

@@ -10,7 +10,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui-SFML.h>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Texture/Texture.h"
 
 Display::Display(uint32_t width, uint32_t height, const sf::String& title, bool useImGui)
@@ -18,6 +18,8 @@ Display::Display(uint32_t width, uint32_t height, const sf::String& title, bool 
 	m_isOwning(true),
 	m_window(new sf::RenderWindow())
 {
+	io::Logger::trace("Display: starting initialization in owning mode");
+
 	s_useImgui.push_back(useImGui);
 
 	sf::ContextSettings sets;
@@ -37,10 +39,10 @@ Display::Display(uint32_t width, uint32_t height, const sf::String& title, bool 
 
 	glewExperimental = GL_TRUE;
 	if (auto errorCode = glewInit(); errorCode != GLEW_OK) {
-		io::Logger::logError("Failed to initialize GLEW: " + std::string((const char*)glewGetErrorString(errorCode)));
+		io::Logger::fatal("Display: failed to initialize GLEW: " + std::string((const char*)glewGetErrorString(errorCode)));
 		return;
 	} else {
-		io::Logger::logInfo("GLEW library initialized successfully");
+		io::Logger::debug("Display: GLEW library initialized successfully");
 	}
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -49,21 +51,28 @@ Display::Display(uint32_t width, uint32_t height, const sf::String& title, bool 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	io::Logger::logInfo("Initialized display and graphics");
+	io::Logger::debug("Display: initialized in owning mode");
 }
 
 Display::Display(sf::RenderWindow& externalWindow, bool useImGui) 
 	: m_isOpen(externalWindow.isOpen()), m_isOwning(false), m_window(&externalWindow) {
+	io::Logger::trace("Display: starting initialization in non-owning mode");
+
 	s_useImgui.push_back(useImGui);
 	updateViewSize();
 
 	if (useImGui && (s_useImgui.size() == 1 || s_useImgui[s_useImgui.size() - 2] == false)) {
 		setupImGui();
 	}
+
+	io::Logger::debug("Display: initialized in non-owning mode");
 }
 
 Display::~Display() {
 	assert(s_useImgui.size());
+
+	io::Logger::trace("Display: starting destruction");
+
 	if (s_useImgui.back() && (s_useImgui.size() == 1 || s_useImgui[s_useImgui.size() - 2] == false)) {
 		destroyImGui();
 	}
@@ -81,6 +90,9 @@ Display::~Display() {
 
 	if (m_isOwning) {
 		delete m_window.get();
+		io::Logger::debug("Display: destroyed in owning mode");
+	} else {
+		io::Logger::debug("Display: destroyed in non-owning mode");
 	}
 }
 
@@ -102,9 +114,16 @@ void Display::pollEvents() {
 		}
 
 		if (event.type == sf::Event::Closed) {
+			io::Logger::debug("Display: close event");
 			close();
 			break;
 		} else if (event.type == sf::Event::Resized) {
+			io::Logger::debug("Display: resize event, new window size: " 
+							  + std::to_string(event.size.height)
+							  + " on "
+							  + std::to_string(event.size.height)
+			);
+
 			updateViewSize();
 		} else if (event.type == sf::Event::MouseWheelScrolled) {
 			m_mouseWheelDelta = event.mouseWheelScroll.delta;
@@ -160,19 +179,23 @@ void Display::updateViewSize() {
 		float raspectRatio = yViewSize / xViewSize;
 		m_window->setView(sf::View(sf::FloatRect(-1, -raspectRatio, 2, 2 * raspectRatio)));
 	}
+
+	io::Logger::trace("Display: view size updated");
 }
 
 void Display::setupImGui() {
 	m_window->setMouseCursorVisible(true);
 	if (!ImGui::SFML::Init(*m_window)) {
-		io::Logger::logError("Failed to initialize ImGui");
+		io::Logger::fatal("Display: failed to initialize ImGui");
 		return;
 	} else {
-		io::Logger::logInfo("ImGui library initialized successfully");
+		io::Logger::debug("Display: ImGui library initialized successfully");
 	}
 }
 
 void Display::destroyImGui() {
 	ImGui::SFML::Shutdown();
 	m_window->setMouseCursorVisible(false);
+
+	io::Logger::debug("Display: ImGui library shut down");
 }

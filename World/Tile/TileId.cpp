@@ -24,9 +24,9 @@ const TileInfo& TileId::getTileInfo() const {
 		TileInfo(TileCategory::FLOOR_OBJECT,TileInfo::INDESTRUCTIBLE,	1.2,				TileInfo::VISIBLE),		// poison cloud
 	};
 
-	assert(m_id < std::size(s_tileIdInfos));
+	assert(m_value < std::size(s_tileIdInfos));
 
-	return s_tileIdInfos[m_id];
+	return s_tileIdInfos[m_value];
 }
 
 const model::ModelDescription& TileId::getModelDescription() const {
@@ -56,13 +56,13 @@ const model::ModelDescription& TileId::getModelDescription() const {
 		model::ModelDescription(model::ShapeId::FLOOR_BOX, /* WHD (sizes) =  */{ 1, 1, 1 })
 	};
 
-	assert(m_id < std::size(s_tileIdModels));
+	assert(m_value < std::size(s_tileIdModels));
 
-	return s_tileIdModels[m_id];
+	return s_tileIdModels[m_value];
 }
 
 model::TextureCoords& TileId::loadToTexCoords(model::TextureCoords& texCoords) const {
-	switch (m_id) {
+	switch (m_value) {
 		case EMPTINESS: break;
 		case STONE_FLOOR: texCoords.addTextureRect(math::Rectf(0, 0, 1, 1)); break;
 		case STONE_WALL: texCoords.addTextureRect(math::Rectf(0, 1, 1, 3)).repeat(4); break;
@@ -91,7 +91,7 @@ bool TileId::isForeground() const {
 	return cat == TileCategory::EMPTINESS || cat == TileCategory::FLOOR_OBJECT || cat == TileCategory::WALL_OBJECT;
 }
 
-std::string TileId::toString() const {
+std::string_view TileId::toString() const {
 	// I'd like to use something like magic_enum here, but it is not OOP
 	static std::string s_tileIdNames[] {
 		"EMPTINESS",
@@ -110,7 +110,7 @@ std::string TileId::toString() const {
 		"NUMBER_TILE_IDS"
 	};
 
-	assert(m_id < std::size(s_tileIdNames));
+	assert(m_value < std::size(s_tileIdNames));
 
-	return s_tileIdNames[m_id];
+	return s_tileIdNames[m_value];
 }

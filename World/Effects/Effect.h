@@ -57,7 +57,7 @@ public:
 	virtual std::unique_ptr<Effect> copy() = 0;
 	
 	inline virtual std::string toString() const {
-		return m_id.toString() + " level " + std::to_string(m_level);
+		return std::string(m_id.toString()) + " level " + std::to_string(m_level);
 	}
 
 	constexpr EffectId getId() const noexcept {

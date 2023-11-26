@@ -4,7 +4,7 @@
 
 #include "EffectId.h"
 
-std::string EffectId::toString() const {
+std::string_view EffectId::toString() const {
 	// I'd like to use something like magic_enum here, but it is not OOP
 	static std::string s_effectIdNames[] {
 		"Acceleration",
@@ -35,7 +35,7 @@ std::string EffectId::toString() const {
 		"NUMBER_EFFECT_IDS"
 	};
 
-	assert(m_id < std::size(s_effectIdNames));
+	assert(m_value < std::size(s_effectIdNames));
 
-	return s_effectIdNames[m_id];
+	return s_effectIdNames[m_value];
 }

@@ -9,7 +9,7 @@
 #include "Math/Collision.h"
 #include "Math/Cmath.h"
 #include "World/World.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "GlobalSettings.h"
 
 EntityController::EntityController(std::unique_ptr<Entity> entity, World& pWorld)
@@ -60,8 +60,8 @@ void EntityController::tryToMove(math::Vector2f offset) {
 	}
 
 	if (GlobalSettings::get().isToLogEntitiesPos()) {
-		io::Logger::logInfo("Entity [" + m_entity->getId().toString() + "]: position: " + m_entity->getPos().toString()
-						+ ", offset: " + offset.toString());
+		io::Logger::info("EntityController: Entity [" + std::string(m_entity->getId().toString()) + "]: position: "
+						 + m_entity->getPos().toString() + ", offset: " + offset.toString());
 	}
 	
 	// Moving

@@ -3,7 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "World.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Utils/Random.h"
 #include "Math/Rasterizer/LineRasterizer.h"
 #include "GlobalSettings.h"
@@ -16,7 +16,7 @@ World::World() : World(WorldLevelId::BASIC_LEVEL) { }
 
 World::World(const math::Vector2i& size) : m_mapper(size) {
 	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(size)) {
-		io::Logger::logError("Too small of a size for a world: " + size.toString());
+		io::Logger::error("World: too small of a size for a world: " + size.toString());
 	}
 
 	// Initializing field
@@ -70,7 +70,7 @@ World& World::operator=(const World& other) {
 	m_mapper.setSize(other.getSize());
 
 	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(getSize())) {
-		io::Logger::logError("Too small of a size for a world: " + getSize().toString());
+		io::Logger::error("World: too small of a size for a world: " + getSize().toString());
 	}
 
 	// Initializing field

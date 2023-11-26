@@ -3,7 +3,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "ModelShader.h"
-#include "IO/Logger.h"
 #include "GlobalSettings.h"
 
 ModelShader::ModelShader(std::string_view vertexShaderFile, std::string_view fragmentShaderFile) 

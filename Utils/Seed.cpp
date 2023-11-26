@@ -8,11 +8,11 @@
 #include <algorithm>
 #include <charconv>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Random.h"
 
 void utils::Seed::setSeed(size_t seed) {
-    io::Logger::logInfo("Global seed set: " + std::to_string(seed));
+    io::Logger::info("Seed: global seed set to " + std::to_string(seed));
 
     s_seed = seed;
     utils::Random<>::setStaticSeed(seed);

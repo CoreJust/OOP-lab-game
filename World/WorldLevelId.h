@@ -28,23 +28,23 @@ public:
 
 public:
 	constexpr WorldLevelId() = delete;
-	constexpr WorldLevelId(Value value) noexcept : BasicId(value) {
+	constexpr WorldLevelId(const Value value) noexcept : BasicId(value) {
 		assert(value < NUMBER_WORLD_LEVEL_IDS);
 	}
 
-	constexpr WorldLevelId& operator=(WorldLevelId other) noexcept {
-		m_id = id_t(other);
+	constexpr WorldLevelId& operator=(const WorldLevelId other) noexcept {
+		m_value = id_t(other);
 
 		return *this;
 	}
 
 	constexpr explicit operator Value() const noexcept {
-		return static_cast<Value>(m_id);
+		return static_cast<Value>(m_value);
 	}
 
 	void loadGenerationSettingsTo(WorldGenerationMaster& generationMaster) const;
 
 	math::Vector2i getWorldSize() const noexcept;
 
-	std::string toString() const override;
+	std::string_view toString() const override;
 };

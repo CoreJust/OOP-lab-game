@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Utils/Random.h"
 #include "GlobalSettings.h"
 #include "Graphics/GameGUI/TextAdapter.h"
@@ -21,7 +21,7 @@
 /*
 *	Long-term TODO: world saves, inventory, audio, enemies, player stats interface, frustum
 *	General TODO: Google test, minimap, more levels, cellular automatons generation, zooming the player in/out,
-*				  review effects stacking
+*				  review effects stacking, smth like TextureAtlas, but more generalized (probably just improve the Texture)
 *	Emergent TODO:
 * 
 *	Bugs:	collision breaks at top-left and down-right angles of non-passable blocks - fixed
@@ -40,32 +40,14 @@
 int main() {
 	///  Initializing  ///
 
-	io::Logger::Settings infoLoggerSettings = io::Logger::Settings {
-		.printHeader = true, 
-		.printDate = false, 
-		.printTime = true, 
-		.printSourceLocation = false 
-	};
-
-	io::Logger::Settings errorLoggerSettings = io::Logger::Settings {
-		.printHeader = true,
-		.printDate = true,
-		.printTime = true,
-		.printSourceLocation = true
-	};
-
-	io::Logger::initInfoLogger(std::cout, infoLoggerSettings);
-	io::Logger::initErrorLogger(std::clog, errorLoggerSettings);
-	io::Logger::logInfo("Initialized loggers");
-
+	io::Logger::initLogger();
 	GlobalSettings::initSettings();
-	io::Logger::logInfo("Loaded global settings");
+	io::Logger::debug("main: initialized setting and loggers");
 
 	gamegui::TextAdapter::initTextAdapter();
-	io::Logger::logInfo("Loaded text font");
 
 	utils::Random<>::initRandom();
-	io::Logger::logInfo("Initialized random");
+	io::Logger::trace("main: initialized random");
 
 
 	///  Running the game  ///
@@ -78,18 +60,16 @@ int main() {
 
 	///  Releasing resources  ///
 
-	io::Logger::logInfo("Game cycle finished; releasing resources...");
+	io::Logger::trace("main: game cycle finished; releasing resources...");
 
 	utils::Random<>::destroyRandom();
-	io::Logger::logInfo("Destroyed random");
+	io::Logger::trace("main: destroyed random");
 
 	gamegui::TextAdapter::destroyTextAdapter();
-	io::Logger::logInfo("Destroyed text font");
-
 	GlobalSettings::destroySettings();
-	io::Logger::logInfo("Destroyed global settings");
+	io::Logger::debug("main: destroyed global settings");
 
-	io::Logger::destroyLoggers();
+	io::Logger::destroyLogger();
 
 	system("pause");
 	return 0;

@@ -21,7 +21,7 @@ namespace gl {
 	// Base class for all the buffer objects (*BO)
 	class BufferObject : public Object {
 	public:
-		void create() override;
-		void release() override;
+		void create() override final;
+		void release() override final;
 	};
 }

@@ -50,26 +50,26 @@ public:
 	}
 
 	constexpr EffectId& operator=(EffectId other) noexcept {
-		m_id = id_t(other);
+		m_value = id_t(other);
 
 		return *this;
 	}
 
 	constexpr explicit operator Value() const noexcept {
-		return static_cast<Value>(m_id);
+		return static_cast<Value>(m_value);
 	}
 
 	constexpr bool isContinuous() const noexcept {
-		return m_id < HEAL;
+		return m_value < HEAL;
 	}
 
 	constexpr bool isPeriodic() const noexcept {
-		return m_id >= CONTINUOUS_HEALING && m_id <= CONTINUOUS_DAMAGE;
+		return m_value >= CONTINUOUS_HEALING && m_value <= CONTINUOUS_DAMAGE;
 	}
 
 	constexpr bool isInstant() const noexcept {
-		return m_id >= HEAL && m_id < NUMBER_EFFECT_IDS;
+		return m_value >= HEAL && m_value < NUMBER_EFFECT_IDS;
 	}
 
-	std::string toString() const override;
+	std::string_view toString() const override;
 };

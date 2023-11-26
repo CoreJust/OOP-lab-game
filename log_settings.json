@@ -1,0 +1,10 @@
+{
+	"logging_level": "debug",
+	"log_date_from_level": "error",
+	"log_time_from_level": "trace",
+	"log_source_from_level": "error",
+	"targets": [
+		"console",
+		"OOP_lab6_log.txt"
+	]
+}

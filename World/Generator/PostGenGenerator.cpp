@@ -4,7 +4,7 @@
 
 #include "PostGenGenerator.h"
 #include "Math/WaveFrontWalker.h"
-#include "IO/Logger.h"
+#include "IO/Logger/Logger.h"
 #include "Utils/Random.h"
 #include "Math/ChanceDistribution.h"
 
@@ -98,7 +98,7 @@ void PostGenGenerator::createDecorations() {
 	// Next level portal
 	math::Vector2i nextLevelPortalPos = m_pWorld.getRandomPassableLocation();
 	m_pWorld.atMut(1, nextLevelPortalPos) = Tile(TileId::NEXT_LEVEL_PORTAL);
-	io::Logger::logInfo("Generated next level portal at: " + nextLevelPortalPos.toString());
+	io::Logger::info("PostGenGenerator: generated next level portal at " + nextLevelPortalPos.toString());
 }
 
 uint32_t PostGenGenerator::clusterWorldCavities(std::vector<int32_t>& map) {

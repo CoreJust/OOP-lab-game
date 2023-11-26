@@ -3,6 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "FileInput.h"
+#include "IO/Logger/Logger.h"
+#include "IO/Message/KeyMessage.h"
 
 io::FileInput::FileInput(const float& mouseWheelDelta, const std::string& fileName) noexcept
     : VirtualInput(mouseWheelDelta), m_loader(fileName, /* is reading = */true) {
@@ -20,11 +22,21 @@ bool io::FileInput::update(float& deltaTime) {
 }
 
 bool io::FileInput::isKeyPressed(const Key key) const {
-    return m_loader.state().keysState[m_keyBindings.getKey(key)];
+    bool result = m_loader.state().keysState[m_keyBindings.getKey(key)];
+    if (result) {
+        Logger::message(KeyMessage(m_keyBindings.getKey(key), key, true));
+    }
+
+    return result;
 }
 
 bool io::FileInput::isKeyReleased(const Key key) const {
-    return !m_loader.state().keysState[m_keyBindings.getKey(key)];
+    bool result = !m_loader.state().keysState[m_keyBindings.getKey(key)];
+    if (result) {
+        Logger::message(KeyMessage(m_keyBindings.getKey(key), key, false));
+    }
+
+    return result;
 }
 
 bool io::FileInput::isMouseButtonPressed(const MouseButton btn) const {
