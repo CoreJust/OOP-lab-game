@@ -11,6 +11,7 @@
 #include "World/Tile/TileId.h"
 #include "Graphics/Texture/ResourceManager.h"
 #include "Graphics/Shader/TileShader.h"
+#include "Graphics/Shader/ModelShaderRegistry.h"
 #include "Graphics/Model/TileModel.h"
 #include "Graphics/Camera.h"
 
@@ -34,13 +35,14 @@ private:
 
 private:
 	ResourceManager& m_pManager;
+	ModelShaderRegistry& m_pMSR;
 	TileShader m_shader;
 
 	std::vector<TileModelInfo> m_models;
 	std::vector<TileRenderInfo> m_tiles{ };
 
 public:
-	TileRenderer(ResourceManager& pManager);
+	TileRenderer(ResourceManager& pManager, ModelShaderRegistry& msr);
 
 	void addTile(const math::Vector2f& pos, const TileId id);
 	void addTile(const math::Vector2f& pos, const TileId id, const math::DirectionFlag VNS);

@@ -3,5 +3,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "TileShader.h"
+#include "ModelShaderRegistry.h"
 
-TileShader::TileShader() : ModelShader("tile_vertex", "tile_fragment") { }
+TileShader::TileShader(ModelShaderRegistry& msr) : ModelShader(msr, "tile_vertex", "tile_fragment") { }

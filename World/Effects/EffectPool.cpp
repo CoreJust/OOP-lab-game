@@ -27,26 +27,33 @@ EffectPool& EffectPool::operator=(EffectPool&& other) {
 }
 
 void EffectPool::update(const float deltaTime) {
-	for (auto it = m_effects.begin(); it != m_effects.end(); ++it) {
-		if ((*it)->update(m_pEntity, m_pWorld, deltaTime)) {
-			it = m_effects.erase(it);
+	for (id_t id = 0; id < EffectId::NUMBER_EFFECT_IDS; id++) {
+		for (auto it = m_effects[id].begin(); it != m_effects[id].end(); ++it) {
+			if ((*it)->update(m_pEntity, m_pWorld, deltaTime)) {
+				it = m_effects[id].erase(it);
 
-			if (it == m_effects.end()) {
-				break;
+				if (it == m_effects[id].end()) {
+					break;
+				}
 			}
 		}
 	}
 }
 
 void EffectPool::pushEffect(std::shared_ptr<Effect> effect) {
-	if (effect->getId() == EffectId::IMMORTALITY 
-		|| effect->getId() == EffectId::SPIRITUAL_FORM 
-		|| effect->getId() == EffectId::INVISIBILITY) {
-		for (auto& e : m_effects) {
-			if (e->getId() == effect->getId()) {
-				((ContinuousEffect*)e.get())->updateTime(*(ContinuousEffect*)effect.get());
+	const EffectId id = effect->getId();
+	if (!id.isInstant()) {
+		const float level = effect->getLevel();
+		auto& lst = m_effects[id];
+		ContinuousEffect* asCE = (ContinuousEffect*)effect.get();
 
-				return;
+		for (auto it = lst.begin(); it != lst.end(); it++) {
+			ContinuousEffect* ce = (ContinuousEffect*)it->get();
+			if (ce->getLevel() == level) {
+				if (ce->getTimeLeft() < asCE->getTimeLeft()) {
+					ce->setTime(asCE->getTimeLeft());
+					return;
+				}
 			}
 		}
 	}
@@ -56,5 +63,5 @@ void EffectPool::pushEffect(std::shared_ptr<Effect> effect) {
 		// MESSAGE
 	}
 
-	m_effects.push_front(std::move(effect));
+	m_effects[id].push_front(std::move(effect));
 }

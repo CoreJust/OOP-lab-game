@@ -19,7 +19,7 @@ namespace utils {
 	template<std::integral T>
 	class EnumWrap {
 	protected:
-		T m_value;
+		T m_value = 0;
 
 	public:
 		constexpr EnumWrap() noexcept = default;

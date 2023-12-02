@@ -16,18 +16,15 @@ namespace io {
 	private:
 		math::Vector2f m_pos;
 
+	protected:
+		inline std::ostream& printTo(std::ostream& out) const override {
+			return out << "Player lost at " << m_pos.to<int>().toString();
+		}
+
 	public:
 		constexpr PlayerLostMessage(
 			const math::Vector2f& pos,
 			const std::source_location location = std::source_location::current()
 		) noexcept : Message(location), m_pos(pos) { }
-
-		std::ostream& printTo(std::ostream& out) const override {
-			return out << "Player lost at " << m_pos.to<int>().toString();
-		}
-
-		friend std::ostream& operator<<(std::ostream& out, const PlayerLostMessage& msg) {
-			return msg.printTo(out);
-		}
 	};
 }

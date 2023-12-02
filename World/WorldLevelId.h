@@ -3,6 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #pragma once
+#include <string>
+#include <vector>
 #include "Utils/BasicId.h"
 #include "Math/Vector.h"
 
@@ -21,6 +23,7 @@ class WorldLevelId final : public BasicId {
 public:
 	enum Value : id_t {
 		BASIC_LEVEL = 0,
+		MAZE_LEVEL,
 		SANCTUARY_LEVEL,
 
 		NUMBER_WORLD_LEVEL_IDS
@@ -45,6 +48,11 @@ public:
 	void loadGenerationSettingsTo(WorldGenerationMaster& generationMaster) const;
 
 	math::Vector2i getWorldSize() const noexcept;
+	const std::vector<std::string>& getTutorialTexts() const noexcept;
 
 	std::string_view toString() const override;
+
+	constexpr WorldLevelId nextLevelId() const noexcept {
+		return WorldLevelId(Value(m_value + 1));
+	}
 };

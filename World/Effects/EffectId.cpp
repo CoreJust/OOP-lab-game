@@ -22,6 +22,8 @@ std::string_view EffectId::toString() const {
 		"Healing",
 		"Damage",
 
+		"Blindness",
+
 		"Immortality",
 		"Spiritual form",
 

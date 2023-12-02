@@ -30,6 +30,7 @@ void ContinuousEffect::applyTo(Entity& entity, World& world) {
 		case EffectId::POWER_DECREASE: entity.getStatsMut().power /= 1.f + Effect::EFFECT_BASE_PER_LEVEL * m_level; break;
 		case EffectId::DEFENCE_INCREASE: entity.getStatsMut().defence *= 1.f + Effect::EFFECT_BASE_PER_LEVEL * m_level; break;
 		case EffectId::DEFENCE_DECREASE: entity.getStatsMut().defence /= 1.f + Effect::EFFECT_BASE_PER_LEVEL * m_level; break;
+		case EffectId::BLINDNESS: entity.setBlind(true); break;
 		case EffectId::IMMORTALITY: entity.setImmortalMode(true); break;
 		case EffectId::SPIRITUAL_FORM: entity.setSpiritualMode(true); break;
 		case EffectId::INVISIBILITY: entity.setInvisibleMode(true); break;
@@ -63,6 +64,7 @@ void ContinuousEffect::eraseEffect(Entity& entity, World& world) {
 		case EffectId::POWER_DECREASE: entity.getStatsMut().power *= 1.f + Effect::EFFECT_BASE_PER_LEVEL * m_level; break;
 		case EffectId::DEFENCE_INCREASE: entity.getStatsMut().defence /= 1.f + Effect::EFFECT_BASE_PER_LEVEL * m_level; break;
 		case EffectId::DEFENCE_DECREASE: entity.getStatsMut().defence *= 1.f + Effect::EFFECT_BASE_PER_LEVEL * m_level; break;
+		case EffectId::BLINDNESS: entity.setBlind(false); break;
 		case EffectId::IMMORTALITY: entity.setImmortalMode(false); break;
 		case EffectId::SPIRITUAL_FORM: entity.setSpiritualMode(false); break;
 		case EffectId::INVISIBILITY: entity.setInvisibleMode(false); break;

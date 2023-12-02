@@ -4,7 +4,9 @@
 
 #include "Logger.h"
 #include <format>
+
 #include "IO/File/LoggerSettingsLoader.h"
+#include "IO/Message/Message.h"
 
 io::Logger::Logger(Settings settings, std::vector<LogTarget> targets)
     : m_settings(std::move(settings)), m_targets(std::move(targets)) {
@@ -24,6 +26,17 @@ void io::Logger::log(LogLevel level, std::string_view message, const std::source
     std::string logStr = getLogString(level, loc, std::chrono::system_clock::now());
     for (auto& target : m_targets) {
         target.target() << logStr << message << std::endl;
+    }
+}
+
+void io::Logger::log(const Message& msg) {
+    if (!m_settings.loggingLevel.allowsLoggingOf(msg.getLogLevel())) {
+        return; // Doesn't log anything
+    }
+
+    std::string logStr = getLogString(msg.getLogLevel(), msg.getLocation(), msg.getCreationTime());
+    for (auto& target : m_targets) {
+        target.target() << logStr << "MESSAGE: " << msg << std::endl;
     }
 }
 
@@ -116,4 +129,10 @@ void io::Logger::fatal(std::string_view message, const std::source_location& loc
     assert(s_logger != nullptr);
 
     s_logger->log(LogLevel::FATAL, message, loc);
+}
+
+void io::Logger::message(const Message& msg) {
+    assert(s_logger != nullptr);
+
+    s_logger->log(msg);
 }

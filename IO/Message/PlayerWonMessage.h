@@ -21,19 +21,16 @@ namespace io {
 		EntityStats m_stats;
 		float m_health;
 
+	protected:
+		inline std::ostream& printTo(std::ostream& out) const override {
+			return out << "Player won(?), the stats are " << m_stats.toString(m_health);
+		}
+
 	public:
 		constexpr PlayerWonMessage(
 			EntityStats playerStats,
 			const float health,
 			const std::source_location location = std::source_location::current()
 		) noexcept : Message(location), m_stats(std::move(playerStats)), m_health(health) { }
-
-		std::ostream& printTo(std::ostream& out) const override {
-			return out << "Player won(?), the stats are " << m_stats.toString(m_health);
-		}
-
-		friend std::ostream& operator<<(std::ostream& out, const PlayerWonMessage& msg) {
-			return msg.printTo(out);
-		}
 	};
 }

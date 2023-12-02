@@ -127,6 +127,10 @@ void Entity::setSpiritualMode(const bool mode) noexcept {
 	m_spiritualMode = mode;
 }
 
+void Entity::setBlind(const bool value) noexcept {
+	m_isBlind = value;
+}
+
 float Entity::getHealth() const noexcept {
 	return m_health;
 }
@@ -157,6 +161,10 @@ bool Entity::isInInvisibleMode() const noexcept {
 
 bool Entity::isInSpiritualMode() const noexcept {
 	return m_spiritualMode;
+}
+
+bool Entity::isBlind() const noexcept {
+	return m_isBlind;
 }
 
 bool Entity::isAlive() const noexcept {

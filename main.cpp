@@ -8,6 +8,7 @@
 #include "Utils/Random.h"
 #include "GlobalSettings.h"
 #include "Graphics/GameGUI/TextAdapter.h"
+#include "Audio/AudioMaster.h"
 
 #include "Game.h"
 
@@ -19,22 +20,38 @@
 */
 
 /*
-*	Long-term TODO: world saves, inventory, audio, enemies, player stats interface, frustum
-*	General TODO: Google test, minimap, more levels, cellular automatons generation, zooming the player in/out,
-*				  review effects stacking, smth like TextureAtlas, but more generalized (probably just improve the Texture)
+*	Long-term TODO: world saves, inventory, player stats interface, frustum
+*	General TODO: Google test, cellular automatons generation, zooming the player in/out, fix camera in the walls
+*				  smth like TextureAtlas, but more generalized (probably just improve the Texture),
+*				  move all the possible stuff into .cpp file so as to boost compilation, player attacking the enemies
 *	Emergent TODO:
 * 
 *	Bugs:	collision breaks at top-left and down-right angles of non-passable blocks - fixed
 *			progress bars displayment as big white squares - fixed
 *			having partially default bindings with user ones allows doubling of real commands - fixed
 *			if player didn't move after teleportation, the camera was left in the previous position - fixed
+*			accidental runtime error after closing the main window directly and trying to close the console - fixed
 * 
-*			accidental runtime error after closing the main window directly and trying to close the console ?
 *			if the console is selected and we tap "play", then move the mouse out of the window
 *				and remove selection, then the mouse gets stuck there unless we press escape and
 *				move the mouse back to the window !
 *			in the recentmost version the file input acts strange - it reproduces actions not exactly !
 *			in the file input mode user cannot conveniently close the game !
+* 
+*	Current game info (last check):
+*		Lines of code: ~17 000 lines
+*		Number of files (.cpp and .h) : number of classes with separate file (and the main func):
+*			Audio module:	 10 files : 5  classes
+*			Graphics module: 74 files : 42 classes
+*			I/O module:		 36 files : 24 classes
+*			Math module:	 20 files : 18 classes
+*			States module:	 9  files : 5  classes
+*			Utils module:	 12 files : 10 classes
+*			World module:	 79 files : 44 classes
+*			Shaders:		 6  files : 3  shaders
+*			Global:			 5  files : 3  classes
+* 
+*			Total:			 251 files : 154 classes
 */
 
 int main() {
@@ -49,6 +66,8 @@ int main() {
 	utils::Random<>::initRandom();
 	io::Logger::trace("main: initialized random");
 
+	audio::AudioMaster::init();
+
 
 	///  Running the game  ///
 
@@ -59,6 +78,8 @@ int main() {
 
 
 	///  Releasing resources  ///
+
+	audio::AudioMaster::destroy();
 
 	io::Logger::trace("main: game cycle finished; releasing resources...");
 

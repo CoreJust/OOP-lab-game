@@ -262,6 +262,26 @@ namespace math {
 			return Vector2(m_y, m_x);
 		}
 
+		constexpr Vector2 move(const Vector2& offset) const noexcept {
+			return *this + offset;
+		}
+
+		constexpr Vector2 up(const T offset = 1) const noexcept {
+			return Vector2(m_x, m_y - offset);
+		}
+
+		constexpr Vector2 down(const T offset = 1) const noexcept {
+			return Vector2(m_x, m_y + offset);
+		}
+
+		constexpr Vector2 right(const T offset = 1) const noexcept {
+			return Vector2(m_x + offset, m_y);
+		}
+
+		constexpr Vector2 left(const T offset = 1) const noexcept {
+			return Vector2(m_x - offset, m_y);
+		}
+
 		constexpr Vector2 mirrorByX() const noexcept {
 			return Vector2(-m_x, m_y);
 		}
@@ -338,6 +358,7 @@ namespace math {
 	};
 
 	using Vector2f = Vector2<float>;
+	using Vector2d = Vector2<double>;
 	using Vector2i = Vector2<int32_t>;
 	using Vector2u = Vector2<uint32_t>;
 }

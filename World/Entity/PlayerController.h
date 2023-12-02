@@ -31,7 +31,7 @@ public:
 	PlayerContoller(std::unique_ptr<Player> player, World& pWorld);
 
 	// Handles player input and controls player
-	void update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input) override;
+	void update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input);
 	void draw(RenderMaster& renderMaster) override;
 
 	void initGUI(RenderMaster& renderMaster, Camera& camera);

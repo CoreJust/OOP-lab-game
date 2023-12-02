@@ -17,7 +17,8 @@
 *		2) defence - diminishes the incoming damage with a difficult scale (explained in the entity class)
 *		3) power - increases the outgoing damage and (possibly, in the future) the ability to destroy things
 *		4) speed - the movement speed base (then it is modified with the tiles' speed modifier)
-*		5) hitbox - the "size" of the entity - from its center (position) to its bounds:
+*		5) agility - the attack speed (each 5 is 1 attack per second)
+*		6) hitbox - the "size" of the entity - from its center (position) to its bounds:
 *		
 *					-----------------------
 *					|		   |		  |
@@ -38,6 +39,7 @@ struct EntityStats {
 	float defence;
 	float power;
 	float speed;
+	float agility;
 	
 	float hitbox;
 

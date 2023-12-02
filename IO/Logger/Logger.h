@@ -4,11 +4,11 @@
 
 #pragma once
 #include <vector>
+#include <chrono>
 #include <source_location>
 
 #include "LogLevel.h"
 #include "LogTarget.h"
-#include "IO/Message/Message.h"
 
 /*
 *	Logger(.h/.cpp) contains a class that allows to log information and errors.
@@ -22,6 +22,8 @@
 */
 
 namespace io {
+    class Message;
+
     // Mostly consists of static interface
     // Implements a modified singleton pattern
     class Logger final {
@@ -47,17 +49,7 @@ namespace io {
         void set(Settings settings, std::vector<LogTarget> targets);
 
         void log(LogLevel level, std::string_view message, const std::source_location& loc);
-
-        void log(const MessageClass auto& msg) {
-            if (!m_settings.loggingLevel.allowsLoggingOf(msg.getLogLevel())) {
-                return; // Doesn't log anything
-            }
-
-            std::string logStr = getLogString(msg.getLogLevel(), msg.getLocation(), msg.getCreationTime());
-            for (auto& target : m_targets) {
-                target.target() << logStr << msg << std::endl;
-            }
-        }
+        void log(const Message& msg);
 
         std::string getLogString(LogLevel level, const std::source_location& loc, const std::chrono::system_clock::time_point& time);
 
@@ -72,10 +64,6 @@ namespace io {
         static void error(std::string_view message, const std::source_location& loc = std::source_location::current());
         static void fatal(std::string_view message, const std::source_location& loc = std::source_location::current());
 
-        static void message(const MessageClass auto& msg) {
-            assert(s_logger != nullptr);
-
-            s_logger->log(msg);
-        }
+        static void message(const Message& msg);
     };
 }

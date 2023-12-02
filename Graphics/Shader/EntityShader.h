@@ -11,5 +11,5 @@
 
 class EntityShader final : public ModelShader {
 public:
-	EntityShader();
+	EntityShader(ModelShaderRegistry& msr);
 };

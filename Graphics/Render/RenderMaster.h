@@ -45,20 +45,33 @@
 *		or even mere console graphics.
 */
 
+class Player;
+
+namespace gamegui {
+	class Minimap;
+	class PlayTime;
+}
+
 class RenderMaster final {
 private:
 	ResourceManager m_resources;
+	ModelShaderRegistry m_modelShaders;
 
 	EntityRenderer m_entityRenderer;
 	TileRenderer m_tileRenderer;
 	GameGUIRenderer m_guiRenderer;
 
 	gl::ContextManager m_contextManager;
-	gl::ContextManager::ContextRef m_generalContext;
+	gl::ContextManager::ContextRef m_tileContext;
+	gl::ContextManager::ContextRef m_entityContext;
+
+	gamegui::Minimap* m_minimap;
+	gamegui::PlayTime* m_playtime;
 
 public:
 	RenderMaster();
 
+	void setPlayerData(const Player& player);
 	void drawEntity(model::EntityModel& entityModel);
 	void drawTile(const TileId id, const math::Vector2f& position, const math::DirectionFlag VNS);
 
@@ -66,4 +79,8 @@ public:
 
 	GameGUIRenderer& getGameGuiRenderer() noexcept;
 	ResourceManager& getResources() noexcept;
+
+	constexpr gamegui::PlayTime* getPlayTime() noexcept {
+		return m_playtime;
+	}
 };

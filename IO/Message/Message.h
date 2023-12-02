@@ -28,11 +28,18 @@ namespace io {
 		std::source_location m_location;
 
 	protected:
-		constexpr Message(std::source_location location) noexcept : m_location(std::move(location)) { }
+		constexpr Message(std::source_location location) noexcept 
+			: m_location(std::move(location)) {
+			if (std::is_constant_evaluated()) {
+				m_creationTime = std::chrono::system_clock::time_point();
+			} else {
+				m_creationTime = std::chrono::system_clock::now();
+			}
+		}
 
-	public:
 		virtual std::ostream& printTo(std::ostream& out) const = 0;
 
+	public:
 		virtual LogLevel getLogLevel() const {
 			return LogLevel::INFO; // Default
 		}
@@ -44,10 +51,16 @@ namespace io {
 		constexpr const std::source_location& getLocation() const noexcept {
 			return m_location;
 		}
+		
+		friend std::ostream& operator<<(std::ostream& out, const Message& msg) {
+			return msg.printTo(out);
+		}
 	};
 
+	/*
 	template<class T>
 	concept MessageClass = std::is_base_of_v<Message, T>&& requires(T msg, std::ostream& out) { 
 		{ out << msg } -> std::same_as<std::ostream&>;
 	};
+	*/
 }

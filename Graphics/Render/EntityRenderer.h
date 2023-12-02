@@ -11,6 +11,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Texture/ResourceManager.h"
 #include "Graphics/Shader/EntityShader.h"
+#include "Graphics/Shader/ModelShaderRegistry.h"
 #include "Graphics/Model/EntityModel.h"
 
 /*
@@ -22,9 +23,12 @@ class EntityRenderer final {
 private:
 	std::vector<utils::NoNullptr<model::EntityModel>> m_entities;
 
+	ModelShaderRegistry& m_pMSR;
 	EntityShader m_shader;
 
 public:
+	EntityRenderer(ModelShaderRegistry& msr);
+
 	void addEntity(utils::NoNullptr<model::EntityModel> model);
 
 	void render(sf::RenderWindow& window, Camera& camera, ResourceManager& resources);

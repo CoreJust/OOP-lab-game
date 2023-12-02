@@ -48,6 +48,10 @@ const std::string& GlobalSettings::getTextFont() const noexcept {
 	return m_textFont;
 }
 
+float GlobalSettings::getVolume() const noexcept {
+	return m_volume;
+}
+
 uint32_t GlobalSettings::getMaxRenderDistance() const noexcept {
 	return m_maxRenderDistance;
 }
@@ -62,6 +66,10 @@ int32_t GlobalSettings::getFogPower() const noexcept {
 
 bool GlobalSettings::isEnableVerticalViewMoving() const noexcept {
 	return m_enableVerticalViewMoving;
+}
+
+bool GlobalSettings::isTutorialEnabled() const noexcept {
+	return m_enableTutorials;
 }
 
 const std::string& GlobalSettings::getBindingsFile() const noexcept {

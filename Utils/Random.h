@@ -50,12 +50,18 @@ namespace utils {
 			m_rand.seed(seed);
 		}
 
-		template<class T, DistributionConcept<T> Distribution = std::uniform_int_distribution<T>>
+		template<class T, DistributionConcept<T> Distribution = std::uniform_int_distribution<
+				std::conditional_t<std::is_signed_v<T>, int64_t, uint64_t>>
+			>
 			requires std::is_arithmetic_v<T>
-		inline T random(T from, T to) {
+		T random(T from, T to) {
 			Distribution dist(from, to);
 
-			return dist(m_rand);
+			return T(dist(m_rand));
+		}
+
+		constexpr const RandomGenerator& getRG() const noexcept {
+			return m_rand;
 		}
 
 	public:
@@ -79,7 +85,7 @@ namespace utils {
 
 		template<class T, DistributionConcept<T> Distribution = std::uniform_int_distribution<T>>
 			requires std::is_arithmetic_v<T>
-		inline static T rand(T from, T to) {
+		static T rand(T from, T to) {
 			assert(s_random);
 
 			return s_random->random<T, Distribution>(from, to);

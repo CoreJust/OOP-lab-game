@@ -19,7 +19,7 @@ EntityController::EntityController(std::unique_ptr<Entity> entity, World& pWorld
 
 }
 
-void EntityController::update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input) {
+void EntityController::update(const float deltaTime) {
 	m_entity->getEffectPoolMut().update(deltaTime);
 
 	for (const math::Vector2i& pos : math::Rectf(m_entity->getPos(), m_entity->getId().getEntityStats().hitbox)) {
@@ -43,11 +43,10 @@ void EntityController::draw(RenderMaster& renderMaster) {
 	renderMaster.drawEntity(*m_model);
 }
 
-void EntityController::tryToMove(math::Vector2f offset) {
-	offset = offset.rotate(m_entity->getRot());
-
+bool EntityController::tryToMove(math::Vector2f offset) {
 	// Collision check
 
+	const math::Vector2f originalOffset = offset;
 	if (!m_entity->isInSpiritualMode()) {
 		offset = math::Collision(
 			m_entity->getPos(),
@@ -70,6 +69,8 @@ void EntityController::tryToMove(math::Vector2f offset) {
 	if (offset.x() || offset.y()) {
 		m_model->sceneObject().rot.y = -offset.rotationNegOY();
 	}
+
+	return originalOffset != offset;
 }
 
 float EntityController::calculateSpeed() const {
@@ -80,13 +81,13 @@ float EntityController::calculateSpeed() const {
 	math::Vector2i pos = entityRect.topLeft().roundFloor().to<int>();
 	for (int32_t x = 0; x < 2; x++) {
 		for (int32_t y = 0; y < 2; y++) {
-			const Tile& tile = m_pWorld.at(0, pos + math::Vector2i { x, y });
-			const Tile& tileFront = m_pWorld.at(1, pos + math::Vector2i { x, y });
-
-			if (tile.isObstacle() || tileFront.isObstacle()) {
+			const math::Vector2i tilePos = pos + math::Vector2i(x, y);
+			if (m_pWorld.isObstacleAt(tilePos)) {
 				result += proportions.at(x, y); // so that we don't get stuck in the wall in case something happened
 			} else {
-				float speedModifier = math::Cmath::min(tile.getId().getTileInfo().speedModifier, tileFront.getId().getTileInfo().speedModifier);
+				const Tile& tile = m_pWorld.at(0, tilePos);
+				const Tile& tileFront = m_pWorld.at(1, tilePos);
+				const float speedModifier = math::Cmath::min(tile.getId().getTileInfo().speedModifier, tileFront.getId().getTileInfo().speedModifier);
 				result += proportions.at(x, y) * speedModifier;
 			}
 		}

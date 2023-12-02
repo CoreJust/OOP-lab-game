@@ -6,6 +6,7 @@
 #include "../TileData.h"
 #include "World/World.h"
 #include "World/Entity/Player.h"
+#include "Audio/SoundId.h"
 
 /*
 *	EffectGiverTileData(.h/.cpp) contains a class that represents one of the possible TileDatas.
@@ -20,8 +21,10 @@ private:
 	float m_coolDown;
 	float m_coolDownTimer = 0.f;
 
+	audio::SoundId m_activationSound;
+
 public:
-	EffectGiverTileData(std::vector<std::shared_ptr<Effect>> effects, const float coolDown = 0.f);
+	EffectGiverTileData(const audio::SoundId sound, std::vector<std::shared_ptr<Effect>> effects, const float coolDown = 0.f);
 
 	void update(math::Vector2f pos, World& world, Player& player, const float deltaTime) override;
 	void onStep(math::Vector2f pos, World& world, Entity& entity) override;

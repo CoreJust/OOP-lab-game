@@ -43,6 +43,9 @@ namespace gamegui {
 		int8_t open(sf::RenderWindow& window);
 
 	public:
+		static void infoMessage(const std::string& title, const std::string& text);
+
+	public:
 		static void initGUI(sf::RenderWindow& window);
 	};
 }

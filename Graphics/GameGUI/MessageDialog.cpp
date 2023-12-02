@@ -12,6 +12,7 @@
 
 #include "IO/Logger/Logger.h"
 #include "Graphics/Display.h"
+#include "Audio/AudioMaster.h"
 
 gamegui::MessageDialog::MessageDialog(const std::string& title, const std::string& text, const std::string& button1, const std::string& button2)
 	: m_title(title), m_text(text), m_button1(button1), m_button2(button2) {
@@ -50,11 +51,15 @@ int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 		if (ImGui::Button(m_button1.data())) {
 			result = 1;
 			display.close();
+
+			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 			
 			io::Logger::debug("MessageDialog: button 1 pressed");
 		} else if (!m_button2.empty() && ImGui::Button(m_button2.data())) {
 			result = 2;
 			display.close();
+
+			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 
 			io::Logger::debug("MessageDialog: button 2 pressed");
 		}
@@ -66,6 +71,11 @@ int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 	}
 
 	return result;
+}
+
+void gamegui::MessageDialog::infoMessage(const std::string& title, const std::string& text) {
+	MessageDialog dialog(title, text);
+	dialog.open();
 }
 
 void gamegui::MessageDialog::initGUI(sf::RenderWindow& window) {

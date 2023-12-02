@@ -84,30 +84,31 @@ bool Tile::isVisible() const noexcept {
 
 std::unique_ptr<TileData> Tile::getDefaultTileDataFor(TileId id) const {
 	switch (m_id) {
-	case TileId::STONE_PORTAL: {
-		std::vector<std::shared_ptr<Effect>> effects;
-		effects.emplace_back(std::make_shared<InstantEffect>(EffectId::RANDOM_TELEPORTATION));
-		effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::INVISIBILITY, 1.f, 6.f));
+		case TileId::STONE_PORTAL: {
+			std::vector<std::shared_ptr<Effect>> effects;
+			effects.emplace_back(std::make_shared<InstantEffect>(EffectId::RANDOM_TELEPORTATION));
+			effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::INVISIBILITY, 1.f, 6.f));
 
-		return std::make_unique<EffectGiverTileData>(std::move(effects), 2.f);
-	} case TileId::NEXT_LEVEL_PORTAL: {
-		return std::make_unique<LevelChangerTileData>(WorldLevelId::SANCTUARY_LEVEL);
-	} case TileId::SAINT_SPRINGS: {
-		std::vector<std::shared_ptr<Effect>> effects;
-		effects.emplace_back(std::make_shared<PeriodicalEffect>(EffectId::CONTINUOUS_HEALING, 2.f, 17.f, 2.5f));
-		effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::ACCELERATION, 4.f, 9.f));
-		effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::IMMORTALITY, 1.f, 1.5f));
+			return std::make_unique<EffectGiverTileData>(audio::SoundId::SOUND_TELEPORTATION, std::move(effects), 2.f);
+		} case TileId::NEXT_LEVEL_PORTAL: {
+			return std::make_unique<LevelChangerTileData>();
+		} case TileId::SAINT_SPRINGS: {
+			std::vector<std::shared_ptr<Effect>> effects;
+			effects.emplace_back(std::make_shared<InstantEffect>(EffectId::HEAL));
+			effects.emplace_back(std::make_shared<PeriodicalEffect>(EffectId::CONTINUOUS_HEALING, 2.f, 17.f, 2.5f));
+			effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::ACCELERATION, 4.f, 9.f));
+			effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::IMMORTALITY, 1.f, 1.5f));
 
-		return std::make_unique<EffectGiverTileData>(std::move(effects), 9.f);
-	} case TileId::POISON_CLOUD: {
-		std::vector<std::shared_ptr<Effect>> effects;
-		effects.emplace_back(std::make_shared<InstantEffect>(EffectId::DAMAGE, 1.f));
-		effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::DECCELERATION, 1.f, 2.f));
+			return std::make_unique<EffectGiverTileData>(audio::SoundId::SOUND_SAINT_SPRINGS_BUFF, std::move(effects), 9.f);
+		} case TileId::POISON_CLOUD: {
+			std::vector<std::shared_ptr<Effect>> effects;
+			effects.emplace_back(std::make_shared<InstantEffect>(EffectId::DAMAGE, 1.f));
+			effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::DECCELERATION, 1.f, 2.f));
 
-		return std::make_unique<EffectGiverTileData>(std::move(effects), 1.f);
-	} default:
-		break;
+			return std::make_unique<EffectGiverTileData>(audio::SoundId::SOUND_POISONING, std::move(effects), 1.f);
+		} 
+	default: break;
 	}
 
-	return std::unique_ptr<TileData>();
+	return nullptr;
 }

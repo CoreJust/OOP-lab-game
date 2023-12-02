@@ -4,22 +4,24 @@
 
 #include "GameState.h"
 #include "IO/Logger/Logger.h"
-#include "IO/Message/NewLevelMessage.h"
 #include "IO/Message/PlayerLostMessage.h"
+#include "World/LevelLoader.h"
 #include "Graphics/GameGUI/MessageDialog.h"
+#include "Graphics/GameGUI/PlayTime.h"
 #include "StateManager.h"
 
 GameState::GameState(StateManager& pManager)
 	: RenderableState(pManager),
-	m_world(WorldLevelId::BASIC_LEVEL),
+	m_world(),
 	m_playerController(std::make_unique<Player>(m_world), m_world)
 {
-	io::Logger::message(io::NewLevelMessage(m_world.getActualSize(), m_playerController.getPlayer().getPos()));
+	LevelLoader(m_world, m_playerController.getPlayer(), true).loadLevel(WorldLevelId::BASIC_LEVEL);
 
 	m_camera.addRotationCallback(m_playerController.createOnRotation());
 	m_camera.setFOV(50.f);
 
 	m_playerController.initGUI(m_renderMaster, m_camera);
+	m_renderMaster.getPlayTime()->reset();
 
 	io::Logger::trace("GameState: initialized");
 }
@@ -29,7 +31,7 @@ void GameState::freeze() {
 }
 
 void GameState::revive() {
-	// Nothing in here
+	m_renderMaster.getPlayTime()->reset();
 }
 
 void GameState::update(float deltaTime, utils::NoNullptr<io::VirtualInput> input) {
@@ -49,6 +51,7 @@ void GameState::render(sf::RenderWindow& window) {
 		// m_playerController.initGUI(m_renderMaster, m_camera); // deprecated
 	}
 
+	m_renderMaster.setPlayerData(m_playerController.getPlayer());
 	m_world.draw(m_renderMaster, m_camera);
 	m_playerController.draw(m_renderMaster);
 
@@ -68,10 +71,7 @@ void GameState::processPlayerDeath() {
 	}
 
 	io::Logger::info("GameState: restarting the game");
-
-	m_world = World(WorldLevelId::BASIC_LEVEL);
-	m_playerController.getPlayer() = Player(m_world);
-	io::Logger::message(io::NewLevelMessage(m_world.getActualSize(), m_playerController.getPlayer().getPos()));
-
+	LevelLoader(m_world, m_playerController.getPlayer(), true).loadLevel(WorldLevelId::BASIC_LEVEL);
+	m_renderMaster.getPlayTime()->reset();
 	io::Logger::debug("GameState: game restarted successfully");
 }

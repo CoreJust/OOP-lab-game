@@ -19,6 +19,8 @@ void PostGenGenerator::generate() {
 		createBounds();
 	} else if (m_sets.flags == GenerationSettings::POSTGEN_DECORATOR) {
 		createDecorations();
+	} else if (m_sets.flags == GenerationSettings::POSTGEN_NEXT_LEVEL_PORTAL_GENERATOR) {
+		createNextLevelPortal();
 	}
 }
 
@@ -65,10 +67,19 @@ void PostGenGenerator::createDecorations() {
 	random.setSeed(m_sets.seed);
 
 	math::ChanceDistribution<decltype(random)::RG, TileId> chanceDist(random, TileId::STONE_FLOOR);
-	chanceDist.push(STONE_CHANCE, TileId::STONE);
 	chanceDist.push(SPRINGS_CHANCE, TileId::SAINT_SPRINGS);
-	chanceDist.push(POISON_CHANCE, TileId::POISON_CLOUD);
-	size_t portalChanceIndex = chanceDist.push(PORTAL_CHANCE, TileId::STONE_PORTAL);
+
+	if (m_sets.postGenSets.allowDangers) {
+		chanceDist.push(POISON_CHANCE, TileId::POISON_CLOUD);
+	}
+
+	if (m_sets.postGenSets.allowObstacles) {
+		chanceDist.push(STONE_CHANCE, TileId::STONE);
+	}
+
+	size_t portalChanceIndex = m_sets.postGenSets.allowPortals
+		? chanceDist.push(PORTAL_CHANCE, TileId::STONE_PORTAL)
+		: 0;
 
 	const math::Vector2i size = m_pWorld.getSize();
 	uint32_t portalsCount = 0;
@@ -94,8 +105,9 @@ void PostGenGenerator::createDecorations() {
 
 		}
 	}
+}
 
-	// Next level portal
+void PostGenGenerator::createNextLevelPortal() {
 	math::Vector2i nextLevelPortalPos = m_pWorld.getRandomPassableLocation();
 	m_pWorld.atMut(1, nextLevelPortalPos) = Tile(TileId::NEXT_LEVEL_PORTAL);
 	io::Logger::info("PostGenGenerator: generated next level portal at " + nextLevelPortalPos.toString());

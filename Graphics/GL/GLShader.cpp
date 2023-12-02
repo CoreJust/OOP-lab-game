@@ -99,6 +99,10 @@ void gl::Shader::setVariable(const GLint id, const GLint value) {
 	glUniform1i(id, value);
 }
 
+void gl::Shader::setVariable(const GLint id, const GLuint value) {
+	glUniform1ui(id, value);
+}
+
 void gl::Shader::setVariable(const GLint id, const GLfloat value) {
 	glUniform1f(id, value);
 }
@@ -109,6 +113,10 @@ void gl::Shader::setVariable(const GLint id, const GLdouble value) {
 
 void gl::Shader::setVariable(const GLint id, const math::Vector2f& value) {
 	glUniform2f(id, value.x(), value.y());
+}
+
+void gl::Shader::setVariable(const GLint id, const math::Vector2d& value) {
+	glUniform2d(id, value.x(), value.y());
 }
 
 void gl::Shader::setVariable(const GLint id, const math::Vector2i& value) {

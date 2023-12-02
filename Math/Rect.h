@@ -158,9 +158,9 @@ namespace math {
 
 		constexpr const Iterator begin() const noexcept {
 			return Iterator(
-				m_topLeft.roundFloor().to<int32_t>(),
-				static_cast<int32_t>(Cmath::floor(m_topLeft.x())), 
-				static_cast<int32_t>(Cmath::floor(m_downRight.x())) + 1
+				m_topLeft.roundFloor().to<IntegralTy>(),
+				static_cast<IntegralTy>(Cmath::floor(m_topLeft.x())),
+				static_cast<IntegralTy>(Cmath::floor(m_downRight.x())) + 1
 			);
 		}
 

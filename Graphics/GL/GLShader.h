@@ -54,10 +54,12 @@ namespace gl {
 		// Access to shader's variables
 		utils::Result<GLint> getVariableLocation(const char* name) const;
 
-		void setVariable(const GLint id, const GLint value);
+		void setVariable(const GLint id, const GLint value); // Also for bools
+		void setVariable(const GLint id, const GLuint value);
 		void setVariable(const GLint id, const GLfloat value);
 		void setVariable(const GLint id, const GLdouble value);
 		void setVariable(const GLint id, const math::Vector2f& value);
+		void setVariable(const GLint id, const math::Vector2d& value);
 		void setVariable(const GLint id, const math::Vector2i& value);
 		void setVariable(const GLint id, const math::Vector2u& value);
 		void setVariable(const GLint id, const glm::vec2& value);

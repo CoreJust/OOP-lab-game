@@ -36,6 +36,7 @@ protected:
 	bool m_immortalMode = false;
 	bool m_invisibleMode = false;
 	bool m_spiritualMode = false;
+	bool m_isBlind = false;
 
 protected:
 	Entity(const math::Vector2f& pos, const float rot, const EntityId id, World& pWorld);
@@ -63,6 +64,7 @@ public:
 	void setImmortalMode(const bool mode) noexcept;
 	void setInvisibleMode(const bool mode) noexcept;
 	void setSpiritualMode(const bool mode) noexcept;
+	void setBlind(const bool value) noexcept;
 
 	float getHealth() const noexcept;
 	const EntityStats& getStats() const noexcept;
@@ -74,6 +76,7 @@ public:
 	bool isInImmortalMode() const noexcept;
 	bool isInInvisibleMode() const noexcept;
 	bool isInSpiritualMode() const noexcept;
+	bool isBlind() const noexcept;
 	bool isAlive() const noexcept;
 
 	std::string toString() const;

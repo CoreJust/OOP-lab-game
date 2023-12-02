@@ -6,6 +6,8 @@
 #include "Math/Rect.h"
 #include "Math/Mapper.h"
 #include "Tile/Tile.h"
+#include "Entity/Enemy/EnemyController.h"
+#include "Entity/Enemy/EnemySpawner.h"
 #include "WorldLevelId.h"
 #include "Graphics/Render/RenderMaster.h"
 
@@ -25,22 +27,29 @@ private:
 	Tile* m_fieldCenter[2];
 
 	math::Mapper<> m_mapper; // Maps the 2D coordinates to 1D array index
+	WorldLevelId m_levelId = WorldLevelId::BASIC_LEVEL;
+
+	std::list<std::unique_ptr<EnemyController>> m_enemies;
+	EnemySpawner m_spawner;
 
 public:
 	World();
 	World(const math::Vector2i& size); // An empty world of the size
-	World(WorldLevelId id);
 
-	World(const World& other);
+	World(const World& other) = delete;
 	World(World&& other) noexcept;
 
 	~World();
 
-	World& operator=(const World& other);
+	World& operator=(const World& other) = delete;
 	World& operator=(World&& other) noexcept;
+
+	void generate(WorldLevelId id) &;
 
 	void update(Player& player, float deltaTime);
 	void draw(RenderMaster& renderMaster, Camera& camera);
+
+	void spawn(const EntityId id, math::Vector2f pos);
 
 	void fillArea(const math::Recti& rect, bool isForeground, TileId id);
 	void fillAreaBounds(const math::Recti& rect, bool isForeground, TileId id);
@@ -62,4 +71,8 @@ public:
 	Tile& atMut(bool isForeground, const math::Vector2i& pos);
 	Tile& atMutBackground(const math::Vector2i& pos);
 	Tile& atMutForeground(const math::Vector2i& pos);
+
+	constexpr WorldLevelId getLevelId() const noexcept {
+		return m_levelId;
+	}
 };

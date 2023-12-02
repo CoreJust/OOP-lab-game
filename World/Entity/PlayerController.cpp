@@ -3,6 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "PlayerController.h"
+#include <format>
 
 #include "Graphics/GameGUI/ProgressBar.h"
 #include "Graphics/GameGUI/Text.h"
@@ -15,7 +16,7 @@ PlayerContoller::PlayerContoller(std::unique_ptr<Player> player, World& pWorld)
 }
 
 void PlayerContoller::update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input) {
-	EntityController::update(deltaTime, input);
+	EntityController::update(deltaTime);
 
 	math::Vector2f offset = math::Direction<float>::getDirectionVector(
 		input->isKeyPressed(io::KEY_UP),
@@ -29,7 +30,7 @@ void PlayerContoller::update(const float deltaTime, utils::NoNullptr<io::Virtual
 	if (offset != math::Vector2f(0, 0)) {
 		offset *= calculateSpeed() * shiftSpeedModifier * deltaTime;
 
-		tryToMove(offset);
+		tryToMove(offset.rotate(m_entity->getRot()));
 	}
 }
 
@@ -38,7 +39,7 @@ void PlayerContoller::draw(RenderMaster& renderMaster) {
 
 	// Drawing GUI
 	m_healthBar->setValue(m_entity->getHealth() / m_entity->getStats().maxHealth);
-	m_infoText->setText("Player: " + m_entity->getPos().toString());
+	m_infoText->setText(std::format("Player( x: {0:.1f}, y: {1:.1f} )", getPlayer().getPos().x(), getPlayer().getPos().y()));
 }
 
 void PlayerContoller::initGUI(RenderMaster& renderMaster, Camera& camera) {

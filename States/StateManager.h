@@ -47,6 +47,8 @@ class StateManager final {
 private:
 	std::unique_ptr<io::VirtualInput> m_virtualInput;
 	std::vector<std::unique_ptr<State>> m_states;
+
+	State::States m_nextState = State::NONE;
 	bool m_popState = false;
 	bool m_isToExit = false;
 
@@ -55,7 +57,8 @@ public:
 
 	void update(sf::RenderWindow& window, float deltaTime);
 
-	void addState(std::unique_ptr<State> state);
+	void setNextState(State::States state);
+	void addState(State::States state);
 	void popState();
 
 	utils::NoNullptr<State> getCurrentState() const;

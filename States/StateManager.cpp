@@ -15,7 +15,7 @@ StateManager::StateManager(const float& mouseWheelDelta)
 	: m_virtualInput(io::VirtualInput::makeVirtualInput(GlobalSettings::get().getInputMode(), mouseWheelDelta)) {
 	io::Logger::trace("StateManager: initialized");
 
-	addState(std::make_unique<MainMenuState>(*this));
+	addState(State::MAIN_MENU);
 }
 
 void StateManager::update(sf::RenderWindow& window, float deltaTime) {
@@ -52,17 +52,27 @@ void StateManager::update(sf::RenderWindow& window, float deltaTime) {
 		}
 
 		io::Logger::trace("StateManager: state popped, states left " + std::to_string(m_states.size()));
+	} else if (m_nextState != State::NONE) {
+		addState(m_nextState);
+		m_nextState = State::NONE;
 	}
 }
 
-void StateManager::addState(std::unique_ptr<State> state) {
-	io::Logger::trace("StateManager: new state " + std::string(typeid(*state).name()));
+void StateManager::setNextState(State::States state) {
+	io::Logger::trace("StateManager: the next state is set");
 
+	m_nextState = state;
+}
+
+void StateManager::addState(State::States state) {
 	if (m_states.size()) {
 		m_states.back()->freeze();
 	}
 
-	m_states.push_back(std::move(state));
+	std::unique_ptr<State> newState = State::makeState(state, *this);
+
+	io::Logger::trace("StateManager: new state " + std::string(typeid(*newState).name()));
+	m_states.push_back(std::move(newState));
 }
 
 void StateManager::popState() {

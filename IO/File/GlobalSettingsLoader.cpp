@@ -45,6 +45,12 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 			} else {
 				m_sets.m_textFont = val.asString();
 			}
+		} else if (key == "volume") {
+			if (!val.isFPNumber() || val.isFPNumber() < 0.f || val.asFPNumber() > 100.f) {
+				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: volume must be a float in range [0; 100]");
+			} else {
+				m_sets.m_volume = val.asFPNumber();
+			}
 		} else if (key == "render_distance") {
 			if (!val.isINumber() || val.asINumber() <= 0) {
 				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: render_distance must be a whole number greater than zero");
@@ -68,6 +74,12 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: enable_vertical_view_moving must be a boolean");
 			} else {
 				m_sets.m_enableVerticalViewMoving = val.asBool();
+			}
+		} else if (key == "enable_tutorial") {
+			if (!val.isBool()) {
+				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: enable_tutorial must be a boolean");
+			} else {
+				m_sets.m_enableTutorials = val.asBool();
 			}
 		} else if (key == "bindings_file") {
 			if (!val.isString()) {

@@ -32,5 +32,8 @@ namespace utils {
 		double now() const;
 
 		float calculateDeltaTime();
+		
+		void reset();
+		float elapsedTime();
 	};
 }

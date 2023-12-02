@@ -36,6 +36,14 @@ public:
 	std::unique_ptr<Effect> copy() override;
 	std::string toString() const override;
 
+	constexpr float getTimeLeft() const noexcept {
+		return m_time;
+	}
+
+	constexpr void setTime(const float time) noexcept {
+		m_time = time;
+	}
+
 protected:
 	virtual void eraseEffect(Entity& entity, World& world);
 	void applyTo(Entity& entity, World& world) override;

@@ -7,11 +7,12 @@
 
 std::string EntityStats::toString(const float health) const {
     return std::format(
-        "( health: {0}/{1}, defence: {2}, power: {3}, speed: {4} )",
+        "( health: {0}/{1}, defence: {2}, power: {3}, speed: {4}, agility: {5} )",
         int(health),
         int(maxHealth),
         int(defence),
         int(power),
-        int(speed)
+        int(speed),
+        int(agility)
     );
 }

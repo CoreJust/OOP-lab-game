@@ -8,7 +8,11 @@
 
 const EntityStats& EntityId::getEntityStats() const {
 	static EntityStats s_entityIdStats[] {
-		EntityStats{ .maxHealth = 1000, .defence = 0, .power = 20, .speed = 3, .hitbox = 0.26f }, // Player
+		EntityStats{ .maxHealth = 1000, .defence = 10, .power = 35, .speed = 3,		.agility = 6, .hitbox = 0.26f }, // Player
+		EntityStats{ .maxHealth = 5000, .defence = 0,  .power = 15, .speed = 3,		.agility = 4, .hitbox = 0.26f }, // Ghost
+		EntityStats{ .maxHealth = 100,  .defence = 0,  .power = 0,  .speed = 1,		.agility = 2, .hitbox = 0.125f },// Evil spirit
+		EntityStats{ .maxHealth = 6000, .defence = 15, .power = 30, .speed = 2.5f,	.agility = 5, .hitbox = 0.26f }, // Lost in maze
+		EntityStats{ .maxHealth = 1100, .defence = 5,  .power = 10, .speed = 0,		.agility = 1, .hitbox = 0.3f }   // Venomous plant
 	};
 
 	assert(m_value < std::size(s_entityIdStats));
@@ -20,11 +24,21 @@ const model::DynamicModelDescription& EntityId::getDynamicModelDescription() con
 	constexpr static glm::vec3 s_simpleEntitySize(0.5f, 1.25f, 0.5f);
 	constexpr static glm::vec3 s_simpleEntityFrom(-s_simpleEntitySize.x / 2, 0.1f, -s_simpleEntitySize.z / 2);
 
+	constexpr static glm::vec3 s_tinyEntitySize(0.125f, 0.25f, 0.125f);
+	constexpr static glm::vec3 s_tinyEntityFrom(-s_tinyEntitySize.x / 2, 0.5f, -s_tinyEntitySize.z / 2);
+
+	constexpr static glm::vec3 s_smallEntitySize(0.5f, 0.25f, 0.5f);
+	constexpr static glm::vec3 s_smallEntityFrom(-s_smallEntitySize.x / 2, 0.f, -s_smallEntitySize.z / 2);
+
 	static model::DynamicModelDescription s_entityIdDMDs[] = {
-		model::DynamicModelDescription::makeBox(model::SceneObject{ }, s_simpleEntityFrom, s_simpleEntitySize, { 0, 0 }) // Player
+		model::DynamicModelDescription::makeBox(model::SceneObject{ }, s_simpleEntityFrom, s_simpleEntitySize, { 0, 0 }), // Player
+		model::DynamicModelDescription::makeBox(model::SceneObject{ }, s_simpleEntityFrom, s_simpleEntitySize, { 0, 0 }), // Ghost
+		model::DynamicModelDescription::makeBox(model::SceneObject{ }, s_tinyEntityFrom,   s_tinyEntitySize,   { 0, 0 }), // Evil spirit
+		model::DynamicModelDescription::makeBox(model::SceneObject{ }, s_simpleEntityFrom, s_simpleEntitySize, { 0, 0 }), // Lost in maze
+		model::DynamicModelDescription::makeBox(model::SceneObject{ }, s_smallEntityFrom,  s_smallEntitySize,  { 0, 0 })  // Venomous plant
 	};
 
-	assert(m_id < std::size(s_entityIdDMDs));
+	assert(m_value < std::size(s_entityIdDMDs));
 
 	return s_entityIdDMDs[m_value];
 }
@@ -33,6 +47,11 @@ std::string_view EntityId::toString() const {
 	// I'd like to use something like magic_enum here, but it is not OOP
 	static std::string s_entityIdNames[] {
 		"PLAYER",
+
+		"GHOST",
+		"EVIL_SPIRIT",
+		"LOST_IN_MAZE",
+		"VENOMOUS_PLANT",
 
 		"NUMBER_ENTITY_IDS"
 	};

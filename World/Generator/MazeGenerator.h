@@ -4,6 +4,8 @@
 
 #pragma once
 #include "WorldGenerator.h"
+#include "Utils/Random.h"
+#include "Utils/Seed.h"
 
 /*
 *	MazeGenerator(.h/.cpp) contains one of the WorldGenerators.
@@ -14,13 +16,24 @@
 
 class MazeGenerator final : public WorldGenerator {
 private:
+	using Path = std::vector<math::Vector2i>;
+
+private:
 	GenerationSettings m_sets;
+	utils::Random<> m_rand;
 
 public:
-	inline MazeGenerator(World& pWorld, GenerationSettings sets) : WorldGenerator(pWorld), m_sets(std::move(sets)) {
+	inline MazeGenerator(World& pWorld, GenerationSettings sets)
+		: WorldGenerator(pWorld), m_sets(std::move(sets)) {
 		assert(m_sets.isMaze());
+
+		m_rand.setSeed(sets.seed);
 	}
 
 	void generateInitial() override;
 	void generate() override;
+
+private:
+	void recursiveBacktracker();
+	void makeImperfect();
 };

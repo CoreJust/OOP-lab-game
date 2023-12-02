@@ -24,4 +24,12 @@ namespace utils {
 
 		return result.count();
 	}
+
+	void Timer::reset() {
+		m_lastTime = systemNow();
+	}
+
+	float Timer::elapsedTime() {
+		return FloatSeconds(systemNow() - m_lastTime).count();
+	}
 }

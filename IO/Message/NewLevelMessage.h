@@ -18,20 +18,17 @@ namespace io {
 		math::Vector2u m_worldSize;
 		math::Vector2f m_playerPos;
 
+	protected:
+		inline std::ostream& printTo(std::ostream& out) const override {
+			return out << "New level loaded, the level size is " << m_worldSize.toString()
+				<< " and the player is at " << m_playerPos.toString();
+		}
+
 	public:
 		constexpr NewLevelMessage(
 			const math::Vector2u& worldSize,
 			const math::Vector2f& playerPos,
 			const std::source_location location = std::source_location::current()
 		) noexcept : Message(location), m_worldSize(worldSize), m_playerPos(playerPos) { }
-
-		std::ostream& printTo(std::ostream& out) const override {
-			return out << "New level loaded, the level size is " << m_worldSize.toString() 
-				<< " and the player is at " << m_playerPos.toString();
-		}
-
-		friend std::ostream& operator<<(std::ostream& out, const NewLevelMessage& msg) {
-			return msg.printTo(out);
-		}
 	};
 }

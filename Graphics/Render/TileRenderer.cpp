@@ -4,8 +4,8 @@
 
 #include "TileRenderer.h"
 
-TileRenderer::TileRenderer(ResourceManager& pManager)
-	: m_pManager(pManager), m_shader() {
+TileRenderer::TileRenderer(ResourceManager& pManager, ModelShaderRegistry& msr)
+	: m_pManager(pManager), m_shader(msr), m_pMSR(msr) {
 	m_models.reserve(TileId::NUMBER_TILE_IDS);
 
 	for (id_t id = 0; id < TileId::NUMBER_TILE_IDS; id++) {
@@ -40,9 +40,7 @@ void TileRenderer::render(sf::RenderWindow& window, Camera& camera) {
 
 	atlas.bind();
 	m_shader.bind();
-	m_shader.loadDefaultFogPower();
-	m_shader.setPlayerPos(camera.getPos());
-	m_shader.setProjViewMatrix(camera.genProjViewMatrix());
+	m_pMSR.storeToShader(m_shader);
 
 	for (auto& info : m_tiles) {
 		model::TileModel& model = m_models[info.id].variants[info.hasVNS ? info.VNSurroundings : 0];

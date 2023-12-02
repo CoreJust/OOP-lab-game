@@ -24,15 +24,8 @@ namespace io {
 	private:
 		inline static KeysStringMap s_keysStringMap;
 
-	public:
-		constexpr KeyMessage(
-			const sf::Keyboard::Key realKey,
-			const Key command,
-			const bool isPressed,
-			const std::source_location location = std::source_location::current()
-		) noexcept : Message(location), m_realKey(realKey), m_commandExecuted(command), m_isPressed(isPressed) { }
-
-		std::ostream& printTo(std::ostream& out) const override {
+	protected:
+		inline std::ostream& printTo(std::ostream& out) const override {
 			if (m_isPressed) {
 				return out << "Key pressed event, key: " << s_keysStringMap.realKeysReversed().at(m_realKey)
 					<< ", command executed: " + s_keysStringMap.virtualKeysReversed().at(m_commandExecuted);
@@ -42,12 +35,16 @@ namespace io {
 			}
 		}
 
+	public:
+		constexpr KeyMessage(
+			const sf::Keyboard::Key realKey,
+			const Key command,
+			const bool isPressed,
+			const std::source_location location = std::source_location::current()
+		) noexcept : Message(location), m_realKey(realKey), m_commandExecuted(command), m_isPressed(isPressed) { }
+
 		LogLevel getLogLevel() const override {
 			return LogLevel::TRACE; // So as not to spam
-		}
-
-		friend std::ostream& operator<<(std::ostream& out, const KeyMessage& msg) {
-			return msg.printTo(out);
 		}
 	};
 }

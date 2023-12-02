@@ -19,11 +19,8 @@
 
 // Teleports player to a new level
 class LevelChangerTileData : public TileData {
-private:
-	WorldLevelId m_newLevel;
-
 public:
-	LevelChangerTileData(WorldLevelId newLevelId);
+	LevelChangerTileData();
 
 	void update(math::Vector2f pos, World& world, Player& player, const float deltaTime) override; // Does nothing
 	void onStep(math::Vector2f pos, World& world, Entity& entity) override;

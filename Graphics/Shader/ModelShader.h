@@ -11,24 +11,18 @@
 *	A model shader allows to render Models.
 */
 
+class ModelShaderRegistry;
+
 class ModelShader : public gl::Shader {
+	friend class ModelShaderRegistry;
+
 protected:
-	GLint m_modelMatrixLoc;
-	GLint m_projViewMatrixLoc;
-	GLint m_playerPosLoc;
-	GLint m_fogPowerLoc;
+	GLint m_modelMatrixLoc = -1;
 
 public:
-	ModelShader(std::string_view vertexShaderFile, std::string_view fragmentShaderFile);
-	ModelShader(std::string_view vertexShaderFile, std::string_view geometryShaderFile, std::string_view fragmentShaderFile);
+	ModelShader(ModelShaderRegistry& msr, std::string_view vertexShaderFile, std::string_view fragmentShaderFile);
+	ModelShader(ModelShaderRegistry& msr, std::string_view vertexShaderFile, std::string_view geometryShaderFile, std::string_view fragmentShaderFile);
 
-	void setProjViewMatrix(const glm::mat4& value);
 	void setModelMatrix(const glm::mat4& value);
 	void setSceneObject(const model::SceneObject& value); // Unites the previous 2
-
-	void setPlayerPos(const glm::vec3& pos);
-	void setPlayerPos(const math::Vector2f& pos);
-
-	void setFogPower(GLint value);
-	void loadDefaultFogPower(); // From global settings
 };

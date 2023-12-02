@@ -4,6 +4,7 @@
 
 #pragma once
 #include <list>
+#include <array>
 #include <memory>
 
 #include "Effect.h"
@@ -19,7 +20,7 @@
 // Handles a set of effects
 class EffectPool final {
 private:
-	std::list<std::shared_ptr<Effect>> m_effects;
+	std::array<std::list<std::shared_ptr<Effect>>, EffectId::NUMBER_EFFECT_IDS> m_effects;
 	Entity& m_pEntity;
 	World& m_pWorld;
 

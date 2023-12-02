@@ -12,9 +12,9 @@
 
 constexpr math::Vector2i MINIMAL_WORLD_SIZE { 1, 1 }; // 3x3
 
-World::World() : World(WorldLevelId::BASIC_LEVEL) { }
+World::World() : m_spawner(*this), m_field { nullptr, nullptr }, m_fieldCenter { nullptr, nullptr } { }
 
-World::World(const math::Vector2i& size) : m_mapper(size) {
+World::World(const math::Vector2i& size) : m_mapper(size), m_spawner(*this) {
 	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(size)) {
 		io::Logger::error("World: too small of a size for a world: " + size.toString());
 	}
@@ -30,25 +30,14 @@ World::World(const math::Vector2i& size) : m_mapper(size) {
 	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 1, TileId::EMPTINESS);
 }
 
-World::World(WorldLevelId id) : World(id.getWorldSize()) {
-	// Generation
-	WorldGenerationMaster generationMaster(*this);
-	id.loadGenerationSettingsTo(generationMaster);
-	generationMaster.generate();
-}
+World::World(World&& other) noexcept 
+	: m_field{ std::exchange(other.m_field[0], nullptr), std::exchange(other.m_field[1], nullptr) },
+	m_fieldCenter { std::exchange(other.m_fieldCenter[0], nullptr), std::exchange(other.m_fieldCenter[1], nullptr) },
+	m_mapper(std::move(other.m_mapper)),
+	m_levelId(other.m_levelId),
+	m_enemies(std::move(other.m_enemies)),
+	m_spawner(*this) {
 
-World::World(const World& other) : World(other.getSize()) {
-	for (const math::Vector2i& pos : m_mapper.getRect()) {
-		atMut(0, pos) = other.at(0, pos);
-		atMut(1, pos) = other.at(1, pos);
-	}
-}
-
-World::World(World&& other) noexcept {
-	if (other.m_field[0] != m_field[0]) { // Not the same/broken world
-		memmove(this, &other, sizeof(World));
-		memset(&other, 0, sizeof(World));
-	}
 }
 
 World::~World() {
@@ -60,47 +49,25 @@ World::~World() {
 	}
 }
 
-World& World::operator=(const World& other) {
-	if (this == &other) {
-		return *this;
-	}
-
-	this->~World();
-
-	m_mapper.setSize(other.getSize());
-
-	if (!MINIMAL_WORLD_SIZE.isToUpLeftFrom(getSize())) {
-		io::Logger::error("World: too small of a size for a world: " + getSize().toString());
-	}
-
-	// Initializing field
-	m_field[0] = new Tile[m_mapper.getArea()];
-	m_field[1] = new Tile[m_mapper.getArea()];
-
-	m_fieldCenter[0] = m_field[0] + m_mapper.getActualCenterIndex();
-	m_fieldCenter[1] = m_field[1] + m_mapper.getActualCenterIndex();
-
-	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 0, TileId::EMPTINESS);
-	fillArea({ -m_mapper.getSize(), m_mapper.getSize() }, 1, TileId::EMPTINESS);
-
-	// Copying the tiles
-	for (const math::Vector2i& pos : m_mapper.getRect()) {
-		atMut(0, pos) = other.at(0, pos);
-		atMut(1, pos) = other.at(1, pos);
+World& World::operator=(World&& other) noexcept {
+	if (other.m_field[0] != m_field[0]) { // Not the same/broken world
+		this->~World();
+		::new(this) World(std::move(other));
 	}
 
 	return *this;
 }
 
-World& World::operator=(World&& other) noexcept {
-	if (other.m_field[0] != m_field[0]) { // Not the same/broken world
-		this->~World();
+void World::generate(WorldLevelId id) & {
+	this->~World();
+	::new(this) World(id.getWorldSize());
 
-		memmove(this, &other, sizeof(World));
-		memset(&other, 0, sizeof(World));
-	}
+	m_levelId = id;
 
-	return *this;
+	// Generation
+	WorldGenerationMaster generationMaster(*this);
+	id.loadGenerationSettingsTo(generationMaster);
+	generationMaster.generate();
 }
 
 void World::update(Player& player, float deltaTime) {
@@ -112,6 +79,18 @@ void World::update(Player& player, float deltaTime) {
 		for (const math::Vector2i& pos : updateRect) {
 			if (at(layer, pos).isInteractive()) {
 				atMut(layer, pos).getTileData()->update(pos.to<float>(), *this, player, deltaTime);
+			}
+		}
+	}
+
+	for (auto it = m_enemies.begin(); it != m_enemies.end(); it++) {
+		auto& enemy = *it;
+
+		enemy->update(deltaTime, player);
+		if (!enemy->getEnemy().isAlive()) {
+			it = m_enemies.erase(it);
+			if (it == m_enemies.end()) {
+				break;
 			}
 		}
 	}
@@ -132,6 +111,21 @@ void World::draw(RenderMaster& renderMaster, Camera& camera) {
 				renderMaster.drawTile(tile.getId(), pos.to<float>(), getVNSFor(pos));
 			}
 		}
+	}
+
+	for (auto& enemy : m_enemies) {
+		enemy->draw(renderMaster);
+	}
+}
+
+void World::spawn(const EntityId id, math::Vector2f pos) {
+	const math::Vector2i posi = pos.roundFloor().to<int32_t>();
+	if (isObstacleAt(posi)) {
+		pos = getNearestPassableLocation(posi).to<float>() + (pos - posi.to<float>());
+	}
+
+	if (auto enemy = m_spawner.spawn(id, pos); enemy) {
+		m_enemies.emplace_back(std::move(enemy));
 	}
 }
 
@@ -267,7 +261,7 @@ math::DirectionFlag World::getVNSFor(const math::Vector2i& pos) {
 	uint8_t result = math::DirectionFlag::ALL_DIRECTIONS;
 	auto check = [&result, &pos, this](math::DirectionFlag flag) {
 		math::Vector2i offset = math::Direction<int32_t>::getDirectionVector(flag);
-		if ((m_mapper.contains(pos + offset) && at(false, pos + offset).getCategory() != TileCategory::WALL)) {
+		if (m_mapper.contains(pos + offset) && at(false, pos + offset).getCategory() != TileCategory::WALL) {
 			result ^= flag;
 		}
 	};

@@ -4,15 +4,18 @@
 
 #include "EntityRenderer.h"
 
+EntityRenderer::EntityRenderer(ModelShaderRegistry& msr)
+	: m_shader(msr), m_pMSR(msr) {
+
+}
+
 void EntityRenderer::addEntity(utils::NoNullptr<model::EntityModel> model) {
 	m_entities.push_back(model);
 }
 
 void EntityRenderer::render(sf::RenderWindow& window, Camera& camera, ResourceManager& resources) {
 	m_shader.bind();
-	m_shader.loadDefaultFogPower();
-	m_shader.setPlayerPos(camera.getPos());
-	m_shader.setProjViewMatrix(camera.genProjViewMatrix());
+	m_pMSR.storeToShader(m_shader);
 
 	for (auto& model : m_entities) {
 		resources.getEntityTexture(model->getEntityID()).bind();

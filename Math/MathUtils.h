@@ -54,6 +54,17 @@ namespace math {
 			return encycle<T, -Range, Range>(x);
 		}
 
+		template<utils::Arithmetic T>
+		constexpr static T clamp(const T x, const T from, const T to) {
+			assert(from < to);
+
+			return x < from
+				? from
+				: x > to
+				? to
+				: x;
+		}
+
 		// Clamps the value in bounds of [From, To]
 		template<utils::Arithmetic T, T From, T To>
 		constexpr static T clamp(const T x) {

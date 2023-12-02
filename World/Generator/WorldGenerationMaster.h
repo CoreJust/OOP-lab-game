@@ -5,6 +5,7 @@
 #pragma once
 #include <vector>
 #include "WorldGenerator.h"
+#include "EnemyGenerator.h"
 
 /*
 *	WorldGenerationMaster(.h/.cpp) contains a class that manages the generators.
@@ -36,6 +37,7 @@ class WorldGenerationMaster final {
 private:
 	World& m_pWorld;
 	std::vector<std::unique_ptr<WorldGenerator>> m_generators;
+	std::vector<EnemyGenerator> m_enemyGenerators;
 
 public:
 	WorldGenerationMaster(World& pWorld) noexcept;
@@ -43,6 +45,7 @@ public:
 	void generate(); // starts the actusl generation
 	void pushInitialGenerator(GenerationSettings sets); // the first generator
 	void pushGenerator(GenerationSettings sets); // (optinal) the next generators
+	void pushEnemyGenerator(std::vector<std::pair<EntityId, uint32_t>> enemies, const float minDistance = 6.f);
 
 private:
 	void pushGenerator(std::unique_ptr<WorldGenerator> generator);

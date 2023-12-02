@@ -7,7 +7,7 @@
 #include "Graphics/GameGUI/MessageDialog.h"
 
 Game::Game()
-	: m_display(800, 600, "OOP lab5 game"), m_stateManager(m_display.getMouseWheelDeltaRef()) {
+	: m_display(800, 600, "OOP lab7 game"), m_stateManager(m_display.getMouseWheelDeltaRef()) {
 	gamegui::MessageDialog::initGUI(m_display.getWindow());
 	io::Logger::debug("Game: initialized");
 }

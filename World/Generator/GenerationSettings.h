@@ -29,7 +29,7 @@ struct GenerationSettings {
 		// Maze generation
 		// Used information from: https://www.astrolog.org/labyrnth/algrithm.htm
 		MAZE_PERFECT, // No loops/inaccessible areas - always one way from a point to another one
-		MAZE_BRAID, // No dead ends (but with loops)
+		MAZE_BRAID, // With loops (and with dead ends, unlike in common definition)
 		MAZE_UNICURSAL, // Single way - no junctions
 		MAZE_SPARSE, // A lot of unused space - a number of rooms and areas without passages
 
@@ -41,6 +41,7 @@ struct GenerationSettings {
 		POSTGEN_PASSAGE_CREATOR, // Ensuring all the passables are interconnected
 		POSTGEN_BOUNDS_CREATOR, // Creating bounds around the world
 		POSTGEN_DECORATOR, // Fills the world with decorations
+		POSTGEN_NEXT_LEVEL_PORTAL_GENERATOR, // Generates next level portal
 
 		// Generates the world not based on the procedural generation but on some fixed template
 		TEMPLATE_GENERATOR,
@@ -62,7 +63,8 @@ struct GenerationSettings {
 	};
 
 	struct MazeGenerationSettings {
-
+		uint8_t straightness; // the straightness of the maze (additional chance of a path to be straight)
+		float imperfectionChance; // the chance of a dead end to become a pass (in imperfect mode)
 	};
 
 	struct CellularAutomatonGenerationSettings {
@@ -70,7 +72,9 @@ struct GenerationSettings {
 	};
 
 	struct PostGenerationSettings {
-
+		bool allowObstacles = true;
+		bool allowDangers = true;
+		bool allowPortals = true;
 	};
 
 	struct TemplateGenerationSettings {

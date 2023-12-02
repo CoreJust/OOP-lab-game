@@ -11,5 +11,5 @@
 
 class TileShader final : public ModelShader {
 public:
-	TileShader();
+	TileShader(ModelShaderRegistry& msr);
 };

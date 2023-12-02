@@ -1,10 +1,12 @@
 {
 	"resources_location": "res/",
 	"font": "Visitor_Rus",
+	"volume": 90.0,
 	"render_distance": 15,
 	"update_distance": 15,
 	"fog_power": 3,
 	"enable_vertical_view_moving": true,
+	"enable_tutorial": true,
 	"bindings_file": "bindings",
 	"input_mode": "keyboard_and_mouse",
 	"input_file": "input_save",

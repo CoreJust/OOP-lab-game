@@ -68,6 +68,10 @@ public:
 		return m_level;
 	}
 
+	constexpr void setLevel(const float level) noexcept {
+		m_level = level;
+	}
+
 protected:
 	virtual void applyTo(Entity& entity, World& world) = 0;
 };

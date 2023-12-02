@@ -12,9 +12,12 @@
 #include "Utils/Seed.h"
 #include "StateManager.h"
 #include "GameState.h"
+#include "Audio/AudioMaster.h"
 
 MainMenuState::MainMenuState(StateManager& pManager) : State(pManager) {
 	io::Logger::trace("MainMenuState: initialized");
+
+	audio::AudioMaster::setAmbientMusic(audio::AmbienceId::MENU_MAIN);
 }
 
 void MainMenuState::freeze() {
@@ -35,6 +38,8 @@ void MainMenuState::render(sf::RenderWindow& window) {
 
 		ImGui::GetIO().FontGlobalScale = 2.f;
 		m_display->update(); // So that the graphics can be enabled for ImGui mode
+
+		audio::AudioMaster::setAmbientMusic(audio::AmbienceId::MENU_MAIN);
 	}
 
 	auto textCentered = [&window](float Y, const char* text) {
@@ -52,7 +57,7 @@ void MainMenuState::render(sf::RenderWindow& window) {
 		ImGui::SetNextWindowPos({ window.getSize().x / 2.f, window.getSize().y / 2.f }, 0, { 0.5f, 0.5f });
 		ImGui::Begin("Main menu", nullptr,  ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 
-		textCentered(0.1f, "===  OOP lab v.5  ===");
+		textCentered(0.1f, "===  OOP lab v.7  ===");
 		textCentered(0.4f, "Enter the world seed or leave the default:");
 		ImGui::NewLine();
 
@@ -62,7 +67,7 @@ void MainMenuState::render(sf::RenderWindow& window) {
 			utils::Seed::setSeed(utils::Seed::fromString(seedStr));
 			ImGui::End();
 
-			m_pManager.addState(std::make_unique<GameState>(m_pManager));
+			m_pManager.setNextState(State::GAME);
 			return;
 		}
 
@@ -71,7 +76,9 @@ void MainMenuState::render(sf::RenderWindow& window) {
 			utils::Seed::setSeed(utils::Seed::fromString(seedStr));
 			ImGui::End();
 
-			m_pManager.addState(std::make_unique<GameState>(m_pManager));
+			m_pManager.setNextState(State::GAME);
+
+			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 			return;
 		}
 		
@@ -80,6 +87,8 @@ void MainMenuState::render(sf::RenderWindow& window) {
 		if (ImGui::Button("Quit")) {
 			m_pManager.popState();
 			ImGui::End();
+
+			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 			return;
 		}
 

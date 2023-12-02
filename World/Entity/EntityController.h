@@ -38,10 +38,12 @@ public:
 	virtual ~EntityController() = default;
 
 	// Handles all the interactions with the world and other entities
-	virtual void update(const float deltaTime, utils::NoNullptr<io::VirtualInput> input);
+	void update(const float deltaTime);
 	virtual void draw(RenderMaster& renderMaster);
 
-	void tryToMove(math::Vector2f offset); // Offset is considered in relation to the entity's rotation
+	// Tries to move in the direction
+	// If a collision occured while moving, returns true
+	bool tryToMove(math::Vector2f offset);
 
 	float calculateSpeed() const; // Takes into account the basic speed and the speed mofifiers of tiles
 	

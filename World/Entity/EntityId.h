@@ -28,6 +28,11 @@ public:
 	enum Value : id_t {
 		PLAYER = 0,
 
+		GHOST,
+		EVIL_SPIRIT,
+		LOST_IN_MAZE,
+		VENOMOUS_PLANT, // not poisonous
+
 		NUMBER_ENTITY_IDS
 	};
 
