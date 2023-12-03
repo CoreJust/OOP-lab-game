@@ -4,11 +4,15 @@
 
 #include "State.h"
 #include "MainMenuState.h"
+#include "SettingsMenuState.h"
+#include "InfoMenuState.h"
 #include "GameState.h"
 
 std::unique_ptr<State> State::makeState(States state, StateManager& pManager) {
 	switch (state) {
 		case State::MAIN_MENU: return std::make_unique<MainMenuState>(pManager);
+		case State::SETTINGS_MENU: return std::make_unique<SettingsMenuState>(pManager);
+		case State::INFO_MENU: return std::make_unique<InfoMenuState>(pManager);
 		case State::GAME: return std::make_unique<GameState>(pManager);
 	default: assert(false && "unreachable"); return nullptr;
 	}

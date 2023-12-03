@@ -15,6 +15,12 @@ void GlobalSettings::initSettings() {
 	io::GlobalSettingsLoader(*s_instance).load();
 }
 
+void GlobalSettings::storeSettings() {
+	assert(s_instance != nullptr);
+
+	io::GlobalSettingsLoader(*s_instance).store();
+}
+
 void GlobalSettings::destroySettings() {
 	assert(s_instance != nullptr);
 
@@ -26,6 +32,12 @@ GlobalSettings& GlobalSettings::get() {
 	assert(s_instance != nullptr);
 
 	return *s_instance;
+}
+
+void GlobalSettings::setDifficulty(const Difficulty difficulty) {
+	m_difficulty = difficulty;
+
+	io::Logger::info("GlobalSettings: difficulty set to " + std::string(difficulty.toString()));
 }
 
 const std::string& GlobalSettings::getTexturesLocation() const noexcept {
@@ -50,6 +62,10 @@ const std::string& GlobalSettings::getTextFont() const noexcept {
 
 float GlobalSettings::getVolume() const noexcept {
 	return m_volume;
+}
+
+Difficulty GlobalSettings::getDifficulty() const noexcept {
+	return m_difficulty;
 }
 
 uint32_t GlobalSettings::getMaxRenderDistance() const noexcept {

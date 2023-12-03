@@ -19,7 +19,7 @@
 namespace gamegui {
 	class Minimap final : public GameGUI {
 	public:
-		constexpr inline static uint32_t MINIMAP_SIZE = 17;
+		constexpr inline static uint32_t MINIMAP_SIZE = 19;
 		constexpr inline static float MINIMAP_SCALE_BASE = 0.025f;
 
 	private:
@@ -33,6 +33,8 @@ namespace gamegui {
 
 		void setPlayerPos(const math::Vector2f& pos);
 		void setTile(const TileId id, const math::Vector2i& pos);
+		void addEnemy(const math::Vector2i& pos);
+
 		void update();
 	};
 }

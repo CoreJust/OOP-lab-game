@@ -26,8 +26,8 @@ std::unique_ptr<io::VirtualInput> io::VirtualInput::makeVirtualInput(const Input
 	std::unique_ptr<io::VirtualInput> result;
 
 	switch (mode) {
-		case io::KEYBOARD_AND_MOUSE_INPUT: result = std::make_unique<io::KeyboardMouseInput>(mouseWheelDelta); break;
-		case io::FILE_INPUT: result = std::make_unique<io::FileInput>(mouseWheelDelta, GlobalSettings::get().getInputFile()); break;
+		case InputMode::KEYBOARD_AND_MOUSE_INPUT: result = std::make_unique<io::KeyboardMouseInput>(mouseWheelDelta); break;
+		case InputMode::FILE_INPUT: result = std::make_unique<io::FileInput>(mouseWheelDelta, GlobalSettings::get().getInputFile()); break;
 	default: assert(false && "unreachable"); break;
 	}
 

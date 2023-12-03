@@ -54,8 +54,15 @@ void RenderMaster::setPlayerData(const Player& player) {
 	}
 }
 
-void RenderMaster::drawEntity(model::EntityModel& entityModel) {
+void RenderMaster::drawEntity(const EntityId id, model::EntityModel& entityModel) {
 	m_entityRenderer.addEntity(&entityModel);
+
+	if (id != EntityId::PLAYER) {
+		m_minimap->addEnemy(math::Vector2f(
+			entityModel.getSceneObject().pos.x, 
+			entityModel.getSceneObject().pos.z
+		).roundFloor().to<int32_t>());
+	}
 }
 
 void RenderMaster::drawTile(const TileId id, const math::Vector2f& position, const math::DirectionFlag VNS) {

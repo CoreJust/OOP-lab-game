@@ -16,6 +16,14 @@ audio::Ambience::Ambience()
 }
 
 void audio::Ambience::setTrack(const AmbienceId id) {
+	if (id == m_currentTrack) {
+		if (m_tracks[id]->getStatus() != sf::SoundSource::Playing) {
+			m_tracks[id]->play();
+		}
+
+		return;
+	}
+
 	m_tracks[m_currentTrack]->stop();
 	m_tracks[id]->play();
 	m_currentTrack = id;

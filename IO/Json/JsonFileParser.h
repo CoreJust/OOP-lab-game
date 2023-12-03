@@ -22,7 +22,7 @@
 
 namespace io {
 	class JsonFileParser : public JsonParser {
-	private:
+	protected:
 		io::FileLoader m_loader;
 
 	public:

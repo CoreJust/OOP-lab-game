@@ -13,8 +13,13 @@
 #include "StateManager.h"
 #include "GameState.h"
 #include "Audio/AudioMaster.h"
+#include "GlobalSettings.h"
 
-MainMenuState::MainMenuState(StateManager& pManager) : State(pManager) {
+MainMenuState::MainMenuState(StateManager& pManager)
+	: State(pManager), 
+	m_imguiApi("Main menu", "===  OOP lab v.7  ==="),
+	m_difficultyChoice(GlobalSettings::get().getDifficulty())
+{
 	io::Logger::trace("MainMenuState: initialized");
 
 	audio::AudioMaster::setAmbientMusic(audio::AmbienceId::MENU_MAIN);
@@ -22,6 +27,7 @@ MainMenuState::MainMenuState(StateManager& pManager) : State(pManager) {
 
 void MainMenuState::freeze() {
 	m_display = nullptr; // Destroys the old display, thus returning it to the default state
+	m_imguiApi.destroy();
 }
 
 void MainMenuState::revive() {
@@ -35,69 +41,63 @@ void MainMenuState::update(float deltaTime, utils::NoNullptr<io::VirtualInput> i
 void MainMenuState::render(sf::RenderWindow& window) {
 	if (!m_display) {
 		m_display = std::make_unique<Display>(window, true);
+		m_seedStr = "1";
+		m_difficultyChoice = GlobalSettings::get().getDifficulty();
 
-		ImGui::GetIO().FontGlobalScale = 2.f;
-		m_display->update(); // So that the graphics can be enabled for ImGui mode
+		m_imguiApi.init(m_display.get());
+		m_imguiApi.setCommonButtonWidthForText(" Settings ");
 
 		audio::AudioMaster::setAmbientMusic(audio::AmbienceId::MENU_MAIN);
 	}
 
-	auto textCentered = [&window](float Y, const char* text) {
-		float windowWidth = ImGui::GetWindowSize().x;
-		float textWidth = ImGui::CalcTextSize(text).x;
+	if (m_imguiApi.tryToBegin(window)) {
+		m_imguiApi.setAlignment(Alignment::CENTERED);
 
-		ImGui::SetCursorPos({ (windowWidth - textWidth) * 0.5f, window.getSize().y * Y });
-		ImGui::Text(text);
-	};
+		m_imguiApi.text(0.42f, "");
 
-	ImGui::SFML::SetCurrentWindow(window);
+		if (m_imguiApi.inputText(m_seedStr, "Enter seed: ")) {
+			utils::Seed::setSeed(utils::Seed::fromString(m_seedStr));
+		}
 
-	std::string seedStr = "1";
-	if (m_display->isOpen()) {
-		ImGui::SetNextWindowPos({ window.getSize().x / 2.f, window.getSize().y / 2.f }, 0, { 0.5f, 0.5f });
-		ImGui::Begin("Main menu", nullptr,  ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+		if (m_imguiApi.comboBox({ "easy", "normal", "hard", "extreme" }, m_difficultyChoice, "Difficulty: ")) {
+			GlobalSettings::get().setDifficulty(Difficulty::Value(m_difficultyChoice));
+		}
 
-		textCentered(0.1f, "===  OOP lab v.7  ===");
-		textCentered(0.4f, "Enter the world seed or leave the default:");
-		ImGui::NewLine();
-
-		float inputTextStartX = (ImGui::GetWindowContentRegionMax().x - ImGui::CalcItemWidth()) / 2.f;
-		ImGui::SetCursorPosX(inputTextStartX);
-		if (ImGui::InputText("##", &seedStr, ImGuiInputTextFlags_EnterReturnsTrue)) {
-			utils::Seed::setSeed(utils::Seed::fromString(seedStr));
-			ImGui::End();
-
+		m_imguiApi.newLine();
+		if (m_imguiApi.button("Play")) {
+			m_imguiApi.end();
 			m_pManager.setNextState(State::GAME);
+
 			return;
 		}
 
-		ImGui::SetCursorPosX(inputTextStartX);
-		if (ImGui::Button("Play")) {
-			utils::Seed::setSeed(utils::Seed::fromString(seedStr));
-			ImGui::End();
+		m_imguiApi.newLine();
+		if (m_imguiApi.button("Settings")) {
+			m_imguiApi.end();
+			m_pManager.setNextState(State::SETTINGS_MENU);
 
-			m_pManager.setNextState(State::GAME);
-
-			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 			return;
 		}
-		
-		ImGui::SameLine();
-		ImGui::SetCursorPosX(inputTextStartX + ImGui::CalcItemWidth() - ImGui::CalcTextSize("Quit").x - 8);
-		if (ImGui::Button("Quit")) {
+
+		m_imguiApi.newLine();
+		if (m_imguiApi.button("Info")) {
+			m_imguiApi.end();
+			m_pManager.setNextState(State::INFO_MENU);
+
+			return;
+		}
+
+		m_imguiApi.newLine();
+		if (m_imguiApi.button("Quit")) {
+			m_imguiApi.end();
+
 			m_pManager.popState();
-			ImGui::End();
 
-			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 			return;
 		}
 
-		textCentered(0.9f, "by Yegor Ilyin");
-
-		ImGui::End();
-		ImGui::EndFrame();
-
-		m_display->clear(sf::Color::Black);
+		m_imguiApi.text(0.9f, "by Yegor Ilyin");
+		m_imguiApi.end();
 	} else {
 		m_pManager.popState();
 	}

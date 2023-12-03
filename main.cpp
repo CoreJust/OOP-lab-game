@@ -39,19 +39,19 @@
 *			in the file input mode user cannot conveniently close the game !
 * 
 *	Current game info (last check):
-*		Lines of code: ~17 000 lines
+*		Lines of code: 17 563 lines
 *		Number of files (.cpp and .h) : number of classes with separate file (and the main func):
 *			Audio module:	 10 files : 5  classes
-*			Graphics module: 74 files : 42 classes
+*			Graphics module: 77 files : 44 classes
 *			I/O module:		 36 files : 24 classes
 *			Math module:	 20 files : 18 classes
-*			States module:	 9  files : 5  classes
+*			States module:	 13 files : 7  classes
 *			Utils module:	 12 files : 10 classes
 *			World module:	 79 files : 44 classes
 *			Shaders:		 6  files : 3  shaders
-*			Global:			 5  files : 3  classes
+*			Global:			 7  files : 4  classes
 * 
-*			Total:			 251 files : 154 classes
+*			Total:			 260 files : 159 classes
 */
 
 int main() {

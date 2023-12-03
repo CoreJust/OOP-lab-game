@@ -19,6 +19,41 @@ void io::GlobalSettingsLoader::load() {
 	loadFromParsed(parseResult.extract());
 }
 
+void io::GlobalSettingsLoader::store() {
+	const std::string path = m_loader.getFullPath(GLOBAL_SETTINGS_FILE_NAME);
+	std::ofstream file(path);
+
+	if (!file.good()) {
+		io::Logger::error("GlobalSettingsLoader: failed to open settings file to store the settings: invalid file");
+		return;
+	} if (!file.is_open()) {
+		io::Logger::error("GlobalSettingsLoader: failed to open settings file to store the settings");
+		return;
+	}
+
+	file << "{\n"
+		<< std::setprecision(1) << std::fixed << std::boolalpha
+		<< "\t\"resources_location\": \"" << m_sets.m_resLocation << "\",\n"
+		<< "\t\"font\": \"" << m_sets.m_textFont << "\",\n"
+		<< "\t\"volume\": " << m_sets.m_volume << ",\n"
+		<< "\t\"difficulty\": \"" << m_sets.m_difficulty.toString() << "\",\n"
+		<< "\t\"render_distance\": " << m_sets.m_maxRenderDistance << ",\n"
+		<< "\t\"update_distance\": " << m_sets.m_updateDistance << ",\n"
+		<< "\t\"fog_power\": " << m_sets.m_fogPower << ",\n"
+		<< "\t\"enable_vertical_view_moving\": " << m_sets.m_enableVerticalViewMoving << ",\n"
+		<< "\t\"enable_tutorial\": " << m_sets.m_enableTutorials << ",\n"
+		<< "\t\"bindings_file\": \"" << m_sets.m_bindingsFile << "\",\n"
+		<< "\t\"input_mode\": \"" << m_sets.m_inputMode.toString() << "\",\n"
+		<< "\t\"input_file\": \"" << m_sets.m_inputFile << "\",\n"
+		<< "\t\"save_input\": " << m_sets.m_isToSaveInput << ",\n"
+		<< "\t\"log_input\": " << m_sets.m_isToLogInput << ",\n"
+		<< "\t\"log_delta_time\": " << m_sets.m_isToLogDeltaTime << ",\n"
+		<< "\t\"log_settings\": " << m_sets.m_isToLogSettings << ",\n"
+		<< "\t\"log_entities_pos\": " << m_sets.m_isToLogEntitiesPos << ",\n"
+		<< "\t\"log_entities_effects\": " << m_sets.m_isToLogEntitiesEffects << "\n"
+		<< "}" << std::endl;
+}
+
 void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 	if (!value.isObject()) {
 		io::Logger::error("GlobalSettingsLoader: invalid global settings file: an object expected");
@@ -34,6 +69,7 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 			if (!val.isString()) {
 				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: resources_location must be a string");
 			} else {
+				m_sets.m_resLocation = val.asString();
 				m_sets.m_texturesLocation = val.asString() + "img/";
 				m_sets.m_audioLocation = val.asString() + "audio/";
 				m_sets.m_shadersLocation = val.asString() + "shaders/";
@@ -50,6 +86,20 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: volume must be a float in range [0; 100]");
 			} else {
 				m_sets.m_volume = val.asFPNumber();
+			}
+		} else if (key == "difficulty") {
+			if (!val.isString()) {
+				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: difficulty must be a string. one of (easy, normal, hard, extreme)");
+			} else {
+				if (val.asString() == "easy") {
+					m_sets.m_difficulty = Difficulty::EASY;
+				} else if (val.asString() == "normal") {
+					m_sets.m_difficulty = Difficulty::NORMAL;
+				} else if (val.asString() == "hard") {
+					m_sets.m_difficulty = Difficulty::HARD;
+				} else if (val.asString() == "extreme") {
+					m_sets.m_difficulty = Difficulty::EXTREME;
+				}
 			}
 		} else if (key == "render_distance") {
 			if (!val.isINumber() || val.asINumber() <= 0) {
@@ -92,9 +142,9 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 				io::Logger::warning("GlobalSettingsLoader: invalid global settings file: input_mode must be a string");
 			} else {
 				if (val.asString() == "keyboard_and_mouse") {
-					m_sets.m_inputMode = io::KEYBOARD_AND_MOUSE_INPUT;
+					m_sets.m_inputMode = io::InputMode::KEYBOARD_AND_MOUSE_INPUT;
 				} else if (val.asString() == "file") {
-					m_sets.m_inputMode = io::FILE_INPUT;
+					m_sets.m_inputMode = io::InputMode::FILE_INPUT;
 				} else {
 					io::Logger::warning("GlobalSettingsLoader: invalid global settings file: input_mode must be either of keyboard_and_mouse or file");
 				}

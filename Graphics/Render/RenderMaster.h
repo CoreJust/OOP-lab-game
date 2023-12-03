@@ -72,7 +72,7 @@ public:
 	RenderMaster();
 
 	void setPlayerData(const Player& player);
-	void drawEntity(model::EntityModel& entityModel);
+	void drawEntity(const EntityId id, model::EntityModel& entityModel);
 	void drawTile(const TileId id, const math::Vector2f& position, const math::DirectionFlag VNS);
 
 	void render(sf::RenderWindow& window, Camera& camera);

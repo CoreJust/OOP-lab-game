@@ -35,7 +35,7 @@ private:
 	static inline std::vector<bool> s_useImgui { }; 
 
 public:
-	Display(uint32_t width, uint32_t height, const sf::String& title, bool useImGui = false); // Owning mode
+	Display(const sf::String& title, bool useImGui = false); // Owning mode
 	Display(sf::RenderWindow& externalWindow, bool useImGui); // Non-owning mode
 	~Display();
 

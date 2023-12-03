@@ -23,6 +23,8 @@ class State {
 public:
 	enum States : uint8_t {
 		MAIN_MENU = 0,
+		SETTINGS_MENU,
+		INFO_MENU,
 		GAME,
 
 		NUMBER_STATES,

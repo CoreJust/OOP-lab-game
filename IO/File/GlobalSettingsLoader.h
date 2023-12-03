@@ -19,7 +19,8 @@
 *	{
 *		"resources_location": "res/",
 *		"font": "Visitor_Rus",
-*		"volume": 0.9,
+*		"volume": 90.0,
+*		"difficulty": "hard",
 *		"render_distance": 15,
 *		"update_distance": 15,
 *		"fog_power": 3,
@@ -46,6 +47,7 @@ namespace io {
 		constexpr GlobalSettingsLoader(GlobalSettings& sets) : JsonFileParser(""), m_sets(sets) { }
 
 		void load();
+		void store();
 
 	private:
 		void loadFromParsed(io::JsonValue value);

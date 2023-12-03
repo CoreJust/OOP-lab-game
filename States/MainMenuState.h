@@ -5,6 +5,7 @@
 #pragma once
 #include "State.h"
 #include "Graphics/Display.h"
+#include "Graphics/GameGUI/ImGuiApi.h"
 
 /*
 *	MainMenuState.h contains a class that inherits parent class State.
@@ -17,6 +18,10 @@
 class MainMenuState : public State {
 private:
 	std::unique_ptr<Display> m_display; // Non-owning
+	gamegui::ImGuiApi m_imguiApi;
+
+	std::string m_seedStr = "1";
+	uint32_t m_difficultyChoice;
 
 public:
 	MainMenuState(StateManager& pManager);
@@ -25,5 +30,5 @@ public:
 	void revive() override;
 
 	void update(float deltaTime, utils::NoNullptr<io::VirtualInput> input) override;
-	void render(sf::RenderWindow& window) override; // Has its own internal cycle
+	void render(sf::RenderWindow& window) override;
 };

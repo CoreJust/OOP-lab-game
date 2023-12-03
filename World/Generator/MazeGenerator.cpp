@@ -107,11 +107,13 @@ void MazeGenerator::makeImperfect() {
 			if (std::has_single_bit(static_cast<uint8_t>(vns))) {
 
 				const float chance = m_rand.random(0, 10'000) / 10000.f;
-				if (chance < m_sets.mazeSets.imperfectionChance) {
+				if (chance < m_sets.mazeSets.imperfectionChance || (!x && !y)) {
 					const math::Vector2i offset = -math::Direction<int32_t>::getDirectionVector(vns);
 					m_pWorld.atMut(false, offset + math::Vector2i(x, y)) = Tile(TileId::STONE_FLOOR);
 				}
 			}
 		}
 	}
+
+	
 }

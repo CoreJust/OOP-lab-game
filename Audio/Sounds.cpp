@@ -27,10 +27,8 @@ void audio::Sounds::loadSound(const SoundId id) {
 
 	sf::SoundBuffer& buffer = m_buffers.emplace_back();
 	if (!buffer.loadFromFile(GlobalSettings::get().getAudioLocation() + name + ".wav")) {
-		if (!buffer.loadFromFile(GlobalSettings::get().getAudioLocation() + name + ".ogg")) {
-			io::Logger::error("Sounds: failed to load sound: " + name);
-			return;
-		}
+		io::Logger::error("Sounds: failed to load sound: " + name);
+		return;
 	}
 
 	sf::Sound& sound = m_sounds.emplace_back(buffer);

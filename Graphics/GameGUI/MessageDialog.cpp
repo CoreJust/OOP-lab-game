@@ -26,7 +26,7 @@ int8_t gamegui::MessageDialog::open() {
 }
 
 int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
-	io::Logger::debug("MessageDialog: opened with title " + m_title);
+	io::Logger::trace("MessageDialog: opened with title " + m_title);
 
 	Display display(window, true);
 
@@ -54,14 +54,14 @@ int8_t gamegui::MessageDialog::open(sf::RenderWindow& window) {
 
 			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 			
-			io::Logger::debug("MessageDialog: button 1 pressed");
+			io::Logger::trace("MessageDialog: button 1 pressed");
 		} else if (!m_button2.empty() && ImGui::Button(m_button2.data())) {
 			result = 2;
 			display.close();
 
 			audio::AudioMaster::playSound(audio::SoundId::SOUND_CLICK);
 
-			io::Logger::debug("MessageDialog: button 2 pressed");
+			io::Logger::trace("MessageDialog: button 2 pressed");
 		}
 
 		ImGui::End();

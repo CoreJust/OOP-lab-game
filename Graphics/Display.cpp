@@ -13,7 +13,7 @@
 #include "IO/Logger/Logger.h"
 #include "Texture/Texture.h"
 
-Display::Display(uint32_t width, uint32_t height, const sf::String& title, bool useImGui)
+Display::Display(const sf::String& title, bool useImGui)
 	: m_isOpen(true), 
 	m_isOwning(true),
 	m_window(new sf::RenderWindow())
@@ -28,7 +28,8 @@ Display::Display(uint32_t width, uint32_t height, const sf::String& title, bool 
 	sets.depthBits = 24;
 	sets.antialiasingLevel = 4;
 
-	m_window->create(sf::VideoMode(width, height), title, sf::Style::Close | sf::Style::Resize, sets);
+	m_window->create(sf::VideoMode::getFullscreenModes()[0], title, sf::Style::Fullscreen, sets);
+	m_window->setActive(true);
 	m_window->setVerticalSyncEnabled(true);
 
 	updateViewSize();
@@ -65,7 +66,7 @@ Display::Display(sf::RenderWindow& externalWindow, bool useImGui)
 		setupImGui();
 	}
 
-	io::Logger::debug("Display: initialized in non-owning mode");
+	io::Logger::trace("Display: initialized in non-owning mode");
 }
 
 Display::~Display() {
@@ -92,7 +93,7 @@ Display::~Display() {
 		delete m_window.get();
 		io::Logger::debug("Display: destroyed in owning mode");
 	} else {
-		io::Logger::debug("Display: destroyed in non-owning mode");
+		io::Logger::trace("Display: destroyed in non-owning mode");
 	}
 }
 
@@ -189,7 +190,7 @@ void Display::setupImGui() {
 		io::Logger::fatal("Display: failed to initialize ImGui");
 		return;
 	} else {
-		io::Logger::debug("Display: ImGui library initialized successfully");
+		io::Logger::trace("Display: ImGui library initialized successfully");
 	}
 }
 
@@ -197,5 +198,5 @@ void Display::destroyImGui() {
 	ImGui::SFML::Shutdown();
 	m_window->setMouseCursorVisible(false);
 
-	io::Logger::debug("Display: ImGui library shut down");
+	io::Logger::trace("Display: ImGui library shut down");
 }

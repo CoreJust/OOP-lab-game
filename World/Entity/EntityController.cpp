@@ -40,7 +40,7 @@ void EntityController::draw(RenderMaster& renderMaster) {
 	m_model->sceneObject().pos.x = m_entity->getX();
 	m_model->sceneObject().pos.z = m_entity->getY();
 
-	renderMaster.drawEntity(*m_model);
+	renderMaster.drawEntity(m_entity->getId(), *m_model);
 }
 
 bool EntityController::tryToMove(math::Vector2f offset) {

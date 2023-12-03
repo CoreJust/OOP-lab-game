@@ -7,6 +7,7 @@
 #include <string>
 
 #include "IO/Input/InputMode.h"
+#include "Difficulty.h"
 
 /*
 *	GlobalSettings(.h/.cpp) contains a class that represents the global game settings.
@@ -22,12 +23,16 @@ namespace io {
 	class GlobalSettingsLoader;
 }
 
+class SettingsMenuState;
+
 // Contains all the global settings of the game: resource locations, graphical settings
 // Implements singleton (since we cannot have two different source locations simultaneously)
 class GlobalSettings final {
 	friend class io::GlobalSettingsLoader;
+	friend class SettingsMenuState;
 
 private:
+	std::string m_resLocation = "res/";
 	std::string m_texturesLocation = "res/img/";
 	std::string m_audioLocation = "res/audio/";
 	std::string m_shadersLocation = "res/shaders/";
@@ -35,20 +40,21 @@ private:
 
 	std::string m_textFont = "Visitor_Rus";
 
-	float m_volume = 1.f;
+	float m_volume = 90.f;
+	Difficulty m_difficulty = Difficulty::HARD;
 
-	uint32_t m_maxRenderDistance = 10;
+	uint32_t m_maxRenderDistance = 15;
 	uint32_t m_updateDistance = 15;
-	int32_t m_fogPower = 2;
+	int32_t m_fogPower = 3;
 
 	bool m_enableVerticalViewMoving = true;
 
 	bool m_enableTutorials = true;
 
 	std::string m_bindingsFile = "bindings";
-	io::InputMode m_inputMode = io::KEYBOARD_AND_MOUSE_INPUT;
+	io::InputMode m_inputMode = io::InputMode::KEYBOARD_AND_MOUSE_INPUT;
 	std::string m_inputFile = "input_save";
-	bool m_isToSaveInput = true;
+	bool m_isToSaveInput = false;
 
 	bool m_isToLogInput = false;
 	bool m_isToLogDeltaTime = false;
@@ -60,13 +66,22 @@ private:
 	inline static GlobalSettings* s_instance = nullptr;
 
 public:
-	static void initSettings(); // will be from a file in the future
+	static void initSettings();
+	static void storeSettings();
 	static void destroySettings();
 
 	// Gives access to the instance of the global settings
 	static GlobalSettings& get();
 
 public:
+	GlobalSettings() = default;
+	GlobalSettings(const GlobalSettings&) = default;
+	GlobalSettings(GlobalSettings&&) = default;
+	GlobalSettings& operator=(const GlobalSettings&) = default;
+	GlobalSettings& operator=(GlobalSettings&&) = default;
+
+	void setDifficulty(const Difficulty difficulty); // The only settable setting
+
 	const std::string& getTexturesLocation() const noexcept;
 	const std::string& getAudioLocation() const noexcept;
 	const std::string& getShadersLocation() const noexcept;
@@ -75,6 +90,7 @@ public:
 	const std::string& getTextFont() const noexcept;
 
 	float getVolume() const noexcept;
+	Difficulty getDifficulty() const noexcept;
 
 	uint32_t getMaxRenderDistance() const noexcept;
 	uint32_t getUpdateDistance() const noexcept;
