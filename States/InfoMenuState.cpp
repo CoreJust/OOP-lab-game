@@ -53,9 +53,9 @@ void InfoMenuState::render(sf::RenderWindow& window) {
 			"At the same time, you need to escape from the enemies.\n"\
 			"\n"\
 			"This project contains:\n"\
-			"\t17 563 lines of code\n"\
-			"\t260 source code files\n"\
-			"\t159 classes\n"\
+			"\t17 790 lines of code\n"\
+			"\t263 source code files\n"\
+			"\t161 classes\n"\
 			"\n"\
 			"List of used resources:\n"\
 			"\tC++20 language and Microsoft Visual studio as IDE\n"\

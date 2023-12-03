@@ -17,6 +17,7 @@ public:
 		NORMAL,
 		HARD,
 		EXTREME,
+		NIGHTMARISH,
 
 		NUMBER_DIFFICULTIES
 	};
@@ -38,6 +39,7 @@ public:
 			"normal",
 			"hard",
 			"extreme",
+			"nightmarish",
 
 			"NUMBER_DIFFICULTIES"
 		};

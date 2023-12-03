@@ -56,7 +56,7 @@ void SettingsMenuState::render(sf::RenderWindow& window) {
 		m_imguiApi.newLine();
 
 		uint32_t choice = m_tmpSets.getDifficulty();
-		if (m_imguiApi.comboBox({ "easy", "normal", "hard", "extreme" }, choice, "Difficulty: ")) {
+		if (m_imguiApi.comboBox({ "easy", "normal", "hard", "extreme", "nightmarish" }, choice, "Difficulty: ")) {
 			m_tmpSets.m_difficulty = Difficulty::Value(choice);
 		}
 

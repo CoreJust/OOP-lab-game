@@ -59,7 +59,7 @@ void MainMenuState::render(sf::RenderWindow& window) {
 			utils::Seed::setSeed(utils::Seed::fromString(m_seedStr));
 		}
 
-		if (m_imguiApi.comboBox({ "easy", "normal", "hard", "extreme" }, m_difficultyChoice, "Difficulty: ")) {
+		if (m_imguiApi.comboBox({ "easy", "normal", "hard", "extreme", "nightmarish" }, m_difficultyChoice, "Difficulty: ")) {
 			GlobalSettings::get().setDifficulty(Difficulty::Value(m_difficultyChoice));
 		}
 

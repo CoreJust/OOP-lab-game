@@ -61,11 +61,14 @@ public:
 	const math::Mapper<>& getMapper() const;
 
 	math::Vector2i getNearestPassableLocation(const math::Vector2i& from) const noexcept; // returns from if no passable location found
+	math::Vector2i getNearestSuitableLocation(const math::Vector2i& from, std::function<bool(math::Vector2i)> isSuitable) const;
 	math::Vector2i getRandomLocation() const noexcept;
 	math::Vector2i getRandomPassableLocation() const noexcept;
+	math::Vector2i getRandomSuitableLocation(std::function<bool(math::Vector2i)> isSuitable) const;
 
 	math::DirectionFlag getVNSFor(const math::Vector2i& pos); // Von Neumann Surrounding
 	bool isObstacleAt(const math::Vector2i& pos) const;
+	bool isInteractiveAt(const math::Vector2i& pos) const;
 
 	const Tile& at(bool isForeground, const math::Vector2i& pos) const;
 	Tile& atMut(bool isForeground, const math::Vector2i& pos);

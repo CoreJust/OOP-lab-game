@@ -39,6 +39,7 @@ void PlayerContoller::draw(RenderMaster& renderMaster) {
 
 	// Drawing GUI
 	m_healthBar->setValue(m_entity->getHealth() / m_entity->getStats().maxHealth);
+	m_healthBar->setText(std::format("Health: {0}/{1}", int(getPlayer().getHealth()), int(getPlayer().getStats().maxHealth)));
 	m_infoText->setText(std::format("Player( x: {0:.1f}, y: {1:.1f} )", getPlayer().getPos().x(), getPlayer().getPos().y()));
 }
 

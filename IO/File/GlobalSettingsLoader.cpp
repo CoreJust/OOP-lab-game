@@ -99,6 +99,8 @@ void io::GlobalSettingsLoader::loadFromParsed(io::JsonValue value) {
 					m_sets.m_difficulty = Difficulty::HARD;
 				} else if (val.asString() == "extreme") {
 					m_sets.m_difficulty = Difficulty::EXTREME;
+				} else if (val.asString() == "nightmarish") {
+					m_sets.m_difficulty = Difficulty::NIGHTMARISH;
 				}
 			}
 		} else if (key == "render_distance") {

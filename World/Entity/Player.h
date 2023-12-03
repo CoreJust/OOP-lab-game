@@ -20,5 +20,8 @@ public:
 	Player(const math::Vector2f& pos, const float rot, World& pWorld);
 	Player(World& pWorld);
 
+	void dealDamageToPlayer(const float damage, const EntityId attacker);
+	void dealDamageToPlayer(const float damage, const EffectId attacker);
+
 	math::Vector2f getViewPos() const;
 };

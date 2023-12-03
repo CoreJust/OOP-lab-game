@@ -71,6 +71,8 @@ public:
 	EntityStats& getStatsMut() noexcept;
 	EntityId getId() const noexcept;
 
+	EntityStats& stats() noexcept;
+
 	EffectPool& getEffectPoolMut() noexcept;
 
 	bool isInImmortalMode() const noexcept;

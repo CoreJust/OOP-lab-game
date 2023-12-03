@@ -49,6 +49,8 @@ bool gamegui::ImGuiApi::tryToBegin(sf::RenderWindow& window) {
         return false;
     }
 
+    m_begun = true;
+
     if (m_centerWindow) {
         ImGui::SetNextWindowPos({ window.getSize().x / 2.f, window.getSize().y / 2.f }, 0, { 0.5f, 0.5f });
     }
@@ -59,7 +61,6 @@ bool gamegui::ImGuiApi::tryToBegin(sf::RenderWindow& window) {
     newLine();
 
     m_dummyCounter = 0;
-    m_begun = true;
     return true;
 }
 

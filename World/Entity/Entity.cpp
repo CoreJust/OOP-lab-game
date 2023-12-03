@@ -47,30 +47,40 @@ Entity& Entity::operator=(Entity&& other) noexcept {
 }
 
 // Preliminary implementation
-// TODO: Review defence system
 float Entity::calcDamage(float amount) const {
 	// Progressive scale for damage reduction with defence
 	// Factors for defence calculation:
 	// 10% gives 100% damage reduction, next 15% - 90%, 35% - 75%, and final 40% - 40%
-	const static float DEFENCE_POWERS_FACTORS[4] = { 0.1f * 1, 0.15f * 0.9f, 0.35f * 0.75f, 0.4f * 0.4f };
+	const static float DEFENCE_POWERS_PERCENTS[4] = { 0.1f, 0.15f, 0.35f, 0.4f };
+	const static float DEFENCE_POWERS_FACTORS[4] = { 1, 0.9f, 0.75f, 0.4f };
 
 	if (m_stats.defence <= 0) {
 		return amount;
 	}
 
-	float result = 0;
-	for (size_t i = 0; i < 4; i++) {
-		float defencePower = m_stats.defence * DEFENCE_POWERS_FACTORS[i];
+	if (m_stats.defence <= amount) {
+		const float damageReduced = m_stats.defence * (
+			DEFENCE_POWERS_PERCENTS[0] * DEFENCE_POWERS_FACTORS[0] +
+			DEFENCE_POWERS_PERCENTS[1] * DEFENCE_POWERS_FACTORS[1] +
+			DEFENCE_POWERS_PERCENTS[2] * DEFENCE_POWERS_FACTORS[2] +
+			DEFENCE_POWERS_PERCENTS[3] * DEFENCE_POWERS_FACTORS[3]
+		);
 
-		if (defencePower > amount) {
-			return result;
+		return amount - damageReduced;
+	} else {
+		float result = 0;
+		for (size_t i = 0; i < 4; i++) {
+			const float defencePart = m_stats.defence * DEFENCE_POWERS_PERCENTS[i];
+			if (defencePart > amount) {
+				return result + amount * (1.f - DEFENCE_POWERS_FACTORS[i]);
+			}
+
+			result += defencePart * (1.f - DEFENCE_POWERS_FACTORS[i]);
+			amount -= defencePart;
 		}
 
-		result += amount - defencePower;
-		amount -= defencePower;
+		return result;
 	}
-
-	return result;
 }
 
 void Entity::move(const math::Vector2f& offset) {
@@ -145,6 +155,10 @@ EntityStats& Entity::getStatsMut() noexcept {
 
 EntityId Entity::getId() const noexcept {
 	return m_id;
+}
+
+EntityStats& Entity::stats() noexcept {
+	return m_stats;
 }
 
 EffectPool& Entity::getEffectPoolMut() noexcept {

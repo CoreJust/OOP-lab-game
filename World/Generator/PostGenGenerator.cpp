@@ -108,7 +108,10 @@ void PostGenGenerator::createDecorations() {
 }
 
 void PostGenGenerator::createNextLevelPortal() {
-	math::Vector2i nextLevelPortalPos = m_pWorld.getRandomPassableLocation();
+	math::Vector2i nextLevelPortalPos = m_pWorld.getRandomSuitableLocation([this](const math::Vector2i& pos) -> bool {
+		return !m_pWorld.isObstacleAt(pos) && !m_pWorld.isInteractiveAt(pos) && pos.length() > 10.f;
+	});
+
 	m_pWorld.atMut(1, nextLevelPortalPos) = Tile(TileId::NEXT_LEVEL_PORTAL);
 	io::Logger::info("PostGenGenerator: generated next level portal at " + nextLevelPortalPos.toString());
 }

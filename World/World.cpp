@@ -188,13 +188,17 @@ const math::Mapper<>& World::getMapper() const {
 }
 
 math::Vector2i World::getNearestPassableLocation(const math::Vector2i& from) const noexcept {
-	if (!isObstacleAt(from)) {
+	return getNearestSuitableLocation(from, [this](const math::Vector2i& pos) -> bool { return !isObstacleAt(pos); });
+}
+
+math::Vector2i World::getNearestSuitableLocation(const math::Vector2i& from, std::function<bool(math::Vector2i)> isSuitable) const {
+	if (isSuitable(from)) {
 		return from;
 	}
 
-	auto tryLookInRange = [this](const math::Vector2i& from, math::Vector2i& to, const math::Vector2i& step) -> bool {
+	auto tryLookInRange = [this, &isSuitable](const math::Vector2i& from, math::Vector2i& to, const math::Vector2i& step) -> bool {
 		while (to != from) {
-			if (!isObstacleAt(to)) {
+			if (isSuitable(to)) {
 				return true;
 			}
 
@@ -202,7 +206,7 @@ math::Vector2i World::getNearestPassableLocation(const math::Vector2i& from) con
 		}
 
 		return false;
-	};
+		};
 
 	math::Vector2i topLeft = from;
 	math::Vector2i downRight = from;
@@ -250,6 +254,10 @@ math::Vector2i World::getRandomPassableLocation() const noexcept {
 	return getNearestPassableLocation(getRandomLocation());
 }
 
+math::Vector2i World::getRandomSuitableLocation(std::function<bool(math::Vector2i)> isSuitable) const {
+	return getNearestSuitableLocation(getRandomLocation(), std::move(isSuitable));
+}
+
 math::DirectionFlag World::getVNSFor(const math::Vector2i& pos) {
 	// A note: in regard of the walls, the out-of-bounds-area is considered not as emptiness but something
 	// It is made this way because otherwise the bounding walls would have been rendered, thus looking unnatural
@@ -278,6 +286,10 @@ math::DirectionFlag World::getVNSFor(const math::Vector2i& pos) {
 
 bool World::isObstacleAt(const math::Vector2i& pos) const {
 	return at(0, pos).isObstacle() || at(1, pos).isObstacle();
+}
+
+bool World::isInteractiveAt(const math::Vector2i& pos) const {
+	return at(0, pos).isInteractive() || at(1, pos).isInteractive();
 }
 
 const Tile& World::at(bool isForeground, const math::Vector2i& pos) const {

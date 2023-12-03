@@ -18,6 +18,8 @@ public:
 		POISONING,
 		SHOCKING, // Immobilizes and blinds the player for some time
 
+		SELF_DESTRUCT, // Kills itself and converts all of own HP into damage
+
 		NUMBER_ENEMY_PLAYER_INTERACTION_POLICIES
 	};
 
@@ -37,6 +39,8 @@ public:
 			"NORMAL_HIT",
 			"POISONING",
 			"SHOCKING",
+
+			"SELF_DESTRUCT",
 
 			"NUMBER_ENEMY_PLAYER_INTERACTION_POLICIES"
 		};

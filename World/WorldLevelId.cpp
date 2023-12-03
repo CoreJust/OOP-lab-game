@@ -48,8 +48,10 @@ void WorldLevelId::loadGenerationSettingsTo(WorldGenerationMaster& generationMas
 		generationMaster.pushEnemyGenerator({ 
 			{ EntityId::VENOMOUS_PLANT, 12 },
 			{ EntityId::EVIL_SPIRIT, 12 },
-			{ EntityId::GHOST, 20 }
-		});
+			{ EntityId::GHOST, 20 },
+			{ EntityId::CHEST, 9 },
+			{ EntityId::MIMIC, 10 }
+		}, 7.f);
 	} break;
 	case MAZE_LEVEL: {
 		generationMaster.pushInitialGenerator(GenerationSettings(
@@ -71,8 +73,10 @@ void WorldLevelId::loadGenerationSettingsTo(WorldGenerationMaster& generationMas
 		));
 
 		generationMaster.pushEnemyGenerator({
-			{ EntityId::LOST_IN_MAZE, 20 }
-		});
+			{ EntityId::LOST_IN_MAZE, 20 },
+			{ EntityId::CHEST, 10 },
+			{ EntityId::MIMIC, 9 }
+		}, 5.f);
 	} break;
 	case SANCTUARY_LEVEL: {
 		generationMaster.pushInitialGenerator(GenerationSettings(
@@ -80,6 +84,10 @@ void WorldLevelId::loadGenerationSettingsTo(WorldGenerationMaster& generationMas
 			GenerationSettings::TEMPLATE_GENERATOR,
 			GenerationSettings::TemplateGenerationSettings{ .id = SANCTUARY_LEVEL, .data = 0 }
 		));
+
+		generationMaster.pushEnemyGenerator({
+			{ EntityId::CHEST, 20 }
+		}, 2.f);
 	} break;
 	default: break;
 	}
@@ -110,8 +118,8 @@ const std::vector<std::string>& WorldLevelId::getTutorialTexts() const noexcept 
 			"Good luck!       "
 		}, { // Sanctuary world
 			"Congratulations! You have passed the game!",
-			"And here is the sanctuary!",
-			"Enjoy!"
+			"I hope you enjoyed the game!",
+			"And here is your reward: the sanctuary!"
 		}
 	};
 

@@ -7,6 +7,8 @@
 #include "EvilSpirit.h"
 #include "LostInMaze.h"
 #include "VenomousPlant.h"
+#include "Chest.h"
+#include "Mimic.h"
 
 EnemySpawner::EnemySpawner(World& pWorld) noexcept
 	: m_pWorld(pWorld) {
@@ -20,7 +22,9 @@ std::unique_ptr<EnemyController> EnemySpawner::spawn(const EntityId id, const ma
 		case EntityId::EVIL_SPIRIT: enemy = std::make_unique<EvilSpirit>(pos, m_pWorld); break;
 		case EntityId::LOST_IN_MAZE: enemy = std::make_unique<LostInMaze>(pos, m_pWorld); break;
 		case EntityId::VENOMOUS_PLANT: enemy = std::make_unique<VenomousPlant>(pos, m_pWorld); break;
-		default: return nullptr;
+		case EntityId::CHEST: enemy = std::make_unique<Chest>(pos, m_pWorld); break;
+		case EntityId::MIMIC: enemy = std::make_unique<Mimic>(pos, m_pWorld); break;
+	default: return nullptr;
 	}
 
 	return std::make_unique<EnemyController>(std::move(enemy), m_pWorld);

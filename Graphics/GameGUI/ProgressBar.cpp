@@ -55,3 +55,13 @@ void gamegui::ProgressBar::setValue(float val) noexcept {
 float gamegui::ProgressBar::getValue() const noexcept {
 	return m_value;
 }
+
+void gamegui::ProgressBar::setText(const std::string& text) noexcept {
+	sf::Text* t = (sf::Text*)m_drawables[2].get();
+	t->setString(text);
+}
+
+const std::string& gamegui::ProgressBar::getText() const noexcept {
+	sf::Text* t = (sf::Text*)m_drawables[2].get();
+	return t->getString();
+}

@@ -17,10 +17,8 @@
 class EvilSpirit final : public Enemy<
 	EnemyMovePolicy::NO_MOVING,
 	EnemyAttackPolicy::PASSIVE_PURSUIT,
-	EnemyPlayerInteractionPolicy::NORMAL_HIT // Actully it is overloaded
+	EnemyPlayerInteractionPolicy::SELF_DESTRUCT
 > {
 public:
 	EvilSpirit(const math::Vector2f& pos, World& pWorld);
-
-	void onAttack(World& world, Player& player) override;
 };

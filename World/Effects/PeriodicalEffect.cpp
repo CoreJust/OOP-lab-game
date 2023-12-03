@@ -35,7 +35,13 @@ void PeriodicalEffect::eraseEffect(Entity& entity, World& world) {
 
 void PeriodicalEffect::applyTo(Entity& entity, World& world) {
 	switch (m_id) {
-    case EffectId::CONTINUOUS_DAMAGE: entity.dealDamage(Effect::CONTINUOUS_DAMAGE_PER_LEVEL * m_level); break;
+    case EffectId::CONTINUOUS_DAMAGE:
+        if (entity.getId() == EntityId::PLAYER) {
+            (*(Player*)&entity).dealDamageToPlayer(Effect::CONTINUOUS_DAMAGE_PER_LEVEL * m_level, m_id);
+        } else {
+            entity.dealDamage(Effect::CONTINUOUS_DAMAGE_PER_LEVEL * m_level);
+        }
+        break;
 	case EffectId::CONTINUOUS_HEALING: entity.heal(Effect::CONTINUOUS_HEAL_PER_LEVEL * m_level); break;
 	default:
 		assert(false && "Not a periodical effect");

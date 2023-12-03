@@ -32,6 +32,8 @@ public:
 		EVIL_SPIRIT,
 		LOST_IN_MAZE,
 		VENOMOUS_PLANT, // not poisonous
+		CHEST,
+		MIMIC,
 
 		NUMBER_ENTITY_IDS
 	};

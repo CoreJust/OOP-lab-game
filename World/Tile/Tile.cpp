@@ -102,7 +102,7 @@ std::unique_ptr<TileData> Tile::getDefaultTileDataFor(TileId id) const {
 			return std::make_unique<EffectGiverTileData>(audio::SoundId::SOUND_SAINT_SPRINGS_BUFF, std::move(effects), 9.f);
 		} case TileId::POISON_CLOUD: {
 			std::vector<std::shared_ptr<Effect>> effects;
-			effects.emplace_back(std::make_shared<InstantEffect>(EffectId::DAMAGE, 1.f));
+			effects.emplace_back(std::make_shared<InstantEffect>(EffectId::DAMAGE, 1.5f));
 			effects.emplace_back(std::make_shared<ContinuousEffect>(EffectId::DECCELERATION, 1.f, 2.f));
 
 			return std::make_unique<EffectGiverTileData>(audio::SoundId::SOUND_POISONING, std::move(effects), 1.f);

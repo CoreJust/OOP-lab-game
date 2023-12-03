@@ -60,7 +60,7 @@ private:
 	bool m_isToLogDeltaTime = false;
 	bool m_isToLogSettings = true;
 	bool m_isToLogEntitiesPos = false;
-	bool m_isToLogEntitiesEffects = true;
+	bool m_isToLogEntitiesEffects = false;
 
 private:
 	inline static GlobalSettings* s_instance = nullptr;

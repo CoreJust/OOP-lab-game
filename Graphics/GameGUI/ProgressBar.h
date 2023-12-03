@@ -25,5 +25,8 @@ namespace gamegui {
 
 		void setValue(float val) noexcept;
 		float getValue() const noexcept;
+
+		void setText(const std::string& text) noexcept;
+		const std::string& getText() const noexcept;
 	};
 }
